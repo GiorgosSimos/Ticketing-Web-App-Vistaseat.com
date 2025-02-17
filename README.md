@@ -5,4 +5,4 @@ VistaSeat is a web-based ticket management system that facilitates the purchase,
 -  Theater plays 🎭
 -  Cinema films 🎬
 -  Music concerts & festivals 🎶
- - Sporting events ⚽
+- Sporting events ⚽
