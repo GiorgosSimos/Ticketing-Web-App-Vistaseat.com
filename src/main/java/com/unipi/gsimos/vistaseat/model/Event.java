@@ -19,6 +19,7 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id")
     private Long id;
 
     @Column(nullable = false)
@@ -47,3 +48,4 @@ public class Event {
     private Venue venue;
 
 }
+
