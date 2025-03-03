@@ -41,7 +41,7 @@ public class Booking {
     @Column(name = "last_name", nullable = false) //For registered users autocompleted with user.getLastName()
     private String lastName;
 
-    @ValidEmail
+    //@ValidEmail
     @Column(nullable = false) // For registered users autocompleted with user.getEmail()
     private String email;
 
