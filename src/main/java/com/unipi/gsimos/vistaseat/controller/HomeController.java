@@ -10,4 +10,9 @@ public class HomeController {
     public String home() {
         return "home"; // This should correspond to home.html in /templates/
     }
+
+    @GetMapping("/adminDashboard")
+    public String adminDashboard() {
+        return "adminDashboard"; // This should correspond to adminDashboard.html in /templates/
+    }
 }

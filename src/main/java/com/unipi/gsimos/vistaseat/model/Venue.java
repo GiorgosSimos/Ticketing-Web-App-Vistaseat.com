@@ -45,4 +45,9 @@ public class Venue {
     // A venue hosts multiple events
     @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Event> events = new ArrayList<>();
+
+    // Multiple venues are managed by an admin
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_id", nullable = false)
+    private User managedBy;
 }

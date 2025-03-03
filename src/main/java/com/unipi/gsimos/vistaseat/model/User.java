@@ -46,4 +46,8 @@ public class User {
     // An admin manages multiple events
     @OneToMany(mappedBy = "managedBy", fetch = FetchType.LAZY)
     private List<Event> managedEvents = new ArrayList<>();
+
+    // An admin manages multiple venues
+    @OneToMany(mappedBy = "managedBy", fetch = FetchType.LAZY)
+    private List<Venue> managedVenues = new ArrayList<>();
 }
