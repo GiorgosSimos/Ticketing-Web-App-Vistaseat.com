@@ -1,5 +1,4 @@
 package com.unipi.gsimos.vistaseat.dto;
-
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,13 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-// Used only for creating new users - field password visible
-public class NewUserDto {
+public class UserDto {
 
     private Long id;
     private String firstName;
     private String lastName;
-    private String password;
     private String phone;
     private String email;
     private UserRole role;
