@@ -13,6 +13,7 @@ import lombok.Setter;
 // Used only for creating new users - field password visible
 public class NewUserDto {
 
+    private Long Id;
     private String firstName;
     private String lastName;
     private String password;

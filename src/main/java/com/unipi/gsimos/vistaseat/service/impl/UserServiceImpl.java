@@ -19,12 +19,19 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
+    /**
+     * Method to create new user.
+     * To not expose the password to the client,
+     * the method accepts a NewUserDto object as parameter, but returns a UserDto.
+     * @param newUserDto
+     * @return UserDto object
+     */
     @Override
-    public NewUserDto createUser(NewUserDto newUserDto) {
+    public UserDto createUser(NewUserDto newUserDto) {
 
         User user = UserMapper.toUser(newUserDto);
         User savedUser = userRepository.save(user);
-        return UserMapper.toNewUserDto(savedUser);
+        return UserMapper.toUserDto(savedUser);
     }
 
     @Override

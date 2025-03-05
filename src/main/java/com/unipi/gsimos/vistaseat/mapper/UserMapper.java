@@ -7,20 +7,21 @@ import com.unipi.gsimos.vistaseat.model.User;
 public class UserMapper {
 
     // Used only when creating new users
-    public static NewUserDto toNewUserDto(User user) {
+    /*public static NewUserDto toNewUserDto(User user) {
         return new NewUserDto(
+                user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getPassword(),
                 user.getPhone(),
                 user.getEmail(),
                 user.getRole()
-                /*user.getManagedEvents() != null ? user.getManagedEvents()
+                *//*user.getManagedEvents() != null ? user.getManagedEvents()
                         .stream().map(Event::getId).collect(Collectors.toList()) : null,
                 user.getManagedVenues() != null ? user.getManagedVenues()
-                        .stream().map(Venue::getId).collect(Collectors.toList()) : null*/
+                        .stream().map(Venue::getId).collect(Collectors.toList()) : null*//*
         );
-    }
+    }*/
 
     // Used only when creating new users
     public static User toUser(NewUserDto newUserDto) {
@@ -45,13 +46,13 @@ public class UserMapper {
         );
     }
 
-    public static User toUser(UserDto userDto) {
-        User user = new User();
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setPhone(userDto.getPhone());
-        user.setEmail(userDto.getEmail());
-        user.setRole(userDto.getRole());
+    /*public static UserDto toUserDto(NewUserDto newUserDto) {
+        UserDto user = new UserDto();
+        user.setFirstName(newUserDto.getFirstName());
+        user.setLastName(newUserDto.getLastName());
+        user.setPhone(newUserDto.getPhone());
+        user.setEmail(newUserDto.getEmail());
+        user.setRole(newUserDto.getRole());
         return user;
-    }
+    }*/
 }

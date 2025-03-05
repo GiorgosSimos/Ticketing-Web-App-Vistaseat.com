@@ -26,12 +26,12 @@ public class UserController {
     // Create new user REST API
     @PostMapping("/register")
     //@RequestBody annotation is used to extract a JSON object and convert it to a DTO
-    public ResponseEntity<NewUserDto> addNewUser(@RequestBody NewUserDto newUserDto) {
+    public ResponseEntity<UserDto> addNewUser(@RequestBody NewUserDto newUserDto) {
         //Before saving, encrypt password with BCryptPasswordEncoder
         newUserDto.setPassword(passwordEncoder.encode(newUserDto.getPassword()));
 
         // Save User
-        NewUserDto savedUser = userService.createUser(newUserDto);
+        UserDto savedUser = userService.createUser(newUserDto);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
