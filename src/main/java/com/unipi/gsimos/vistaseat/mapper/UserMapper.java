@@ -9,7 +9,6 @@ public class UserMapper {
     // Used only when creating new users
     public static NewUserDto toNewUserDto(User user) {
         return new NewUserDto(
-                user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getPassword(),
@@ -23,17 +22,7 @@ public class UserMapper {
         );
     }
 
-    public static UserDto toUserDto(User user) {
-        return new UserDto(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getPhone(),
-                user.getEmail(),
-                user.getRole()
-        );
-    }
-
+    // Used only when creating new users
     public static User toUser(NewUserDto newUserDto) {
         User user = new User();
         user.setFirstName(newUserDto.getFirstName());
@@ -45,4 +34,24 @@ public class UserMapper {
         return user;
     }
 
+    public static UserDto toUserDto(User user) {
+        return new UserDto(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPhone(),
+                user.getEmail(),
+                user.getRole()
+        );
+    }
+
+    public static User toUser(UserDto userDto) {
+        User user = new User();
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setPhone(userDto.getPhone());
+        user.setEmail(userDto.getEmail());
+        user.setRole(userDto.getRole());
+        return user;
+    }
 }
