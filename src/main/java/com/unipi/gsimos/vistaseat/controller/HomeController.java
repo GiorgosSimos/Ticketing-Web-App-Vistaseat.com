@@ -13,6 +13,11 @@ public class HomeController {
 
     @GetMapping("/adminDashboard")
     public String adminDashboard() {
-        return "adminDashboard"; // This should correspond to adminDashboard.html in /templates/
+        return "adminDashboard";
+    }
+
+    @GetMapping("/adminLogin")
+    public String adminLogin() {
+        return "adminLogin";
     }
 }
