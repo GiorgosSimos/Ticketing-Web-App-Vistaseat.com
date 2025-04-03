@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Method to create new user.
@@ -31,6 +33,8 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(newUserDto.getEmail())){
             throw new RuntimeException("Email already exists");
         }
+        //Before saving, encrypt password with BCryptPasswordEncoder
+        newUserDto.setPassword(passwordEncoder.encode(newUserDto.getPassword()));
 
         User user = UserMapper.toUser(newUserDto);
         User savedUser = userRepository.save(user);

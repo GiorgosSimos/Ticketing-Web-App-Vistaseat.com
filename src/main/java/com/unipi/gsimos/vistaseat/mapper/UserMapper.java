@@ -28,7 +28,7 @@ public class UserMapper {
         User user = new User();
         user.setFirstName(newUserDto.getFirstName());
         user.setLastName(newUserDto.getLastName());
-        user.setPassword(newUserDto.getPassword()); // Will be hashed before saving
+        user.setPassword(newUserDto.getPassword()); // Is hashed in the Service, Layer before saving
         user.setPhone(newUserDto.getPhone());
         user.setEmail(newUserDto.getEmail());
         user.setRole(newUserDto.getRole());
@@ -45,14 +45,4 @@ public class UserMapper {
                 user.getRole()
         );
     }
-
-    /*public static UserDto toUserDto(NewUserDto newUserDto) {
-        UserDto user = new UserDto();
-        user.setFirstName(newUserDto.getFirstName());
-        user.setLastName(newUserDto.getLastName());
-        user.setPhone(newUserDto.getPhone());
-        user.setEmail(newUserDto.getEmail());
-        user.setRole(newUserDto.getRole());
-        return user;
-    }*/
 }

@@ -11,27 +11,23 @@
 
 </head>
 <body>
+<h1>Welcome to vistaseat.com</h1>
 <section>
-    <form>
-        <h1>Sign In</h1>
-        <div class="inputbox">
-            <ion-icon name="person-outline"></ion-icon>
-            <input type="text">
-            <label>Your name</label>
-        </div>
+    <form id="loginForm" method="POST" th:action="@{/adminLogin}">
+        <h2>Log In</h2>
         <div class="inputbox">
             <ion-icon name="mail-outline"></ion-icon>
-            <input type="email">
-            <label>Your email</label>
+            <input type="email" id="email" name="email" required>
+            <label for="email">Your email</label>
         </div>
         <div class="inputbox">
             <ion-icon name="lock-closed-outline"></ion-icon>
-            <input type="password">
-            <label>Your password</label>
+            <input type="password" id="password" name="password" required>
+            <label for="password">Your password</label>
         </div>
-        <button>Sign In</button>
+        <button type="submit">Log In</button>
         <div class="register">
-            <p>Don't have an account? <a href="#">Sign Up</a></p>
+            <p>Don't have an account? <a href="/adminSignUp">Sign Up</a></p>
         </div>
     </form>
 </section>

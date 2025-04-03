@@ -4,6 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     setTimeout(() => {
         adminLogInForm.style.transition = 'opacity 0.5s ease-in-out';
-        adminLogInForm.style.opacity = 2;
+        adminLogInForm.style.opacity = 1;
     }, 500);
 });
