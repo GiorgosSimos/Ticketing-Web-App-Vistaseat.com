@@ -33,9 +33,9 @@ public class ContentController {
         return "adminLogin";
     }
 
-    @GetMapping("/adminSignUp")
-    public String adminSignup(){
-        return "adminSignUp";
+    @GetMapping("/userSignUp")
+    public String userSignup(){
+        return "userSignUp";
     }
 
     @GetMapping("/adminDashboard")

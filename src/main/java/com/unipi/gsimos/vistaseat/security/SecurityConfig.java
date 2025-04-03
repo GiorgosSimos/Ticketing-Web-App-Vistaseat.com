@@ -69,17 +69,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests//creating exceptions for URLs we want to allow access
 
-                            // Public API registration
+                            // Public API registration for new users
                             .requestMatchers("/api/users/register").permitAll()
 
-                            // All other endpoints require admin
-                            .requestMatchers("/adminDashboard", "/adminDashboard/**","/api/**")
-                            .hasRole("DOMAIN_ADMIN")//endpoints that only DOMAIN_ADMIN can access
-
                             // Public pages
-                            .requestMatchers("/","/adminLogin","/adminLogin/**","/adminSignUp",
+                            .requestMatchers("/","/adminLogin","/adminLogin/**","/userSignUp",
                                     "/css/**", "/js/**", "/images/**")
                             .permitAll()
+
+                            // Endpoints that require admin authentication
+                            .requestMatchers("/adminDashboard", "/adminDashboard/**","/api/**")
+                            .hasRole("DOMAIN_ADMIN")//endpoints that only DOMAIN_ADMIN can access
 
                             .anyRequest().authenticated();// Everything else requires login, endpoints that require authentication
                 });
