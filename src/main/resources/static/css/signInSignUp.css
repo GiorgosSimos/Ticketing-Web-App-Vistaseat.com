@@ -81,6 +81,20 @@ h2 {
     font-size: 1rem;
 }
 
+.password-box {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #555;
+}
+
 input:focus ~ label,
 input:valid ~ label {
     top: -5px;
@@ -124,5 +138,22 @@ button:hover {
     text-decoration: underline;
     color: #a8a8a8;
 }
+
+.toast {
+    position: relative;
+    background-color: #ff4d4d;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    font-weight: bold;
+    opacity: 0.95;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+}
+.hidden {
+    display: none;
+}
+
 
 

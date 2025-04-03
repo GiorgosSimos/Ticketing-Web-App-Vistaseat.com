@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +25,7 @@ public class SecurityConfig {
 
     public SecurityConfig(UserRepository userRepository) {
         _userRepository = userRepository;
+
     }
 
     @Bean
@@ -50,7 +52,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAuthFailureHandler customAuthFailureHandler)
+            throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -59,17 +62,29 @@ public class SecurityConfig {
                                     .usernameParameter("email")
                                     .passwordParameter("password")
                                     .defaultSuccessUrl("/adminDashboard", true)
+                                    .failureHandler(customAuthFailureHandler)
                                     .permitAll();// endpoints that are publicly accessible
 
                         })
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests//creating exceptions for URLs we want to allow access
-                            .requestMatchers("/","/adminSignUp","/api/users/register",
+
+                            // Public API registration
+                            .requestMatchers("/api/users/register").permitAll()
+
+                            // All other endpoints require admin
+                            .requestMatchers("/adminDashboard", "/adminDashboard/**","/api/**")
+                            .hasRole("DOMAIN_ADMIN")//endpoints that only DOMAIN_ADMIN can access
+
+                            // Public pages
+                            .requestMatchers("/","/adminLogin","/adminLogin/**","/adminSignUp",
                                     "/css/**", "/js/**", "/images/**")
                             .permitAll()
-                            .anyRequest()//Everything else requires login
-                            .authenticated();// endpoints that require authentication
+
+                            .anyRequest().authenticated();// Everything else requires login, endpoints that require authentication
                 });
+
+                http.requestCache(RequestCacheConfigurer::disable);
 
                 http.sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)

@@ -5,6 +5,7 @@ import com.unipi.gsimos.vistaseat.dto.UserDto;
 import com.unipi.gsimos.vistaseat.exception.ResourceNotFoundException;
 import com.unipi.gsimos.vistaseat.mapper.UserMapper;
 import com.unipi.gsimos.vistaseat.model.User;
+import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,9 @@ public class UserServiceImpl implements UserService {
         }
         //Before saving, encrypt password with BCryptPasswordEncoder
         newUserDto.setPassword(passwordEncoder.encode(newUserDto.getPassword()));
+
+        //Default userRole -> REGISTERED
+        newUserDto.setRole(UserRole.REGISTERED);
 
         User user = UserMapper.toUser(newUserDto);
         User savedUser = userRepository.save(user);

@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>vistaseat.com | Admin Sign In</title>
-    <link rel="stylesheet" href="adminLogin.css" th:href="@{/css/adminLogin.css}">
-    <script th:src="@{/js/adminLogin.js}" async></script>
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <title>vistaseat.com | Sign Up</title>
+    <link rel="stylesheet" href="adminLogin.css" th:href="@{/css/signInSignUp.css}">
+    <script th:src="@{/js/signInSignUp.js}" async></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@6.0.4/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@6.0.4/dist/ionicons/ionicons.js"></script>
 
 </head>
 <body>
@@ -36,10 +36,15 @@
             <input type="email" id="email" name="email" required>
             <label for="email">Your email</label>
         </div>
-        <div class="inputbox">
-            <ion-icon name="key-outline"></ion-icon>
+        <div class="inputbox password-box">
             <input type="password" id="password" name="password" minlength="8" required>
             <label for="password">Your password</label>
+            <ion-icon name="eye-outline" class="toggle-password" onclick="togglePassword('password', this)"></ion-icon>
+        </div>
+        <div class="inputbox password-box">
+            <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required>
+            <label for="confirmPassword">Confirm password</label>
+            <ion-icon name="eye-outline" class="toggle-password" onclick="togglePassword('confirmPassword', this)"></ion-icon>
         </div>
         <button type="submit">Sign Up</button>
         <div class="register">
@@ -53,13 +58,19 @@
     document.querySelector('form').addEventListener('submit', async function(e) {
         e.preventDefault(); // Prevent default form submission
 
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        if (password!==confirmPassword) {
+            alert('Passwords do not match.');
+            return;
+        }
+
         const formData = {
             firstName: document.getElementById('firstName').value,
             lastName: document.getElementById('lastName').value,
             phone: document.getElementById('phone').value,
             email: document.getElementById('email').value,
-            password: document.getElementById('password').value,
-            role: "DOMAIN_ADMIN" // Assigning the admin role directly. TODO Implement a safer way
+            password: password
         };
 
         try {
@@ -74,11 +85,17 @@
             if (response.ok) {
                 const data = await response.json();
                 alert("User has registered successfully");
-                // Redirect to login page or dashboard
+                // Redirect to login page
                 window.location.href = "/adminLogin";
             } else {
-                const errorData = await response.json();
-                alert("Registration failed: " + (errorData.message || "An unexpected error occurred"));
+                try {
+                    const errorData = await response.json();
+                    alert("Registration failed: " + (errorData.message || "An unexpected error occurred"));
+                } catch (parseError) {
+                    const rawText = await response.text(); // fallback
+                    console.warn("Could not parse JSON. Raw response:", rawText);
+                    alert("Registration failed. Server did not return expected JSON.");
+                }
         }
         } catch (error) {
                 alert("An error occurred: " + error.message);
