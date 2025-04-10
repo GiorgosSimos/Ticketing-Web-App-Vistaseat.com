@@ -5,7 +5,7 @@ An integrated **seat reservation and ticketing system** for events and performan
 > 🌐 A full-stack Java web application combining MVC architecture and RESTful services.
 
 ## 🗂️ Project Overview
-**VistaSeat.com** is a web-based ticketing platform that facilitates the exploration, reservation, and purchase of tickets for a variety of events, including:
+**Vistaseat.com** is a web-based ticketing platform that facilitates the exploration, reservation, and purchase of tickets for a variety of events, including:
 
 - Museum visits 🏛️
 - Archaeological sites 🏺
@@ -60,7 +60,7 @@ database design, and full-stack development.
 🛠️ The project is a work in progress — continuously developed and expanded with more features and polish.
 
 ## 📋 Final Note
-vistaseat.com is a comprehensive ticketing platform that demonstrates the practical value of modern web technologies
+Vistaseat.com is a comprehensive ticketing platform that demonstrates the practical value of modern web technologies
 in streamlining event management.
 Designed with scalability, usability, and real-world application in mind,
 the system lays a solid foundation for further development and potential deployment in live environments.
