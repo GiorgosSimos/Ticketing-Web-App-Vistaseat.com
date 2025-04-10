@@ -2,7 +2,7 @@
 
 An integrated **seat reservation and ticketing system** for events and performances, developed as part of my MSc thesis in Informatics.
 
-> 🚀 A full-stack Java web application combining MVC architecture and RESTful services.
+> 🌐 A full-stack Java web application combining MVC architecture and RESTful services.
 
 ## 🗂️ Project Overview
 **VistaSeat.com** is a web-based ticketing platform that facilitates the exploration, reservation, and purchase of tickets for a variety of events, including:
@@ -46,20 +46,20 @@ An integrated **seat reservation and ticketing system** for events and performan
 - **Admin:** Has access to an admin dashboard to manage users, venues, and events
 
 ## 🧩 Architecture Highlights
-- **MVC + REST APIs** Clean separation of concerns with REST endpoints to expose data.
-- **PostgreSQL** Relational design with relationships between Users, Events, and Venues handled with JPA & Hibernate ORM
+- **MVC + REST APIs:** Clean separation of concerns with REST endpoints to expose data.
+- **PostgreSQL:** Relational design with relationships between Users, Events, and Venues handled with JPA & Hibernate ORM
 
-## 📖 Academic Context
+## 🎓 Academic Context
 This app is part of my MSc Dissertation at the University of Pireaus - Department of Informatics, titled:
 > Design and Development of an Integrated Ticketing and Seat Reservation System
 > 
 The goal is to simulate a real-world ticketing platform while showcasing skills in software engineering,
 database design, and full-stack development.
 
-## 📌 Status
+## 🔄 Status
 🛠️ The project is a work in progress — continuously developed and expanded with more features and polish.
 
-## 📣 Final Note
+## 📋 Final Note
 vistaseat.com is a comprehensive ticketing platform that demonstrates the practical value of modern web technologies
 in streamlining event management.
 Designed with scalability, usability, and real-world application in mind,
