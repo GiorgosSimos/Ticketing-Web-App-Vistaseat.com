@@ -1,0 +1,122 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f7f7f7;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1c1c1c;
+    color: wheat;
+    padding: 1rem 2rem;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    border-radius: 15px;
+    margin-right: 10px;
+}
+
+.insignia {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.admin-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.welcome-text {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 60px;
+    background: wheat;
+    color: black;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+.admin-dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 2rem ;
+}
+
+.card {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.revenue {
+    grid-column: span 2;
+    margin-top: -1rem;
+}
+
+.history-section {
+    padding: 2rem;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+.tab-button {
+    padding: 0.75rem 1.5rem;
+    background: #eee;
+    border: none;
+    margin-right: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.tab-button.active {
+    background: #1c1c1c;
+    color: white;
+}
+
+.tab-content table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.tab-content th, .tab-content td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}

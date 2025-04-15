@@ -1,10 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | Vistaseat.com</title>
+    <link rel="stylesheet" th:href="@{css/admin.css}">
+    <script th:src="@{js/admin.js}" defer></script>
 </head>
 <body>
-<h2 th:text="'Welcome ' + ${firstName} + ' ' + ${lastName}">Welcome, Admin!</h2>
+
+    <!--Header-->
+    <header class="admin-header">
+        <div class="logo-section">
+            <img src="/images/logo.png" alt="Vistaseat logo" class="logo">
+            <span class="insignia">Vistaseat.com</span>
+        </div>
+        <div class="admin-profile">
+            <img src="/images/admin_logo.png" alt="Admin Icon" class="admin-icon">
+            <div class="admin-dropdown">
+                <span class="welcome-text" th:text="'Hi, ' + ${firstName} + ' ' + ${lastName}">Hi, Admin</span>
+                <div class="dropdown-menu">
+                    <a href="home.html">Account settings</a>
+                    <a href="/">Log out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Cards -->
+    <section class="dashboard-cards">
+        <div class="card">Registered Users<br><span th:text="${totalUsers}">0</span></div>
+        <div class="card">Events<br><span th:text="${totalEvents}">0</span></div>
+        <div class="card">Venues<br><span th:text="${totalVenues}">0</span></div>
+        <div class="card">Bookings<br><span th:text="${totalBookings}">0</span></div>
+        <div class="card revenue">Revenue<br>€<span th:text="${totalRevenue}">0.00</span></div>
+    </section>
+
+    <!-- History Section -->
+    <section class="history-section">
+        <h2>History</h2>
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(this, 'registrations')">User Registrations</button>
+            <button class="tab-button" onclick="openTab(this, 'bookings')">Bookings</button>
+        </div>
+        <div class="tab-content" id="registrations">
+            <table>
+                <thead>
+                <tr>
+                    <th>First Name</th><th>Last Name</th><th>Email</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${recentUsers}">
+                    <td th:text="${user.firstName}">Jane</td>
+                    <td th:text="${user.lastName}">Doe</td>
+                    <td th:text="${user.email}">jane@example.com</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-content" id="bookings" style="display:none;">
+            <table>
+                <thead>
+                <tr>
+                    <th>Booking ID</th><th>Date</th><th>Total Price</th><th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="booking : ${recentBookings}">
+                    <td th:text="${booking.id}">123</td>
+                    <td th:text="${booking.date}">2025-04-01</td>
+                    <td>€<span th:text="${booking.totalPrice}">29.99</span></td>
+                    <td th:text="${booking.status}">Confirmed</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
 </body>
 </html>
