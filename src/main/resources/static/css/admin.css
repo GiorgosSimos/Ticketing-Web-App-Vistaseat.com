@@ -36,7 +36,7 @@ body {
     position: relative;
 }
 
-.admin-icon {
+.admin-profile .admin-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -61,7 +61,16 @@ body {
     z-index: 999;
 }
 
-.admin-dropdown:hover .dropdown-menu {
+.admin-dropdown .dropdown-menu a {
+    display: block; /* make each link fill its own line */
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+}
+
+/* When .open is on the parent, show the menu */
+.admin-dropdown.open .dropdown-menu {
     display: block;
 }
 

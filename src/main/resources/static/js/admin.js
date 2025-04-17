@@ -9,16 +9,17 @@ function openTab(button, tabName) {
     button.currentTarget.classList.add("active");
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const dropdown = document.querySelector(".admin-dropdown");
-    const menu = document.querySelector(".dropdown-menu");
+document.addEventListener('DOMContentLoaded',  () => {
+    const avatar = document.getElementById('adminAvatar');
+    const adminDropdown = document.getElementById('adminDropdown');
 
-    dropdown.addEventListener("click", function (e) {
+    avatar.addEventListener('click', e => {
         e.stopPropagation();
-        menu.style.display = (menu.style.display === "block" ) ? "block" : "none";
+        adminDropdown.classList.toggle('open');
     });
 
-    document.addEventListener("click", function (e) {
-        menu.style.display = "none";
-    })
+    document.addEventListener('click', () => {
+        adminDropdown.classList.remove('open');
+    });
+
 });
