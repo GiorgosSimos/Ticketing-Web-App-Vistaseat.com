@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard | Vistaseat.com</title>
-    <link rel="stylesheet" th:href="@{css/admin.css}">
+    <link rel="stylesheet" th:href="@{css/adminStyle.css}">
     <script th:src="@{js/admin.js}" defer></script>
 </head>
 <body>
 
     <!--Header-->
-    <header class="admin-header">
+    <header class="admin-header-container">
         <div class="logo-section">
             <img src="/images/logo.png" alt="Vistaseat logo" class="logo">
             <span class="insignia">Vistaseat.com</span>
@@ -26,7 +26,7 @@
         </div>
     </header>
 
-    <!-- Dashboard Cards -->
+    <!-- Dashboard Cards - CSS Grid Container -->
     <section class="dashboard-cards">
         <div class="card">Registered Users<br><span th:text="${totalUsers}">0</span></div>
         <div class="card">Events<br><span th:text="${totalEvents}">0</span></div>
@@ -76,6 +76,9 @@
             </table>
         </div>
     </section>
+    <footer class="admin-footer">
+        <p>Copyright © Georgios Simos - University of Pireaus, Department of Informatics</p>
+    </footer>
 
 </body>
 </html>

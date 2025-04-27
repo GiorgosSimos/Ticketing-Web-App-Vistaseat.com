@@ -2,16 +2,16 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: #f7f7f7;
+    background-image: url('/images/background.jpg');
 }
 
-.admin-header {
+.admin-header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #1c1c1c;
-    color: wheat;
-    padding: 1rem 2rem;
+    background: rgb(105, 36, 124);
+    color: white;
+    padding: 1rem 1.5rem;
 }
 
 .logo-section {
@@ -58,7 +58,7 @@ body {
     border: 1px solid #ccc;
     padding: 0.5rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 999;
+    z-index: 1;
 }
 
 .admin-dropdown .dropdown-menu a {
@@ -77,13 +77,15 @@ body {
 .dashboard-cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2rem;
     padding: 2rem ;
 }
 
 .card {
     background: white;
     padding: 1rem;
+    border: 1px solid black;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     font-size: 1.1rem;
@@ -91,8 +93,8 @@ body {
 }
 
 .revenue {
-    grid-column: span 2;
-    margin-top: -1rem;
+    grid-column-start: 4;
+    grid-column-end: 5;
 }
 
 .history-section {
@@ -128,4 +130,13 @@ body {
     padding: 0.75rem;
     border: 1px solid #ddd;
     text-align: left;
+}
+
+.admin-footer {
+    padding: 1rem 1.5rem;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    background-color: rgb(105, 36, 124);
+
 }
