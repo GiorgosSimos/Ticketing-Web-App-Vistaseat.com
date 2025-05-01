@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard | Vistaseat.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{css/adminStyle.css}">
     <script th:src="@{js/admin.js}" defer></script>
 </head>
@@ -11,7 +13,7 @@
     <!--Header-->
     <header class="admin-header-container">
         <div class="logo-section">
-            <img src="/images/logo.png" alt="Vistaseat logo" class="logo">
+            <a href="/"><img src="/images/logo.png" alt="Vistaseat logo" class="logo"></a>
             <span class="insignia">Vistaseat.com</span>
         </div>
         <div class="admin-profile">
@@ -20,6 +22,7 @@
                 <span class="welcome-text" th:text="'Hi, ' + ${firstName} + ' ' + ${lastName}">Hi, Admin</span>
                 <div class="dropdown-menu">
                     <a href="home.html">Account settings</a>
+
                     <a href="/">Log out</a>
                 </div>
             </div>
@@ -28,10 +31,30 @@
 
     <!-- Dashboard Cards - CSS Grid Container -->
     <section class="dashboard-cards">
-        <div class="card">Registered Users<br><span th:text="${totalUsers}">0</span></div>
-        <div class="card">Events<br><span th:text="${totalEvents}">0</span></div>
-        <div class="card">Venues<br><span th:text="${totalVenues}">0</span></div>
-        <div class="card">Bookings<br><span th:text="${totalBookings}">0</span></div>
+        <div class="card">
+            Registered Users
+            <br><span th:text="${totalUsers}">15000</span>
+            <a href="#" class="manage-button" role="button"><img src="/images/gear.svg" alt="manage button"></a>
+            <span class="tooltip-text">Manage Users</span>
+        </div>
+        <div class="card">
+            Events
+            <br><span th:text="${totalEvents}">337</span>
+            <a href="#" class="manage-button" role="button"><img src="/images/gear.svg" alt="manage button"></a>
+            <span class="tooltip-text">Manage Events</span>
+        </div>
+        <div class="card">
+            Venues
+            <br><span th:text="${totalVenues}">49</span>
+            <a href="#" class="manage-button" role="button"><img src="/images/gear.svg" alt="manage button"></a>
+            <span class="tooltip-text">Manage Venues</span>
+        </div>
+        <div class="card">
+            Bookings
+            <br><span th:text="${totalBookings}">117184</span>
+            <a href="#" class="manage-button" role="button"><img src="/images/gear.svg" alt="manage button"></a>
+            <span class="tooltip-text">Manage Bookings</span>
+        </div>
         <div class="card revenue">Revenue<br>€<span th:text="${totalRevenue}">0.00</span></div>
     </section>
 
