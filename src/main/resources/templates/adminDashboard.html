@@ -21,9 +21,9 @@
             <div class="admin-dropdown" id="adminDropdown">
                 <span class="welcome-text" th:text="'Hi, ' + ${firstName} + ' ' + ${lastName}">Hi, Admin</span>
                 <div class="dropdown-menu">
-                    <a href="home.html">Account settings</a>
-
-                    <a href="/">Log out</a>
+                    <a href="/adminDashboard/account" role="button">Account settings</a>
+                    <hr>
+                    <a href="/" role="button">Log out</a>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
     <section class="dashboard-cards">
         <div class="card">
             Registered Users
-            <br><span th:text="${totalUsers}">15000</span>
+            <br><span th:text="${totalUsers}">15,000</span>
             <a href="#" class="manage-button" role="button"><img src="/images/gear.svg" alt="manage button"></a>
             <span class="tooltip-text">Manage Users</span>
         </div>
@@ -51,7 +51,7 @@
         </div>
         <div class="card">
             Bookings
-            <br><span th:text="${totalBookings}">117184</span>
+            <br><span th:text="${totalBookings}">117,184</span>
             <a href="#" class="manage-button" role="button"><img src="/images/gear.svg" alt="manage button"></a>
             <span class="tooltip-text">Manage Bookings</span>
         </div>

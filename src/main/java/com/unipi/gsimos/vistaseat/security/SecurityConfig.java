@@ -79,7 +79,7 @@ public class SecurityConfig {
 
                             // Endpoints that require admin authentication
                             .requestMatchers("/adminDashboard", "/adminDashboard/**","/api/**")
-                            .hasRole("DOMAIN_ADMIN")//endpoints that only DOMAIN_ADMIN can access
+                            .hasRole("DOMAIN_ADMIN")//endpoints that only DOMAIN_ADMIN role can access
 
                             .anyRequest().authenticated();// Everything else requires login, endpoints that require authentication
                 });

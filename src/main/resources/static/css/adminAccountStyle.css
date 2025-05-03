@@ -1,0 +1,126 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('/images/background.jpg');
+}
+
+.admin-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgb(105, 36, 124);
+    color: white;
+    padding: 1rem 1.5rem;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    border-radius: 15px;
+    margin-right: 10px;
+}
+
+.insignia {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.admin-profile .admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.welcome-text {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 60px;
+    background: wheat;
+    color: black;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.admin-dropdown .dropdown-menu a {
+    display: block; /* make each link fill its own line */
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+}
+
+/* When .open is on the parent, show the menu */
+.admin-dropdown.open .dropdown-menu {
+    display: block;
+}
+
+/* My Account Grid */
+.account-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+}
+.account-container h2 {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+.account-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1rem;
+    align-items: center;
+}
+.grid-item {
+    font-weight: 500;
+}
+.account-grid input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #e9ecef;
+}
+.account-grid input:disabled {
+    background: #e9ecef;
+    border: none;
+}
+#editBtn {
+    position: relative;
+    width: 70px;
+    height: 50px;
+    left: 665px;
+    margin-top: 1.5rem;
+}
+
+.admin-footer {
+    padding: 1rem 1.5rem;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    background-color: rgb(105, 36, 124);
+
+}
