@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,11 +19,11 @@ import java.io.IOException;
 import java.security.Principal;
 
 @Controller
-public class ContentController {
+public class AdminController {
 
     private final UserRepository userRepository;
 
-    public ContentController(UserRepository userRepository) {
+    public AdminController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -55,11 +56,18 @@ public class ContentController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
+        // Admin first and last names
         session.setAttribute("firstName", user.getFirstName());
         session.setAttribute("lastName", user.getLastName());
 
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
+
+        // Total counts
+        model.addAttribute("totalUsers", userRepository.count());
+
+        // Recent Users
+        model.addAttribute("recentUsers", userRepository.findTop10ByRoleOrderByIdDesc(UserRole.REGISTERED));
 
         return "adminDashboard";
     }

@@ -85,4 +85,14 @@ public class UserServiceImpl implements UserService {
 
         userRepository.deleteById(userId);
     }
+
+    @Override
+    public long countUsers() {
+        return userRepository.count();
+    }
+
+    @Override
+    public List<User> getLast10Users() {
+        return userRepository.findTop10ByRoleOrderByIdDesc(UserRole.REGISTERED);
+    }
 }
