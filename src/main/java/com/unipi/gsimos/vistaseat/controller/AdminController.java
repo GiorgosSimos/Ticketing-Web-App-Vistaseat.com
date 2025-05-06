@@ -2,6 +2,7 @@ package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
+import com.unipi.gsimos.vistaseat.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.ui.Model;
@@ -22,9 +23,11 @@ import java.security.Principal;
 public class AdminController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public AdminController(UserRepository userRepository) {
+    public AdminController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -64,10 +67,10 @@ public class AdminController {
         model.addAttribute("lastName", user.getLastName());
 
         // Total counts
-        model.addAttribute("totalUsers", userRepository.count());
+        model.addAttribute("totalUsers", userService.countUsersByRole(UserRole.REGISTERED));
 
         // Recent Users
-        model.addAttribute("recentUsers", userRepository.findTop10ByRoleOrderByIdDesc(UserRole.REGISTERED));
+        model.addAttribute("recentUsers", userService.getLast10Users());
 
         return "adminDashboard";
     }
