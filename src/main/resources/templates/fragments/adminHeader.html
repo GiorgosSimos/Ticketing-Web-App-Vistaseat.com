@@ -18,7 +18,14 @@
                     <a href="/#" role="button">Manage Bookings</a>
                     <a href="/adminDashboard/account" role="button">Account settings</a>
                     <hr>
-                    <a href="/" role="button">Log out</a>
+                    <a>
+                        <form th:action="@{/adminLogout}" method="post" style="display: inline;">
+                            <button type="submit" style="all:unset; cursor: pointer; color: inherit">
+                                Log out
+                            </button>
+                        </form>
+                    </a>
+
                 </div>
             </div>
         </div>

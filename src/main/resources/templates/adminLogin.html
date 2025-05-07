@@ -53,6 +53,17 @@
             toast.classList.add("hidden");
         }, 4000); // hide after 4s
     }
+
+    const logout = params.get("logout");
+    if (logout) {
+        toastMessage.innerText = "You have been successfully logged out.";
+        toast.classList.remove("hidden");
+
+        setTimeout(() => {
+            toast.classList.add("hidden");
+        }, 4000);
+    }
+
 </script>
 </body>
 </html>

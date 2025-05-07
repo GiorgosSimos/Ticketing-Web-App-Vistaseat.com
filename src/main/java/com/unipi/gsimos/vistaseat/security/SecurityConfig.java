@@ -66,6 +66,16 @@ public class SecurityConfig {
                                     .permitAll();// endpoints that are publicly accessible
 
                         })
+                .logout(logout -> logout
+                        .logoutUrl("/adminLogout")// the endpoint that performs logout
+                        .logoutSuccessUrl("/adminLogin?logout=true") // redirect to login with a message
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                    )
+
+
+
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests//creating exceptions for URLs we want to allow access
 
