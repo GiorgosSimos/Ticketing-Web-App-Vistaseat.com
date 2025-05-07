@@ -2,7 +2,6 @@ package com.unipi.gsimos.vistaseat.service;
 
 import com.unipi.gsimos.vistaseat.dto.NewUserDto;
 import com.unipi.gsimos.vistaseat.dto.UserDto;
-import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 
 import java.util.List;
@@ -21,5 +20,5 @@ public interface UserService {
 
     long countUsersByRole(UserRole userRole);
 
-    List<User> getLast10Users();
+    List<UserDto> getLast10Users();
 }

@@ -51,14 +51,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException("User with id " + userId + " not found")
                 );
-
         return UserMapper.toUserDto(user);
     }
 
     @Override
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map((user -> UserMapper.toUserDto(user))).collect(Collectors.toList());
+        return users.stream().map((UserMapper::toUserDto)).collect(Collectors.toList());
     }
 
     @Override
@@ -91,8 +90,23 @@ public class UserServiceImpl implements UserService {
         return userRepository.countByRole(role);
     }
 
+    /**
+     * Retrieves the 10 most recently registered users with the role REGISTERED.
+     * <p>
+     * This method uses {@link UserRepository#findTop10ByRoleOrderByIdDesc(UserRole)}
+     * to fetch the data, assuming higher IDs correspond to newer registrations.
+     * It then converts the list of {@link User} entities into a list of {@link UserDto}
+     * using the {@link UserMapper#toUserDto(User)} method via Java Stream API.
+     * <p>
+     * Java Streams provide a declarative and readable approach to transform
+     * collections, replacing manual iteration with a functional-style pipeline.
+     * @return a list of the 10 most recent registered users as {@link UserDto}
+     */
     @Override
-    public List<User> getLast10Users() {
-        return userRepository.findTop10ByRoleOrderByIdDesc(UserRole.REGISTERED);
+    public List<UserDto> getLast10Users() {
+        List<User> users = userRepository.findTop10ByRoleOrderByIdDesc(UserRole.REGISTERED);
+        return users.stream()
+                .map((UserMapper::toUserDto))
+                .collect(Collectors.toList());
     }
 }

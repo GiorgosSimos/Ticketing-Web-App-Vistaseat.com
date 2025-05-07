@@ -1,0 +1,26 @@
+
+<div th:fragment="adminHeader(firstName, lastName)">
+    <!--Admin Header-->
+    <header class="admin-header-container">
+        <div class="logo-section">
+            <a href="/adminDashboard"><img src="/images/logo.png" alt="Vistaseat logo" class="logo"></a>
+            <span class="insignia">Vistaseat.com</span>
+        </div>
+        <div class="admin-profile">
+            <img src="/images/admin_logo.png" alt="Admin Avatar" class="admin-avatar" id="adminAvatar">
+            <div class="admin-dropdown" id="adminDropdown">
+                    <span class="welcome-text"
+                          th:text="'Hi, ' + ${firstName} + ' ' + ${lastName}">Hi, Admin</span>
+                <div class="dropdown-menu">
+                    <a href="/adminDashboard/manageUsers" role="button">Manage Users</a>
+                    <a href="/#" role="button">Manage Venues</a>
+                    <a href="/#" role="button">Manage Events</a>
+                    <a href="/#" role="button">Manage Bookings</a>
+                    <a href="/adminDashboard/account" role="button">Account settings</a>
+                    <hr>
+                    <a href="/" role="button">Log out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+</div>

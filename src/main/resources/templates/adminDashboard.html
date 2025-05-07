@@ -10,31 +10,15 @@
 </head>
 <body>
 
-    <!--Header-->
-    <header class="admin-header-container">
-        <div class="logo-section">
-            <a href="/"><img src="/images/logo.png" alt="Vistaseat logo" class="logo"></a>
-            <span class="insignia">Vistaseat.com</span>
-        </div>
-        <div class="admin-profile">
-            <img src="/images/admin_logo.png" alt="Admin Avatar" class="admin-avatar" id="adminAvatar">
-            <div class="admin-dropdown" id="adminDropdown">
-                <span class="welcome-text" th:text="'Hi, ' + ${firstName} + ' ' + ${lastName}">Hi, Admin</span>
-                <div class="dropdown-menu">
-                    <a href="/adminDashboard/account" role="button">Account settings</a>
-                    <hr>
-                    <a href="/" role="button">Log out</a>
-                </div>
-            </div>
-        </div>
-    </header>
+    <!-- Include Header-->
+    <div th:replace="fragments/adminHeader :: adminHeader(${firstName}, ${lastName})"></div>
 
     <!-- Dashboard Cards - CSS Grid Container -->
     <section class="dashboard-cards">
         <div class="card">
             Registered Users
             <br><span th:text="${totalUsers}"></span>
-            <a href="#" class="manage-button" role="button"><img src="/images/gear.svg" alt="manage button"></a>
+            <a href="/adminDashboard/manageUsers" class="manage-button" role="button"><img src="/images/gear.svg" alt="manage button"></a>
             <span class="tooltip-text">Manage Users</span>
         </div>
         <div class="card">
@@ -55,7 +39,13 @@
             <a href="#" class="manage-button" role="button"><img src="/images/gear.svg" alt="manage button"></a>
             <span class="tooltip-text">Manage Bookings</span>
         </div>
-        <div class="card revenue">Revenue<br>€<span th:text="${totalRevenue}"></span></div>
+        <div class="card revenue">Revenue
+            <br>€
+            <span th:text="${totalRevenue}"></span>
+        </div>
+        <div class="history-section">
+
+        </div>
     </section>
 
     <!-- History Section -->
@@ -99,9 +89,8 @@
             </table>
         </div>
     </section>
-    <footer class="admin-footer">
-        <p>Copyright © Georgios Simos - University of Pireaus, Department of Informatics</p>
-    </footer>
 
+    <!-- Include Footer-->
+    <div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

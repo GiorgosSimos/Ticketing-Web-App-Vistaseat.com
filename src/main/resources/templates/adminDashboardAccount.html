@@ -9,24 +9,9 @@
     <script th:src="@{/js/admin.js}" defer></script>
 </head>
 <body>
-    <!--Header-->
-    <header class="admin-header-container">
-        <div class="logo-section">
-            <a href="/"><img src="/images/logo.png" alt="Vistaseat logo" class="logo"></a>
-            <span class="insignia">Vistaseat.com</span>
-        </div>
-        <div class="admin-profile">
-            <img src="/images/admin_logo.png" alt="Admin Avatar" class="admin-avatar" id="adminAvatar">
-            <div class="admin-dropdown" id="adminDropdown">
-                <span class="welcome-text" th:text="'Hi, ' + ${firstName} + ' ' + ${lastName}">Hi, Admin</span>
-                <div class="dropdown-menu">
-                    <a href="/adminDashboard/account" role="button">Account settings</a>
-                    <hr>
-                    <a href="/" role="button">Log out</a>
-                </div>
-            </div>
-        </div>
-    </header>
+
+    <!-- Include Header-->
+    <div th:replace="fragments/adminHeader :: adminHeader(${firstName}, ${lastName})"></div>
 
     <!--Success Message for Update-->
     <div th:if="${successMessage}" class="alert alert-success" id="success-alert" role="alert"
@@ -59,9 +44,8 @@
         </form>
     </section>
 
-    <footer class="admin-footer">
-        <p>Copyright © Georgios Simos - University of Pireaus, Department of Informatics</p>
-    </footer>
+    <!-- Include Footer-->
+    <div th:replace="fragments/footer :: footer"></div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

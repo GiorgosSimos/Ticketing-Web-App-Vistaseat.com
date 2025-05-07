@@ -118,4 +118,15 @@ public class AdminController {
         return "redirect:/adminDashboard/account";
     }
 
+    @GetMapping("/adminDashboard/manageUsers")
+    public String manageUsers(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+
+        return "manageUsers";
+    }
+
 }
