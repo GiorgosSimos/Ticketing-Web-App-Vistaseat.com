@@ -32,6 +32,7 @@
     </form>
 </section>
 <script>
+    // Error messages alert
     const params = new URLSearchParams(window.location.search);
     const error = params.get("error");
 
@@ -54,6 +55,7 @@
         }, 4000); // hide after 4s
     }
 
+    // Log out alert
     const logout = params.get("logout");
     if (logout) {
         toastMessage.innerText = "You have been successfully logged out.";

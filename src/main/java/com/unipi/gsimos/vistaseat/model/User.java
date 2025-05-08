@@ -5,6 +5,8 @@ import com.unipi.gsimos.vistaseat.customAnnotations.ValidEmail;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import java.time.LocalDateTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,6 +48,13 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role = UserRole.REGISTERED; // Default role is registered User
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active = true; // All users are active when created
+
+    @CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    private LocalDateTime registrationDate;
 
     // An admin manages multiple events
     @JsonIgnore
