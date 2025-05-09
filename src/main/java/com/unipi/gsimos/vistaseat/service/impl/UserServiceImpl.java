@@ -9,6 +9,10 @@ import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +27,15 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * Method to create new user.
-     * To not expose the password to the client,
-     * the method accepts a NewUserDto object as parameter, but returns a UserDto.
-     * @param newUserDto
-     * @return UserDto object
+     * Creates a new user in the system.
+     * <p>
+     * To ensure password confidentiality, this method accepts a {@code NewUserDto} containing the user's credentials,
+     * including the password, and returns a {@code UserDto} without the password field.
+     *
+     * @param newUserDto the data transfer object containing the new user's details
+     * @return a {@code UserDto} representing the created user (excluding the password)
      */
+
     @Override
     public UserDto createUser(NewUserDto newUserDto) {
         if (userRepository.existsByEmail(newUserDto.getEmail())){
@@ -58,6 +65,20 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream().map((UserMapper::toUserDto)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<UserDto> getAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("registrationDate").descending());
+        Page<User> users = userRepository.findAll(pageable);
+        return users.map((UserMapper::toUserDto));
+    }
+
+    @Override
+    public Page<UserDto> getUsersByRole(UserRole role, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("registrationDate").descending());
+        Page<User> users = userRepository.findAllByRole(role, pageable);
+        return users.map((UserMapper::toUserDto));
     }
 
     @Override

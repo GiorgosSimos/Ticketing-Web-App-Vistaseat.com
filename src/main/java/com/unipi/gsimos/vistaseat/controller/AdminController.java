@@ -1,9 +1,11 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.dto.UserDto;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.ui.Model;
 import com.unipi.gsimos.vistaseat.model.User;
@@ -119,12 +121,25 @@ public class AdminController {
     }
 
     @GetMapping("/adminDashboard/manageUsers")
-    public String manageUsers(Model model) {
+    public String manageUsers(@RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "10") int size,
+                              @RequestParam(required = false) UserRole role,
+                              Model model) {
+
+        Page<UserDto> userPage = (role != null)
+                ? userService.getUsersByRole(role, page, size)
+                : userService.getAllUsers(page, size);
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
+
+        model.addAttribute("users", userPage.getContent());
+        model.addAttribute("currentPage", userPage.getNumber() + 1);
+        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("selectRole", role);
 
         return "manageUsers";
     }

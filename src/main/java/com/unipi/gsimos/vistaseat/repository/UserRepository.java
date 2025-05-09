@@ -2,6 +2,8 @@ package com.unipi.gsimos.vistaseat.repository;
 
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.UserRole;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,6 +16,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     long countByRole(UserRole role);
+
+    // filter users by role
+    Page<User> findAllByRole(UserRole role, Pageable pageable);
 
     List<User> findTop10ByRoleOrderByIdDesc(UserRole role);
 
