@@ -136,7 +136,7 @@ public class AdminController {
      */
     @GetMapping("/adminDashboard/manageUsers")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "10") int size,
+                              @RequestParam(defaultValue = "5") int size,
                               @RequestParam(required = false) UserRole role,
                               Model model) {
 
@@ -156,7 +156,7 @@ public class AdminController {
         model.addAttribute("registered", userService.countUsersByRole(UserRole.REGISTERED));
         model.addAttribute("admins", userService.countUsersByRole(UserRole.DOMAIN_ADMIN));
 
-        // .getNumber() is zero-based, so +1 is needed for display purposes.
+        // .getNumber() is zero-based, +1 is used for display purposes
         model.addAttribute("currentPage", usersPage.getNumber() + 1);
         model.addAttribute("totalPages", usersPage.getTotalPages());
 

@@ -93,8 +93,16 @@
 
         <!-- Pagination Controls -->
         <div class="d-flex justify-content-end align-items-center mt-3">
-            <button class="btn btn-sm btn-outline-primary me-1" th:disabled="${currentPage == 1}">First Page</button>
-            <button class="btn btn-sm btn-outline-primary me-2" th:disabled="${currentPage == 1}">
+            <!-- First Page - Go to first page (index 0)-->
+            <button class="btn btn-sm btn btn-light me-1"
+                    th:disabled="${currentPage == 1}"
+                    onclick="goToPage(0)">
+                First Page
+            </button>
+            <!-- Previous Page - Go to page before current-->
+            <button class="btn btn-sm btn btn-light me-2"
+                    th:disabled="${currentPage == 1}"
+                    th:onclick="'goToPage(' + (${currentPage} - 2) + ')'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left"
                      viewBox="0 0 16 16">
                     <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11
@@ -102,35 +110,56 @@
                 </svg>
             </button>
 
+            <!-- Page Info -->
             <span class="me-2">Page <span th:text="${currentPage}">1</span> of <span th:text="${totalPages}">2</span></span>
 
-            <button class="btn btn-sm btn-outline-primary me-1" th:disabled="${currentPage == totalPages}">
+            <!-- Next Page -->
+            <button class="btn btn-sm btn btn-light me-1"
+                    th:disabled="${currentPage == totalPages}"
+                    th:onclick="'goToPage(' + ${currentPage} + ')'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right"
                      viewBox="0 0 16 16">
                     <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5
                             2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
                 </svg>
             </button>
-            <button class="btn btn-sm btn-outline-primary" th:disabled="${currentPage == totalPages}">Last Page</button>
+
+            <!-- Last Page -->
+            <button class="btn btn-sm btn btn-light"
+                    th:disabled="${currentPage == totalPages}"
+                    th:onclick="'goToPage(' + (${totalPages} - 1) + ')'">
+                Last Page
+            </button>
         </div>
     </div>
 
+    <br>
     <!-- Include Footer-->
     <div th:replace="fragments/footer :: footer"></div>
 
     <script>
+        // function to apply role filters for users display
         function filterByRole(role) {
             const url = new URL(window.location.href);
 
             if (role === null || role === 'null'){
-                url.searchParams.delete('role'); // Remove the role param to show all users
+                url.searchParams.delete('role');      // Remove the role param to show all users
             } else {
                 url.searchParams.set('role', role); // Add or replace the 'role' parameter
             }
 
-            url.searchParams.set('page', 0);      // Reset to first page when filter changes
+            url.searchParams.set('page', 0);        // Reset to first page when filter changes
             window.location.href = url.toString(); // Redirect to new URL
         }
+
+        // function for pagination controls
+        function goToPage(page) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            window.location.href = url.toString();
+        }
+
+
     </script>
 
 
