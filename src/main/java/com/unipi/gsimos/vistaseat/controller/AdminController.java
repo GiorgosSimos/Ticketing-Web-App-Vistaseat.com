@@ -69,7 +69,7 @@ public class AdminController {
         model.addAttribute("lastName", user.getLastName());
 
         // Total counts
-        model.addAttribute("totalUsers", userService.countUsersByRole(UserRole.REGISTERED));
+        model.addAttribute("totalUsers", userService.countAllUsers());
 
         // Recent Users
         model.addAttribute("recentUsers", userService.getLast10Users());
@@ -120,13 +120,27 @@ public class AdminController {
         return "redirect:/adminDashboard/account";
     }
 
+    /**
+     * Handles GET requests to the admin dashboard's Manage Users page.
+     * <p>
+     * This method retrieves a paginated list of users from the database, either all users or
+     * filtered by a specified role (e.g., ADMIN, USER).
+     * It also extracts the currently
+     * authenticated admin's name for display and prepares pagination and filter data for the view.
+     *
+     * @param page the zero-based index of the current page (default is 0)
+     * @param size the number of users per page (default is 10)
+     * @param role optional filter to return only users with a specific role
+     * @param model the Spring Model used to pass data to the Thymeleaf view
+     * @return the name of the Thymeleaf template to render ("manageUsers")
+     */
     @GetMapping("/adminDashboard/manageUsers")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
                               @RequestParam(defaultValue = "10") int size,
                               @RequestParam(required = false) UserRole role,
                               Model model) {
 
-        Page<UserDto> userPage = (role != null)
+        Page<UserDto> usersPage = (role != null)
                 ? userService.getUsersByRole(role, page, size)
                 : userService.getAllUsers(page, size);
 
@@ -135,10 +149,18 @@ public class AdminController {
 
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("users", usersPage.getContent());
 
-        model.addAttribute("users", userPage.getContent());
-        model.addAttribute("currentPage", userPage.getNumber() + 1);
-        model.addAttribute("totalPages", userPage.getTotalPages());
+        // User counts
+        model.addAttribute("totalUsers", userService.countAllUsers());
+        model.addAttribute("registered", userService.countUsersByRole(UserRole.REGISTERED));
+        model.addAttribute("admins", userService.countUsersByRole(UserRole.DOMAIN_ADMIN));
+
+        // .getNumber() is zero-based, so +1 is needed for display purposes.
+        model.addAttribute("currentPage", usersPage.getNumber() + 1);
+        model.addAttribute("totalPages", usersPage.getTotalPages());
+
+        //This keeps track of the current filter so the right button can be highlighted or pre-selected in the UI.
         model.addAttribute("selectRole", role);
 
         return "manageUsers";

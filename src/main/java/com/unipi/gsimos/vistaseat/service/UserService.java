@@ -25,5 +25,7 @@ public interface UserService {
 
     long countUsersByRole(UserRole userRole);
 
+    long countAllUsers();
+
     List<UserDto> getLast10Users();
 }

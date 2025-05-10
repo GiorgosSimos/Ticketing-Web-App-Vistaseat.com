@@ -7,11 +7,6 @@
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" th:href="@{/css/adminStyle.css}">
     <script th:src="@{/js/admin.js}" defer></script>
-    <style>
-        body {
-            background-color: #e9ecef;
-        }
-    </style>
 </head>
 <body>
     <!-- Include Header-->
@@ -37,8 +32,23 @@
         <!-- Filter Buttons -->
         <div class="mb-3 d-flex align-items-center">
             <label class="me-2 fw-bold">Roles:</label>
-            <button class="btn btn-sm btn-outline-dark me-2" onclick="filterByRole('REGISTERED')">Registered Users</button>
-            <button class="btn btn-sm btn-outline-dark" onclick="filterByRole('DOMAIN_ADMIN')">Admins</button>
+            <button class="btn btn-sm me-2"
+                    th:classappend="${selectRole == null} ? 'btn-dark' : 'btn-outline-dark'"
+                    onclick="filterByRole(null)">
+                All Users (<span th:text="${totalUsers}"></span>)
+            </button>
+            <button class="btn btn-sm me-2"
+                    th:classappend="${selectRole == T(com.unipi.gsimos.vistaseat.model.UserRole).REGISTERED}
+                    ? 'btn-dark' : 'btn-outline-dark'"
+                    onclick="filterByRole('REGISTERED')">
+                Registered Users (<span th:text="${registered}"></span>)
+            </button>
+            <button class="btn btn-sm"
+                    th:classappend="${selectRole == T(com.unipi.gsimos.vistaseat.model.UserRole).DOMAIN_ADMIN}
+                    ? 'btn-dark' : 'btn-outline-dark'"
+                    onclick="filterByRole('DOMAIN_ADMIN')">
+                Admins (<span th:text="${admins}"></span>)
+            </button>
         </div>
 
         <!-- User Table -->
@@ -107,6 +117,21 @@
 
     <!-- Include Footer-->
     <div th:replace="fragments/footer :: footer"></div>
+
+    <script>
+        function filterByRole(role) {
+            const url = new URL(window.location.href);
+
+            if (role === null || role === 'null'){
+                url.searchParams.delete('role'); // Remove the role param to show all users
+            } else {
+                url.searchParams.set('role', role); // Add or replace the 'role' parameter
+            }
+
+            url.searchParams.set('page', 0);      // Reset to first page when filter changes
+            window.location.href = url.toString(); // Redirect to new URL
+        }
+    </script>
 
 
 </body>

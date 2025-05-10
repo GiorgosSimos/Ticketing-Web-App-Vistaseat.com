@@ -67,18 +67,71 @@ public class UserServiceImpl implements UserService {
         return users.stream().map((UserMapper::toUserDto)).collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a paginated and sorted list of all users, mapped to {@link UserDto} objects.
+     *
+     * <p>This method uses Spring Data pagination by executing a SQL query similar to:
+     * <pre>
+     * SELECT * FROM users
+     * ORDER BY registration_date DESC
+     * LIMIT size OFFSET page * size
+     * </pre>
+     * where:
+     * <ul>
+     *   <li><b>page</b>: the index of the page to retrieve (starting from 0)</li>
+     *   <li><b>size</b>: the number of users per page</li>
+     * </ul>
+     *
+     * <p>The result is sorted in descending order based on the user's registration date.
+     * Each {@link User} entity is then converted to a {@link UserDto} to ensure that
+     * sensitive fields such as passwords, tokens, or internal IDs are not exposed to the client.
+     *
+     * @param page the page number to retrieve (zero-based)
+     * @param size the number of users per page
+     * @return a {@link Page} of {@link UserDto} objects, sorted by registration date in descending order
+     */
     @Override
     public Page<UserDto> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("registrationDate").descending());
         Page<User> users = userRepository.findAll(pageable);
-        return users.map((UserMapper::toUserDto));
+        return users.map(UserMapper::toUserDto);
     }
 
+
+    /**
+     * Retrieves a paginated and sorted list of users filtered by their role, mapped to {@link UserDto} objects.
+     *
+     * <p>This method executes a filtered SQL query similar to:
+     * <pre>
+     * SELECT * FROM users
+     * WHERE role = 'ADMIN'
+     * ORDER BY registration_date DESC
+     * LIMIT size OFFSET page * size
+     * </pre>
+     * where:
+     * <ul>
+     *   <li><b>role</b>: the user role to filter by (e.g., ADMIN, USER)</li>
+     *   <li><b>page</b>: the index of the page to retrieve (starting from 0)</li>
+     *   <li><b>size</b>: the number of users per page</li>
+     * </ul>
+     *
+     * <p>The results are sorted by registration date in descending order.
+     * The returned {@link User} entities are mapped to {@link UserDto} objects
+     * to avoid exposing sensitive information (e.g., passwords or internal tokens).
+     *
+     * <p>This is <b>useful for administrative views where toggling between different user roles</b>
+     * (such as administrators and regular users) is required.
+     *
+     * @param role the {@link UserRole} used to filter users
+     * @param page the page number to retrieve (zero-based)
+     * @param size the number of users per page
+     * @return a {@link Page} of {@link UserDto} objects filtered by role and sorted by registration date
+     */
     @Override
     public Page<UserDto> getUsersByRole(UserRole role, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("registrationDate").descending());
         Page<User> users = userRepository.findAllByRole(role, pageable);
-        return users.map((UserMapper::toUserDto));
+        return users.map(UserMapper::toUserDto);
     }
 
     @Override
@@ -104,6 +157,11 @@ public class UserServiceImpl implements UserService {
         );
 
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public long countAllUsers() {
+        return userRepository.count();
     }
 
     @Override
