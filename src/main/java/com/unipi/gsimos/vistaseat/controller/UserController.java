@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 
@@ -55,7 +56,7 @@ public class UserController {
 
     // Delete user REST API
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) {
+    public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId) throws AccessDeniedException {
         userService.deleteUser(userId);
         return ResponseEntity.ok("User with id " + userId + " was deleted successfully");
     }

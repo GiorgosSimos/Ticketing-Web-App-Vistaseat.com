@@ -48,6 +48,7 @@
     <div th:replace="fragments/footer :: footer"></div>
 
     <script>
+        //function to change button label between edit - save
         document.addEventListener("DOMContentLoaded", function() {
             const editBtn = document.getElementById("editBtn");
             const form = document.getElementById("accountForm");
@@ -70,6 +71,7 @@
     </script>
 
     <script>
+        //function to display alert messages
         document.addEventListener("DOMContentLoaded", function () {
             const successAlert = document.getElementById("success-alert");
             if (successAlert) {

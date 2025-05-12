@@ -4,6 +4,7 @@ import com.unipi.gsimos.vistaseat.dto.UserDto;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,11 +15,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.security.Principal;
 
 @Controller
@@ -136,7 +139,7 @@ public class AdminController {
      */
     @GetMapping("/adminDashboard/manageUsers")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "5") int size,
+                              @RequestParam(defaultValue = "7") int size,
                               @RequestParam(required = false) UserRole role,
                               Model model) {
 
@@ -166,4 +169,32 @@ public class AdminController {
         return "manageUsers";
     }
 
+    @PostMapping("/adminDashboard/manageUsers/toggle-status/{id}")
+    public String toggleUserStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+        try {
+            userService.toggleUserStatus(id);
+            redirectAttributes.addFlashAttribute("message", "User status changed successfully!");
+        } catch (AccessDeniedException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        } catch (EntityNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("error", "User not found!");
+        }
+
+        return "redirect:/adminDashboard/manageUsers";
+    }
+
+    @PostMapping("adminDashboard/manageUsers/delete/{id}")
+    public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+        try {
+            userService.deleteUser(id);
+            redirectAttributes.addFlashAttribute("message", "User was deleted successfully!");
+        } catch (EntityNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("error", "User not found!");
+        } catch (AccessDeniedException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/adminDashboard/manageUsers";
+    }
 }

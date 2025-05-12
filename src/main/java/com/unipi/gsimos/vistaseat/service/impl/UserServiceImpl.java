@@ -8,14 +8,19 @@ import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,6 +67,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public void toggleUserStatus(Long userId) throws AccessDeniedException {
+        verifyNotSelf(userId, "Action denied: You cannot change status on your own administrator account.");
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new EntityNotFoundException("User with id " + userId + " not found"));
+        user.setActive(!user.isActive());
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long userId) throws AccessDeniedException {
+        verifyNotSelf(userId, "Action denied: You cannot delete your own administrator account.");
+
+        userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User with id " + userId + " not found")
+        );
+        userRepository.deleteById(userId);
+    }
+
+    @Override
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream().map((UserMapper::toUserDto)).collect(Collectors.toList());
@@ -96,7 +123,6 @@ public class UserServiceImpl implements UserService {
         Page<User> users = userRepository.findAll(pageable);
         return users.map(UserMapper::toUserDto);
     }
-
 
     /**
      * Retrieves a paginated and sorted list of users filtered by their role, mapped to {@link UserDto} objects.
@@ -151,15 +177,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        userRepository.findById(userId).orElseThrow(
-                () -> new ResourceNotFoundException("User with id " + userId + " not found")
-        );
-
-        userRepository.deleteById(userId);
-    }
-
-    @Override
     public long countAllUsers() {
         return userRepository.count();
     }
@@ -188,4 +205,17 @@ public class UserServiceImpl implements UserService {
                 .map((UserMapper::toUserDto))
                 .collect(Collectors.toList());
     }
+
+    // method to prevent users from performing actions on their own account
+    private void verifyNotSelf(Long targetUserId, String errorMessage) throws AccessDeniedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+        User currentUser = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new EntityNotFoundException("Authenticated user not found"));
+
+        if (currentUser.getId().equals(targetUserId)) {
+            throw new AccessDeniedException(errorMessage);
+        }
+    }
+
 }

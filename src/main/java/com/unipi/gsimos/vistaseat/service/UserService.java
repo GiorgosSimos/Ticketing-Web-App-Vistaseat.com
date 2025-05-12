@@ -5,6 +5,7 @@ import com.unipi.gsimos.vistaseat.dto.UserDto;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import org.springframework.data.domain.Page;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 public interface UserService {
@@ -21,11 +22,13 @@ public interface UserService {
 
     UserDto updateUser(Long userId, UserDto updatedUser);
 
-    void deleteUser(Long userId);
+    void deleteUser(Long userId) throws AccessDeniedException;
 
     long countUsersByRole(UserRole userRole);
 
     long countAllUsers();
 
     List<UserDto> getLast10Users();
+
+    void toggleUserStatus(Long userId) throws AccessDeniedException;
 }
