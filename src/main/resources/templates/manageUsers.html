@@ -32,6 +32,7 @@
                     </svg>
                 </button>
             </div>
+            <input type="hidden" name="role" th:value="${selectRole}" />
         </form>
         <!-- Filter Buttons -->
         <div class="mb-3 d-flex align-items-center">
@@ -89,7 +90,6 @@
                         <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
                         <!-- View Booking History Button -->
                         <form action=""
-
                               class="confirm-form-submission"
                               data-message="View booking history of this user?"
                               style="display: inline;">
@@ -130,7 +130,8 @@
                               class="confirm-form-submission"
                               data-message="Are you sure you want to delete this user?"
                               style="display: inline;">
-                            <button class="btn btn-sm btn-danger" id="btn-delete-user" title="Delete User">
+                            <button class="btn btn-sm btn-danger" id="btn-delete-user"
+                                    title="Delete User" type="submit">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                      class="bi bi-trash" viewBox="0 0 16 16">
                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0
@@ -219,11 +220,11 @@
             // Grabs current filters from the DOM
             const searchQuery = document.querySelector('input[name="searchQuery"]')?.value;
             const role = document.querySelector('input[name="role"]')?.value;
-            const size = document.querySelector('input[name="size"]')?.value;
+            //const size = document.querySelector('input[name="size"]')?.value;
 
             if (searchQuery) url.searchParams.set("searchQuery", searchQuery);
             if (role) url.searchParams.set("role", role);
-            if (size) url.searchParams.set("size", size);
+            //if (size) url.searchParams.set("size", size);
 
             window.location.href = url.toString();
         }
@@ -245,7 +246,6 @@
         document.addEventListener('DOMContentLoaded', function () {
             const successAlert = document.getElementById('success-alert');
             const accessDeniedAlert = document.getElementById('access-denied-alert');
-
             autoDismissAlert(successAlert);
             autoDismissAlert(accessDeniedAlert);
         });
@@ -253,7 +253,6 @@
         // Pop up alert for Actions buttons
         document.addEventListener("DOMContentLoaded", function () {
             const actionForms = document.querySelectorAll('.confirm-form-submission');
-
             actionForms.forEach(form => {
                 form.addEventListener('submit', function (event) {
                     const message = form.getAttribute('data-message');
@@ -263,8 +262,6 @@
                 });
             });
         });
-
-
     </script>
 </body>
 </html>
