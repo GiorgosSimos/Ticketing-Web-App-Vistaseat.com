@@ -161,6 +161,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<UserDto> searchUsersByName(String searchQuery, Pageable pageable) {
+        return userRepository
+                .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(searchQuery, searchQuery, pageable)
+                .map(UserMapper::toUserDto);
+    }
+
+    @Override
     public UserDto updateUser(Long userId, UserDto updatedUser) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("User with id " + userId + " not found")

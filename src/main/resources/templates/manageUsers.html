@@ -20,9 +20,10 @@
     <div class="container mt-5">
         <h1 class="mb-4">Manage Users</h1>
         <!-- User Search Field -->
-        <div class="d-flex justify-content-start mb-3">
+        <form th:action="@{/adminDashboard/manageUsers}" method="get" class="d-flex justify-content-start mb-3">
             <div class="input-group w-50">
-                <input type="text" class="form-control" placeholder="Search User..." name="searchQuery" />
+                <input type="text" class="form-control" placeholder="Search User..." name="searchQuery"
+                        th:value="${searchQuery}"/>
                 <button class="btn btn-outline-secondary" type="submit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
                          viewBox="0 0 16 16">
@@ -31,8 +32,7 @@
                     </svg>
                 </button>
             </div>
-        </div>
-
+        </form>
         <!-- Filter Buttons -->
         <div class="mb-3 d-flex align-items-center">
             <label class="me-2 fw-bold">Roles:</label>
@@ -198,6 +198,9 @@
         function filterByRole(role) {
             const url = new URL(window.location.href);
 
+            // Remove search filter when switching role
+            url.searchParams.delete('searchQuery');
+
             if (role === null || role === 'null'){
                 url.searchParams.delete('role');      // Remove the role param to show all users
             } else {
@@ -209,11 +212,22 @@
         }
 
         // function for pagination controls
-        function goToPage(page) {
+        function goToPage(pageNumber) {
             const url = new URL(window.location.href);
-            url.searchParams.set('page', page);
+            url.searchParams.set("page", pageNumber);
+
+            // Grabs current filters from the DOM
+            const searchQuery = document.querySelector('input[name="searchQuery"]')?.value;
+            const role = document.querySelector('input[name="role"]')?.value;
+            const size = document.querySelector('input[name="size"]')?.value;
+
+            if (searchQuery) url.searchParams.set("searchQuery", searchQuery);
+            if (role) url.searchParams.set("role", role);
+            if (size) url.searchParams.set("size", size);
+
             window.location.href = url.toString();
         }
+
 
         // Function to fade out and remove an alert.
         // If the success alert is on the page, wait 3 seconds,

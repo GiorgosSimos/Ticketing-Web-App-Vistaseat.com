@@ -7,6 +7,8 @@ import com.unipi.gsimos.vistaseat.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.ui.Model;
 import com.unipi.gsimos.vistaseat.model.User;
@@ -134,18 +136,27 @@ public class AdminController {
      * @param page the zero-based index of the current page (default is 0)
      * @param size the number of users per page (default is 10)
      * @param role optional filter to return only users with a specific role
+     * @param searchQuery optional search filter to return only users with a specific name
      * @param model the Spring Model used to pass data to the Thymeleaf view
      * @return the name of the Thymeleaf template to render ("manageUsers")
      */
     @GetMapping("/adminDashboard/manageUsers")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "7") int size,
+                              @RequestParam(defaultValue = "8") int size,
                               @RequestParam(required = false) UserRole role,
+                              @RequestParam(required = false) String searchQuery,
                               Model model) {
 
-        Page<UserDto> usersPage = (role != null)
-                ? userService.getUsersByRole(role, page, size)
-                : userService.getAllUsers(page, size);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserDto> usersPage;
+
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            usersPage = userService.searchUsersByName(searchQuery.trim(), pageable);
+        } else if (role != null) {
+            usersPage = userService.getUsersByRole(role, page, size);
+        } else {
+            usersPage = userService.getAllUsers(page, size);
+        }
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
@@ -165,6 +176,8 @@ public class AdminController {
 
         //This keeps track of the current filter so the right button can be highlighted or pre-selected in the UI.
         model.addAttribute("selectRole", role);
+
+        model.addAttribute("searchQuery", searchQuery);
 
         return "manageUsers";
     }
