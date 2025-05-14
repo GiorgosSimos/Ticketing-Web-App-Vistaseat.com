@@ -80,7 +80,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests//creating exceptions for URLs we want to allow access
 
-                            // Public API registration for new users
+                            // Public API for new users registration
                             .requestMatchers("/api/users/register").permitAll()
 
                             // Public pages
