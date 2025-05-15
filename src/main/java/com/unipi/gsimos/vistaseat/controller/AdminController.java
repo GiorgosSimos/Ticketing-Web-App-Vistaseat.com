@@ -4,6 +4,7 @@ import com.unipi.gsimos.vistaseat.dto.UserDto;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
+import com.unipi.gsimos.vistaseat.service.VenueService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
@@ -31,10 +32,12 @@ public class AdminController {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final VenueService venueService;
 
-    public AdminController(UserRepository userRepository, UserService userService) {
+    public AdminController(UserRepository userRepository, UserService userService, VenueService venueService) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.venueService = venueService;
     }
 
     @GetMapping("/")
@@ -73,8 +76,11 @@ public class AdminController {
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
 
-        // Total counts
+        // Total System users count
         model.addAttribute("totalUsers", userService.countAllUsers());
+
+        // Total Venues count
+        model.addAttribute("totalVenues", venueService.countVenues());
 
         // Recent Users
         model.addAttribute("recentUsers", userService.getLast10Users());
@@ -209,5 +215,16 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/adminDashboard/manageUsers";
+    }
+
+    @GetMapping("/adminDashboard/manageVenues")
+    public String manageUsers(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+
+        return "manageVenues";
     }
 }

@@ -38,4 +38,9 @@ public class VenueServiceImpl implements VenueService {
         return venueMapper.toDto(savedVenue);
 
     }
+
+    @Override
+    public Long countVenues() {
+        return venueRepository.count();
+    }
 }
