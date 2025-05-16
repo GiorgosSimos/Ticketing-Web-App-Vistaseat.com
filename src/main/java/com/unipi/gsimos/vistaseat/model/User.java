@@ -61,7 +61,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "managedBy", fetch = FetchType.LAZY)
     private List<Event> managedEvents = new ArrayList<>();
 
-    // An admin manages multiple venues
+    // A user (admin) can manage many venues, but each venue is managed by one user.
     @JsonIgnore
     @OneToMany(mappedBy = "managedBy", fetch = FetchType.LAZY)
     private List<Venue> managedVenues = new ArrayList<>();

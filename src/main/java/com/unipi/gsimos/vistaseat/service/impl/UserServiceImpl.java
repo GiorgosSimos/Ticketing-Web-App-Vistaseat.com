@@ -7,6 +7,7 @@ import com.unipi.gsimos.vistaseat.mapper.UserMapper;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
+import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final VenueRepository venueRepository;
     private UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -82,9 +84,16 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) throws AccessDeniedException {
         verifyNotSelf(userId, "Action denied: You cannot delete your own administrator account.");
 
-        userRepository.findById(userId).orElseThrow(
-                () -> new ResourceNotFoundException("User with id " + userId + " not found")
-        );
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found"));
+
+        // prevent orphaned venues or events - TODO User friendly exceptions
+        if (venueRepository.countVenuesManagedByUser(userId) > 0) {
+            throw new IllegalStateException("You cannot delete an administrator who currently manages venues.");
+        } else if (!user.getManagedEvents().isEmpty()) {
+            throw new IllegalStateException("You cannot delete an administrator who currently manages events.");
+        }
+
         userRepository.deleteById(userId);
     }
 

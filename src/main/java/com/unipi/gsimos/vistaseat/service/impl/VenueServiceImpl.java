@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.model.Venue;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.VenueService;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -62,12 +63,13 @@ public class VenueServiceImpl implements VenueService {
     }
 
     @Override
+    @Transactional
     public void deleteVenue(Long VenueId) {
         Venue venue = venueRepository.findById(VenueId)
                 .orElseThrow(() -> new RuntimeException("Venue not found"));
 
-
-        if (venue.getEvents() != null && !venue.getEvents().isEmpty()) {
+        // prevent orphaned events - TODO User friendly exceptions
+        if (!venue.getEvents().isEmpty()) {
             throw new IllegalStateException("Cannot delete venue: it is associated with existing events.");
         }
 
