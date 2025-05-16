@@ -1,6 +1,7 @@
 package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.UserDto;
+import com.unipi.gsimos.vistaseat.dto.VenueDto;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
@@ -218,13 +219,46 @@ public class AdminController {
     }
 
     @GetMapping("/adminDashboard/manageVenues")
-    public String manageUsers(Model model) {
+    public String manageUsers(@RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "2") int size,
+                              @RequestParam(required = false) String searchQuery,
+                              Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<VenueDto> venuesPage;
+
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            venuesPage = venueService.searchVenueByName(searchQuery.trim(), pageable);
+        } else {
+            venuesPage = venueService.getAllVenues(page, size);
+        }
 
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
 
+        model.addAttribute("venues", venuesPage.getContent());
+
+        // .getNumber() is zero-based, +1 is used for display purposes
+        model.addAttribute("currentPage", venuesPage.getNumber() + 1);
+        model.addAttribute("totalPages", venuesPage.getTotalPages());
+
+        model.addAttribute("searchQuery", searchQuery);
+
         return "manageVenues";
+    }
+
+    @PostMapping("adminDashboard/manageVenues/delete/{id}")
+    public String deleteVenue(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+        try {
+            venueService.deleteVenue(id);
+            redirectAttributes.addFlashAttribute("message", "Venue was deleted successfully!");
+        } catch (EntityNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("error", "Venue not found!");
+        }
+
+        return "redirect:/adminDashboard/manageVenues";
     }
 }

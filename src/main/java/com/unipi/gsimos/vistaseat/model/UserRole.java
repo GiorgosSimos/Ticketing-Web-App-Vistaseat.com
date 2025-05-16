@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum UserRole {
-    REGISTERED,
-    DOMAIN_ADMIN, // Top level administrator
+    REGISTERED, // Simple user
+    DOMAIN_ADMIN, // Top level administrator, manages all venues and events
     EVENT_ADMIN, // Manages one or more events
     VENUE_ADMIN // Manages one or more venues and its events
 }

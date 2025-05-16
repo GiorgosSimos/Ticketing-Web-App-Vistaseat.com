@@ -8,6 +8,10 @@ import com.unipi.gsimos.vistaseat.model.Venue;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.VenueService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,5 +46,31 @@ public class VenueServiceImpl implements VenueService {
     @Override
     public Long countVenues() {
         return venueRepository.count();
+    }
+
+    @Override
+    public Page<VenueDto> getAllVenues(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Venue> venues = venueRepository.findAll(pageable);
+        return venues.map(venueMapper::toDto);
+    }
+
+    @Override
+    public Page<VenueDto> searchVenueByName(String searchQuery, Pageable pageable) {
+        return venueRepository.findVenueByNameContainingIgnoreCase(searchQuery, pageable)
+                .map(venueMapper::toDto);
+    }
+
+    @Override
+    public void deleteVenue(Long VenueId) {
+        Venue venue = venueRepository.findById(VenueId)
+                .orElseThrow(() -> new RuntimeException("Venue not found"));
+
+
+        if (venue.getEvents() != null && !venue.getEvents().isEmpty()) {
+            throw new IllegalStateException("Cannot delete venue: it is associated with existing events.");
+        }
+
+        venueRepository.deleteById(VenueId);
     }
 }
