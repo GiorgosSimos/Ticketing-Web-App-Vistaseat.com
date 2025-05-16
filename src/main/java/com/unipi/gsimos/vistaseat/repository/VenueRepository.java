@@ -11,6 +11,17 @@ public interface VenueRepository extends JpaRepository<Venue, Long> {
 
     Page<Venue> findVenueByNameContainingIgnoreCase(String name, Pageable pageable);
 
+    /**
+     * Counts the number of venues managed by a specific user (admin).
+     * <p>
+     * This method uses a custom JPQL (Java Persistence Query Language) query to retrieve
+     * the count of {@code Venue} entities associated with a particular user ID.
+     * JPQL is an object-oriented query language similar to SQL but operates on entity objects
+     * rather than directly on database tables.
+     *
+     * @param userId the ID of the user (admin) managing the venues
+     * @return the total number of venues managed by the specified user
+     */
     @Query("SELECT COUNT(v) FROM Venue v WHERE v.managedBy.id = :userId")
     long countVenuesManagedByUser(@Param("userId") Long userId);
 

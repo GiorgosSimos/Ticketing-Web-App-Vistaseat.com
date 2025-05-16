@@ -19,22 +19,36 @@
     <!-- Section User Info -->
     <div class="container mt-5">
         <h1 class="mb-4">Manage Venues</h1>
-        <!-- Venue Search Field -->
-        <form th:action="@{/adminDashboard/manageVenues}"
-              method="get"
-              class="d-flex justify-content-start mb-3">
-            <div class="input-group w-50">
-                <input type="text" class="form-control" placeholder="Search Venues..." name="searchQuery"
-                       th:value="${searchQuery}">
-                <button class="btn btn-outline-secondary" type="submit">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
-                         viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0
-                                1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                    </svg>
-                </button>
-            </div>
-        </form>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <!-- Left: Search Field -->
+            <form th:action="@{/adminDashboard/manageVenues}"
+                  method="get"
+                  class="d-flex w-50">
+                <div class="input-group w-100">
+                    <input type="text" class="form-control" placeholder="Search Venues..." name="searchQuery"
+                           th:value="${searchQuery}">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-search"
+                             viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0
+                            1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Right: Add Venue Button -->
+            <a href="/adminDashboard/manageUsers/addVenue" class="btn btn-primary d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-plus-circle me-2" viewBox="0 0 16 16">
+                    <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12z"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+                Add Venue
+            </a>
+        </div>
+        <hr>
 
         <!-- User Table -->
         <div class="table-responsive">
@@ -47,6 +61,7 @@
                     <th>Zipcode</th>
                     <th>City</th>
                     <th>Capacity</th>
+                    <th>Associated Events</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -58,6 +73,7 @@
                     <td th:text="${venue.zipcode}">15123</td>
                     <td th:text="${venue.city}">Athens</td>
                     <td th:text="${venue.capacity}">75500</td>
+                    <td>TBI</td>
                     <td>
                         <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
                         <!-- Action Button: View Events held in this Venue -->
@@ -65,7 +81,7 @@
                               class="confirm-form-submission"
                               data-message="View events of this venue?"
                               style="display: inline;">
-                            <button class="btn btn-sm btn-info me-1" id="btn-events-held" title="View Venue Events">
+                            <button class="btn btn-sm btn-info me-1" id="btn-events-held" title="View Associated Events">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
                                     <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384
                                             1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
