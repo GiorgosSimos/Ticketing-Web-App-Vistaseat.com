@@ -25,4 +25,6 @@ public interface VenueRepository extends JpaRepository<Venue, Long> {
     @Query("SELECT COUNT(v) FROM Venue v WHERE v.managedBy.id = :userId")
     long countVenuesManagedByUser(@Param("userId") Long userId);
 
+    boolean existsByName(String name);
+
 }

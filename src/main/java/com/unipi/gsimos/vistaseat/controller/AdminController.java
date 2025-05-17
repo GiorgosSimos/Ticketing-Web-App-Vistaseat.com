@@ -220,7 +220,7 @@ public class AdminController {
 
     @GetMapping("/adminDashboard/manageVenues")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "2") int size,
+                              @RequestParam(defaultValue = "5") int size,
                               @RequestParam(required = false) String searchQuery,
                               Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

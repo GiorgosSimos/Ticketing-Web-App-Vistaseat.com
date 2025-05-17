@@ -13,6 +13,62 @@
   <!-- Include Header -->
   <div th:insert="~{fragments/adminHeader :: adminHeader(${firstName}, ${lastName})}"></div>
 
+  <!-- Alert messages for changes made -->
+  <div th:if="${message}" class="alert alert-success" id="success-alert" th:text="${message}"></div>
+  <div th:if="${error}" class="alert alert-danger" id="access-denied-alert" th:text="${error} "></div>
+
+  <div class="add-venue-form-card">
+    <!-- Title & Icon -->
+    <div class="d-flex align-items-center mb-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" fill="currentColor" class="bi bi-buildings me-2"
+           viewBox="0 0 16 16">
+        <path d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0
+                0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022M6 8.694 1
+                10.36V15h5zM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5z"/>
+        <path d="M2 11h1v1H2zm2 0h1v1H4zm-2 2h1v1H2zm2 0h1v1H4zm4-4h1v1H8zm2 0h1v1h-1zm-2 2h1v1H8zm2 0h1v1h-1zm2-2h1v1h-1zm0
+                2h1v1h-1zM8 7h1v1H8zm2 0h1v1h-1zm2 0h1v1h-1zM8 5h1v1H8zm2 0h1v1h-1zm2 0h1v1h-1zm0-2h1v1h-1z"/>
+      </svg>
+      <h2 class="mb-0">Add New Venue</h2>
+    </div>
+
+    <!-- Description -->
+    <p class="text-muted mb-4">
+      Create a new venue for hosting events. Fill in all the required information.
+    </p>
+
+    <form th:action="@{/adminDashboard/manageVenues/addVenue/create}"
+          method="post"
+          class="add-venue-form-grid">
+      <!-- Venue Name -->
+      <label for="venue-name">Venue Name</label>
+      <input type="text" class="form-control full-span" id="venue-name" name="name"
+             placeholder="Enter Venue Name"  required>
+
+      <!-- Street / Number -->
+      <label for="street">Street</label>
+      <label for="number">Number</label>
+      <input type="text" class="form-control" id="street" name="street" required>
+      <input type="text" class="form-control" id="number" name="number" required>
+
+      <!-- Zipcode / City -->
+      <label for="zipcode">Zipcode</label>
+      <label for="city">City</label>
+      <input type="text" class="form-control" id="zipcode" name="zipcode" required>
+      <input type="text" class="form-control" id="city" name="city" required>
+
+      <!-- Capacity label (full row) -->
+      <label for="capacity" class="mt-2">Capacity</label>
+      <!-- Capacity input (full row) -->
+      <input type="number" min="1" class="form-control full-span" id="capacity" name="capacity" required>
+
+      <!-- Submit button (full row) -->
+      <button type="submit" class="btn btn-dark w-100 rounded-pill mt-3 full-span">
+        Create Venue
+      </button>
+    </form>
+  </div>
+
+
   <!-- Include Footer-->
   <div th:insert="~{fragments/footer :: footer}"></div>
 

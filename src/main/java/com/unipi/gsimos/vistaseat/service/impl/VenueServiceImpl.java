@@ -33,6 +33,10 @@ public class VenueServiceImpl implements VenueService {
         User admin =  userRepository.findById(dto.getAdminId())
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
 
+        if (venueRepository.existsByName(dto.getName())) {
+            throw new IllegalArgumentException("A Venue with this name already exists");
+        }
+
         // Make sure that only admins can create venues
         if (admin.getRole() != UserRole.DOMAIN_ADMIN) {
             throw new RuntimeException("Only admins can create venues.");
