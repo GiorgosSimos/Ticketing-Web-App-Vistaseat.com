@@ -7,9 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 //A Web controller (@Controller) works with HTML forms (using @ModelAttribute, returns view names for Thymeleaf).
@@ -32,6 +30,17 @@ public class VenueController {
         model.addAttribute("lastName", user.getLastName());
 
         return "addVenue";
+    }
+
+    @PostMapping("/adminDashboard/manageVenues/editVenue")
+    public String editVenue(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+
+        return "editVenue";
     }
 
     /**

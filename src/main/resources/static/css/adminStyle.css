@@ -224,8 +224,8 @@ body {
     text-align: left;
 }
 
-/* Styling for addVenue in manageUsers */
-.add-venue-form-card {
+/* Styling for addVenue, editVenue in manageUsers */
+.add-venue-form-card, .edit-venue-form-card {
     border-radius: 1.5rem;
     box-shadow: 0 4px 32px rgba(0,0,0,0.08);
     padding: 2rem 2.5rem;
@@ -240,6 +240,12 @@ body {
     gap: 1rem 2rem;
 }
 
-.add-venue-form-grid .full-span {
+.edit-venue-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 1rem 2rem;
+}
+
+.add-venue-form-grid .full-span, #editSaveBtn {
     grid-column: span 2;
 }
