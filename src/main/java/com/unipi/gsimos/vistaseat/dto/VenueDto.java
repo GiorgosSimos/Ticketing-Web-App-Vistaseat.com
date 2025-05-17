@@ -17,12 +17,12 @@ public class VenueDto {
     @NotBlank(message = "Venue name is required")
     @Size(min = 2, max = 100, message = "Venue name must be between 2 and 100 characters")
     // Regex allows letters, digits, space, hyphen, apostrophe, period, comma, ampersand
-    @Pattern(regexp = "^[\\w\\s\\-',.&]+$", message = "Venue name contains invalid characters")
+    @Pattern(regexp = "^[\\p{L}\\d\\s\\-',.&]+$", message = "Venue name contains invalid characters")
     private String name;
 
     @NotBlank(message = "Street is required")
-    @Size(min = 2, max = 100, message = "Street must be between 2 and 100 characters")
-    @Pattern(regexp = "^[\\w\\s\\-',.&]+$", message = "Venue name contains invalid characters")
+    @Size(min = 2, max = 100, message = "Street name must be between 2 and 100 characters")
+    @Pattern(regexp = "^[\\p{L}\\d\\s\\-',.&]+$", message = "Street name contains invalid characters")
     private String street;
 
     @NotNull(message = "Number is required")
@@ -35,8 +35,8 @@ public class VenueDto {
     private Integer zipcode;
 
     @NotBlank(message = "City is required")
-    @Size(min = 2, max = 100, message = "City name must be between 2 and 50 characters")
-    @Pattern(regexp = "^[\\w\\s\\-',.&]+$", message = "City name contains invalid characters")
+    @Size(min = 2, max = 100, message = "City name must be between 2 and 100 characters")
+    @Pattern(regexp = "^[\\p{L}\\d\\s\\-',.&]+$", message = "City name contains invalid characters")
     private String city;
 
     @NotNull(message = "Capacity is required")

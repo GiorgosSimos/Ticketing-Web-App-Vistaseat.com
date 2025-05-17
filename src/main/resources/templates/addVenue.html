@@ -44,7 +44,7 @@
       <input type="text" minlength="2" maxlength="100" class="form-control full-span"
              id="name" name="name"
              placeholder="Enter Venue Name"
-             pattern="^[\w\s\-',.&]+$"
+             pattern="^[\w\s\-',.&\u0370-\u03FF\u1F00-\u1FFF]+$"
              required
              title="Between 2 and 100 chars. Can contain letters, digits, spaces, hyphens, apostrophes, periods, commas, and ampersands.">
 
@@ -53,7 +53,7 @@
       <label for="number">Number</label>
       <input type="text" minlength="2" maxlength="100" class="form-control"
              id="street" name="street"
-             pattern="^[\w\s\-',.&]+$"
+             pattern="^[\w\s\-',.&\u0370-\u03FF\u1F00-\u1FFF]+$"
              title="Between 2 and 100 chars. Can contain letters, digits, spaces, hyphens, apostrophes, periods, commas, and ampersands"
              required>
       <input type="number" min="1" max="999"  class="form-control"
@@ -70,7 +70,7 @@
              required>
       <input type="text" minlength="2" maxlength="50" class="form-control"
              id="city" name="city"
-             pattern="^[\w\s\-',.&]+$"
+             pattern="^[\w\s\-',.&\u0370-\u03FF\u1F00-\u1FFF]+$"
              title="Between 2 and 50 chars. Can contain letters, digits, spaces, hyphens, apostrophes, periods, commas, and ampersands."
              required>
 
