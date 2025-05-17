@@ -34,8 +34,25 @@ public class VenueController {
         return "addVenue";
     }
 
+    /**
+     * Handles POST requests for creating a new venue.
+     * <p>
+     * Binds form data to a {@link VenueDto}, sets the current authenticated admin as the venue's admin,
+     * and attempts to save the new venue using the service layer.
+     * <ul>
+     *   <li>If creation is successful, a success message is added to flash attributes and the user is redirected to the manage venues page.</li>
+     *   <li>If an error occurs, an error message is added to flash attributes and the user is redirected back to the add venue form.</li>
+     * </ul>
+     * @param venueDto             The data transfer object containing venue details from the form.
+     *                             The {@code @ModelAttribute} annotation
+     *                             that binds submitted form fields to this object.
+     * @param redirectAttributes   Attributes for passing flash messages on redirect.
+     * @return Redirect to the appropriate page depending on the operation result.
+     */
     @PostMapping("/adminDashboard/manageVenues/addVenue/create")
-    public String createVenue(@ModelAttribute VenueDto venueDto, RedirectAttributes redirectAttributes) {
+    public String createVenue(@ModelAttribute VenueDto venueDto,
+                              RedirectAttributes redirectAttributes) {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
         venueDto.setAdminId(user.getId());

@@ -33,6 +33,7 @@ public class VenueServiceImpl implements VenueService {
         User admin =  userRepository.findById(dto.getAdminId())
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
 
+        // Venue name is unique
         if (venueRepository.existsByName(dto.getName())) {
             throw new IllegalArgumentException("A Venue with this name already exists");
         }
@@ -55,7 +56,7 @@ public class VenueServiceImpl implements VenueService {
 
     @Override
     public Page<VenueDto> getAllVenues(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("capacity").descending());
         Page<Venue> venues = venueRepository.findAll(pageable);
         return venues.map(venueMapper::toDto);
     }
