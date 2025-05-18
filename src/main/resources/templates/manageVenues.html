@@ -92,8 +92,8 @@
                             </button>
                         </form>
                         <!-- Button: Edit Venue -->
-                        <form th:action="@{'/adminDashboard/manageVenues/editVenue'}"
-                              method="post"
+                        <form th:action="@{'/adminDashboard/manageVenues/editVenue/' + ${venue.id}}"
+                              method="get"
                               class="confirm-form-submission"
                               data-message="Are you sure you want to edit this venue?"
                               style="display: inline;">

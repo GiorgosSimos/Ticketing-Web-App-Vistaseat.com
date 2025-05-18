@@ -2,6 +2,8 @@ package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.VenueDto;
 import com.unipi.gsimos.vistaseat.model.User;
+import com.unipi.gsimos.vistaseat.model.Venue;
+import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.VenueService;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
@@ -15,10 +17,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class VenueController {
 
     private final VenueService venueService;
+    private final VenueRepository venueRepository;
 
 
-    public VenueController(VenueService venueService) {
+    public VenueController(VenueService venueService, VenueRepository venueRepository) {
         this.venueService = venueService;
+        this.venueRepository = venueRepository;
     }
 
     @GetMapping("/adminDashboard/manageVenues/addVenue")
@@ -32,15 +36,58 @@ public class VenueController {
         return "addVenue";
     }
 
-    @PostMapping("/adminDashboard/manageVenues/editVenue")
-    public String editVenue(Model model) {
+    // Show the Edit Venue form (GET)
+    @GetMapping("/adminDashboard/manageVenues/editVenue/{venueId}")
+    public String showEditVenueForm(@PathVariable Long venueId, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
+        Venue venue = venueRepository.findById(venueId)
+                .orElseThrow(() -> new RuntimeException("Venue not found"));
+
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("venue", venue);
 
         return "editVenue";
+    }
+
+    // Handle form submission (POST)
+    @PostMapping("/adminDashboard/manageVenues/editVenue/{venueId}")
+    public String editVenue(@PathVariable Long venueId,
+                            @RequestParam String name,
+                            @RequestParam String street,
+                            @RequestParam Integer number,
+                            @RequestParam Integer zipcode,
+                            @RequestParam String city,
+                            @RequestParam Integer capacity,
+                            RedirectAttributes redirectAttributes,
+                            Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+        Venue venue = venueRepository.findById(venueId)
+                .orElseThrow(()-> new RuntimeException("Venue not found"));
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("venue", venue);
+
+        try {
+            venue.setName(name);
+            venue.setStreet(street);
+            venue.setNumber(number);
+            venue.setZipcode(zipcode);
+            venue.setCity(city);
+            venue.setCapacity(capacity);
+            venueRepository.save(venue);
+            redirectAttributes.addFlashAttribute("message", "Venue updated successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Venue could not be updated because of an unexpected error: " + e.getMessage());
+            return "redirect:/adminDashboard/manageVenues/editVenue/" + venueId;
+        }
+
+        return "redirect:/adminDashboard/manageVenues";
     }
 
     /**
