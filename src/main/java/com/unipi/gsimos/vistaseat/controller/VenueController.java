@@ -36,7 +36,6 @@ public class VenueController {
         return "addVenue";
     }
 
-    // Show the Edit Venue form (GET)
     @GetMapping("/adminDashboard/manageVenues/editVenue/{venueId}")
     public String showEditVenueForm(@PathVariable Long venueId, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -55,30 +54,20 @@ public class VenueController {
     // Handle form submission (POST)
     @PostMapping("/adminDashboard/manageVenues/editVenue/{venueId}")
     public String editVenue(@PathVariable Long venueId,
-                            @RequestParam String name,
-                            @RequestParam String street,
-                            @RequestParam Integer number,
-                            @RequestParam Integer zipcode,
-                            @RequestParam String city,
-                            @RequestParam Integer capacity,
-                            RedirectAttributes redirectAttributes,
-                            Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+                            @ModelAttribute VenueDto venueDto,
+                            RedirectAttributes redirectAttributes) {
+
         Venue venue = venueRepository.findById(venueId)
                 .orElseThrow(()-> new RuntimeException("Venue not found"));
 
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-        model.addAttribute("venue", venue);
+        venue.setName(venueDto.getName());
+        venue.setStreet(venueDto.getStreet());
+        venue.setNumber(venueDto.getNumber());
+        venue.setZipcode(venueDto.getZipcode());
+        venue.setCity(venueDto.getCity());
+        venue.setCapacity(venueDto.getCapacity());
 
         try {
-            venue.setName(name);
-            venue.setStreet(street);
-            venue.setNumber(number);
-            venue.setZipcode(zipcode);
-            venue.setCity(city);
-            venue.setCapacity(capacity);
             venueRepository.save(venue);
             redirectAttributes.addFlashAttribute("message", "Venue updated successfully");
         } catch (Exception e) {
