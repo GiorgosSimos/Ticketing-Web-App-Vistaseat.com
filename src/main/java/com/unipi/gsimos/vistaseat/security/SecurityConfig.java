@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,13 +20,13 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final UserRepository _userRepository;
 
     public SecurityConfig(UserRepository userRepository) {
         _userRepository = userRepository;
-
     }
 
     @Bean
@@ -75,8 +76,6 @@ public class SecurityConfig {
                         .permitAll()
                     )
 
-
-
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests//creating exceptions for URLs we want to allow access
 
@@ -89,7 +88,7 @@ public class SecurityConfig {
                             .permitAll()
 
                             // Endpoints that require admin authentication
-                            .requestMatchers("/adminDashboard", "/adminDashboard/**","/api/**")
+                            .requestMatchers("/adminDashboard", "/adminDashboard/**")
                             .hasRole("DOMAIN_ADMIN")//endpoints that only DOMAIN_ADMIN role can access
 
                             .anyRequest().authenticated();// Everything else requires login, endpoints that require authentication
