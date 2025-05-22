@@ -1,14 +1,11 @@
 package com.unipi.gsimos.vistaseat.model;
 
-import jakarta.validation.constraints.Min;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -31,21 +28,6 @@ public class Event {
     @Column(name = "event_type", nullable = false)
     private EventType eventType;
 
-    @Column(nullable = false)
-    @Min(value = 0, message = "Event price cannot be negative")
-    private BigDecimal price;
-
-    @Column(nullable = false)
-    @Min(value = 0, message = "Duration of an event cannot be negative")
-    private int duration;
-
-    //WARNING: Initialization of available seats should match the capacity of the corresponding venue
-    @Column(name = "available_seats", nullable = false)
-    private int availableSeats;
-
-    @Column(name = "event_date", nullable = false)
-    private LocalDateTime eventDate;
-
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -59,8 +41,8 @@ public class Event {
     @JoinColumn(name = "admin_id", nullable = false)
     private User managedBy;
 
-    // An event can have multiple bookings
+    // An event can have multiple occurrences
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Booking> bookings;
+    private List<EventOccurrence> occurrences;
 }
 

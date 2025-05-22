@@ -1,6 +1,5 @@
 package com.unipi.gsimos.vistaseat.model;
 
-import com.unipi.gsimos.vistaseat.customAnnotations.ValidEmail;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -25,10 +24,10 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Multiple bookings can refer to a single event, event_id is a FK
+    // Multiple bookings can refer to a single event occurrence
     @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    @JoinColumn(name = "event_occurrence_id", nullable = false)
+    private EventOccurrence eventOccurrence;
 
     // Multiple bookings can be made by a single user, user_id is a FK
     @ManyToOne

@@ -4,7 +4,7 @@ public enum EventType {
     THEATER,
     CINEMA,
     CONCERT,
-    SPORT,
+    SPORTS,
     MUSEUM,
     ARCHAEOLOGICAL
 }

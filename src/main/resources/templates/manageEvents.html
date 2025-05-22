@@ -9,107 +9,170 @@
   <script th:src="@{/js/admin.js}" defer></script>
 </head>
 <body>
-<!-- Include Header -->
-<div th:insert="~{fragments/adminHeader :: adminHeader(${firstName}, ${lastName})}"></div>
+  <!-- Include Header -->
+  <div th:insert="~{fragments/adminHeader :: adminHeader(${firstName}, ${lastName})}"></div>
 
-<!-- Alert messages for changes made -->
-<div th:if="${message}" class="alert alert-success" id="success-alert" th:text="${message}"></div>
-<div th:if="${error}" class="alert alert-danger" id="access-denied-alert" th:text="${error} "></div>
+  <!-- Alert messages for changes made -->
+  <div th:if="${message}" class="alert alert-success" id="success-alert" th:text="${message}"></div>
+  <div th:if="${error}" class="alert alert-danger" id="access-denied-alert" th:text="${error} "></div>
 
-<!-- Section Event Info -->
-<div class="container mt-5">
-  <h1 class="mb-4">Manage Events</h1>
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <!-- Left: Search Field -->
-    <form
+  <!-- Section Event Info -->
+  <div class="container mt-5">
+    <h1 class="mb-4">Manage Events</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <!-- Left: Search Field -->
+      <form
           method="get"
           class="d-flex w-50">
-      <div class="input-group w-100">
-        <input type="text" class="form-control" placeholder="Search Events..." name="searchQuery"
-               th:value="${searchQuery}">
-        <button class="btn btn-outline-secondary" type="submit">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-               class="bi bi-search"
-               viewBox="0 0 16 16">
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0
+        <div class="input-group w-100">
+          <input type="text" class="form-control" placeholder="Search Events..." name="searchQuery"
+                 th:value="${searchQuery}">
+          <button class="btn btn-outline-secondary" type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-search"
+                viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0
                             1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-          </svg>
-        </button>
-      </div>
-    </form>
+            </svg>
+          </button>
+        </div>
+      </form>
 
-    <!-- Right: Add Event Button -->
-    <a href="#" class="btn btn-primary d-flex align-items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-           class="bi bi-plus-circle me-2" viewBox="0 0 16 16">
-        <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12z"/>
-        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-      </svg>
-      Add Event
-    </a>
-  </div>
-  <hr>
+      <!-- Right: Add Event Button -->
+      <a href="#" class="btn btn-primary d-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-plus-circle me-2" viewBox="0 0 16 16">
+          <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12z"/>
+          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+        </svg>
+        Add Event
+      </a>
+    </div>
+
+    <!-- Event Filter Buttons -->
+    <div class="mb-3 d-flex align-items-center">
+      <label class="me-2 fw-bold">Events:</label>
+      <button class="btn btn-sm me-2"
+              th:classappend="${selectEventType == null} ? 'btn-dark' : 'btn-outline-dark'"
+              onclick="filterByEvent(null)">
+        🎉 All Events
+      </button>
+      <button class="btn btn-sm me-2"
+              th:classappend="${selectEventType == T(com.unipi.gsimos.vistaseat.model.EventType).THEATER}
+                    ? 'btn-dark' : 'btn-outline-dark'"
+              onclick="filterByEvent('THEATER')">
+        🎭 Theater Plays
+      </button>
+      <button class="btn btn-sm me-2"
+              th:classappend="${selectEventType == T(com.unipi.gsimos.vistaseat.model.EventType).CINEMA}
+                    ? 'btn-dark' : 'btn-outline-dark'"
+              onclick="filterByEvent('CINEMA')">
+        🎬 Cinema Films
+      </button>
+      <button class="btn btn-sm me-2"
+              th:classappend="${selectEventType == T(com.unipi.gsimos.vistaseat.model.EventType).CONCERT}
+                    ? 'btn-dark' : 'btn-outline-dark'"
+              onclick="filterByEvent('CONCERT')">
+        🎶 Music Concerts
+      </button>
+      <button class="btn btn-sm me-2"
+              th:classappend="${selectEventType == T(com.unipi.gsimos.vistaseat.model.EventType).SPORTS}
+                    ? 'btn-dark' : 'btn-outline-dark'"
+              onclick="filterByEvent('SPORTS')">
+        ⚽ Sports
+      </button>
+      <button class="btn btn-sm me-2"
+              th:classappend="${selectEventType == T(com.unipi.gsimos.vistaseat.model.EventType).MUSEUM}
+                    ? 'btn-dark' : 'btn-outline-dark'"
+              onclick="filterByEvent('MUSEUM')">
+        🏛️ Museum Visits
+      </button>
+      <button class="btn btn-sm me-2"
+              th:classappend="${selectEventType == T(com.unipi.gsimos.vistaseat.model.EventType).ARCHAEOLOGICAL}
+                    ? 'btn-dark' : 'btn-outline-dark'"
+              onclick="filterByEvent('ARCHAEOLOGICAL')">
+        🏺 Archaeological Site Visits
+      </button>
+    </div>
+    <hr>
 
 
-  <!-- Pagination Controls -->
-  <div class="d-flex justify-content-end align-items-center mt-3">
-    <!-- First Page - Go to first page (index 0)-->
-    <button class="btn btn-sm btn btn-light me-1"
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-end align-items-center mt-3">
+      <!-- First Page - Go to first page (index 0)-->
+      <button class="btn btn-sm btn btn-light me-1"
 
             >
-      First Page
-    </button>
-    <!-- Previous Page - Go to page before current-->
-    <button class="btn btn-sm btn btn-light me-2"
+        First Page
+      </button>
+      <!-- Previous Page - Go to page before current-->
+      <button class="btn btn-sm btn btn-light me-2"
             >
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left"
-           viewBox="0 0 16 16">
-        <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left"
+             viewBox="0 0 16 16">
+          <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11
                             3.204v9.592a1 1 0 0 1-1.659.753"/>
-      </svg>
-    </button>
+        </svg>
+      </button>
 
-    <!-- Page Info -->
-    <span class="me-2">Page <span th:text="${currentPage}">1</span> of <span th:text="${totalPages}">2</span></span>
+      <!-- Page Info -->
+      <span class="me-2">Page <span th:text="${currentPage}">1</span> of <span th:text="${totalPages}">2</span></span>
 
-    <!-- Next Page -->
-    <button class="btn btn-sm btn btn-light me-1"
+      <!-- Next Page -->
+      <button class="btn btn-sm btn btn-light me-1"
             >
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right"
-           viewBox="0 0 16 16">
-        <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right"
+             viewBox="0 0 16 16">
+          <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5
                             2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
-      </svg>
-    </button>
+        </svg>
+      </button>
 
-    <!-- Last Page -->
-    <button class="btn btn-sm btn btn-light"
+      <!-- Last Page -->
+      <button class="btn btn-sm btn btn-light"
             >
-      Last Page
-    </button>
+        Last Page
+      </button>
+    </div>
   </div>
-</div>
 
-<br>
+  <br>
 
-<!-- Include Footer-->
-<div th:insert="~{fragments/footer :: footer}"></div>
+  <!-- Include Footer-->
+  <div th:insert="~{fragments/footer :: footer}"></div>
 
-<script>
+  <script>
 
-  // function for pagination controls
-  function goToPage(pageNumber) {
-    const url = new URL(window.location.href);
-    url.searchParams.set("page", pageNumber);
+    // function to apply role filters for users display
+    function filterByEvent(eventType) {
+      const url = new URL(window.location.href);
 
-    // Grabs current search filters from the DOM
-    const searchQuery = document.querySelector('input[name="searchQuery"]')?.value;
-    if (searchQuery) url.searchParams.set("searchQuery", searchQuery);
+      // Remove search filter when switching role
+      url.searchParams.delete('searchQuery');
 
-    window.location.href = url.toString();
-  }
+      if (eventType === null || eventType === 'null'){
+        url.searchParams.delete('eventType');      // Remove the eventType param to show all events
+      } else {
+        url.searchParams.set('eventType', eventType); // Add or replace the 'eventType' parameter
+      }
 
-</script>
+      url.searchParams.set('page', 0);        // Reset to first page when filter changes
+      window.location.href = url.toString(); // Redirect to new URL
+    }
+
+    // function for pagination controls
+    function goToPage(pageNumber) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("page", pageNumber);
+
+      // Grabs current search filters from the DOM
+      const searchQuery = document.querySelector('input[name="searchQuery"]')?.value;
+      if (searchQuery) url.searchParams.set("searchQuery", searchQuery);
+
+      window.location.href = url.toString();
+    }
+
+  </script>
 
 </body>
 </html>
