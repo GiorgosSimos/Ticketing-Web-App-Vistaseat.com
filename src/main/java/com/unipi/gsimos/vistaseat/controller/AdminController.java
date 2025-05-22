@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import com.unipi.gsimos.vistaseat.service.VenueService;
@@ -26,11 +27,13 @@ public class AdminController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final VenueService venueService;
+    private final EventRepository eventRepository;
 
-    public AdminController(UserRepository userRepository, UserService userService, VenueService venueService) {
+    public AdminController(UserRepository userRepository, UserService userService, VenueService venueService, EventRepository eventRepository) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.venueService = venueService;
+        this.eventRepository = eventRepository;
     }
 
     @GetMapping("/adminLogin")
@@ -64,6 +67,9 @@ public class AdminController {
 
         // Total Venues count
         model.addAttribute("totalVenues", venueService.countVenues());
+
+        // Total Events count
+        model.addAttribute("totalEvents",eventRepository.count());
 
         // Recent Users
         model.addAttribute("recentUsers", userService.getLast10Users());

@@ -249,3 +249,20 @@ body {
 .add-venue-form-grid .full-span, #editSaveBtn {
     grid-column: span 2;
 }
+
+/* Styling for addEvent, editEvent in manageEvents */
+.add-event-form-card, .edit-event-form-card {
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    padding: 2rem 2.5rem;
+    background: rgb(251, 243, 193);
+    max-width: 480px;
+    margin: 2rem auto;
+}
+
+.add-event-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
