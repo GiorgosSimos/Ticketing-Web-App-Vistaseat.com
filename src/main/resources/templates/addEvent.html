@@ -32,7 +32,7 @@
             Create a new event at an existing venue. Fill in all the required information.
         </p>
         <!-- TODO - Server side form Validation -->
-        <form
+        <form th:action="@{/adminDashboard/manageEvents/addEvent/create}"
               method="post"
               class="add-event-form">
             <!-- Event Name -->
