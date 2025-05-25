@@ -3,9 +3,9 @@ package com.unipi.gsimos.vistaseat.controller;
 import com.unipi.gsimos.vistaseat.dto.UserDto;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.UserRole;
-import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,15 +22,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.nio.file.AccessDeniedException;
 
 @Controller
+@RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
     private final UserService userService;
-
-    public UserController(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
-        this.userService = userService;
-    }
 
     @GetMapping("/")
     public String home() {

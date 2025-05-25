@@ -35,4 +35,7 @@ public class EventDto {
     private Long venueId;
 
     private Long adminId;
+
+    // Derived data needed by the client/UI layer. Keeps count of occurrences for every Event.
+    private Long occurrenceCount;
 }
