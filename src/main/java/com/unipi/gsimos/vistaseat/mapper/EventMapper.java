@@ -43,6 +43,7 @@ public class EventMapper {
         eventDto.setDescription(event.getDescription());
         if (event.getVenue() != null) {
             eventDto.setVenueId(event.getVenue().getId());
+            eventDto.setVenueName(event.getVenue().getName());
         }
 
         if (event.getManagedBy() != null) {

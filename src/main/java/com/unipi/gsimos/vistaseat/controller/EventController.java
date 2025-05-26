@@ -14,10 +14,7 @@ import com.unipi.gsimos.vistaseat.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -50,12 +47,18 @@ public class EventController {
 
         if (searchQuery != null && !searchQuery.isEmpty()) {
             eventsPage = eventService.getEventsByName(searchQuery.trim(), pageable);
+        } else if (eventType != null) {
+            eventsPage = eventService.getEventsByEventType(eventType, page, size);
         } else {
             eventsPage = eventService.getAllEvents(page, size);
         }
 
         List<EventDto> eventsList = new ArrayList<>(eventsPage.getContent());
         model.addAttribute("events", eventsList);
+
+        // Paging controls
+        model.addAttribute("currentPage", eventsPage.getNumber() + 1);
+        model.addAttribute("totalPages", eventsPage.getTotalPages());
 
         // Sort in descending/ascending order by event occurrence count
         if ("occurrenceCount".equals(sort)) {
@@ -110,5 +113,21 @@ public class EventController {
             redirectAttributes.addFlashAttribute("error", "Error: "+e.getMessage());
             return "redirect:/adminDashboard/manageEvents/addEvent";
         }
+    }
+
+    @PostMapping("/adminDashboard/manageEvents/delete/{eventId}")
+    public String deleteEvent(@PathVariable Long eventId, RedirectAttributes redirectAttributes) {
+
+        try {
+            eventService.deleteEvent(eventId);
+            redirectAttributes.addFlashAttribute("message", "Event deleted successfully");
+            return "redirect:/adminDashboard/manageEvents?success";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error: "+e.getMessage());
+            return "redirect:/adminDashboard/manageEvents";
+        }
+
+
+
     }
 }

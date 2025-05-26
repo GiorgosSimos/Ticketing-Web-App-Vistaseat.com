@@ -110,7 +110,7 @@
             <a th:href="@{/adminDashboard/manageEvents(sort='occurrenceCount', sortDirection=${sortDirection == 'asc' ? 'desc' : 'asc'})}"
                style="text-decoration: none; color: inherit;">
                No of Occurrences
-                <i class="" th:classappend="${sortDirection == 'asc'} ? 'fa-solid fa-circle-up' : 'fa-solid fa-circle-down'"></i>
+                <i class="fa-solid" th:classappend="${sortDirection == 'asc'} ? 'fa-circle-up' : 'fa-circle-down'"></i>
             </a>
           </th>
           <th>Actions</th>
@@ -120,7 +120,7 @@
         <tr th:each="event : ${events}">
           <td th:text="${event.name}">Cinema Paradiso</td>
           <td th:text="${event.eventType}">CINEMA</td>
-          <td th:text="${event.venueId}">Cine Open Air - Starlit Sky</td>
+          <td th:text="${event.venueName}">Cine Open Air - Starlit Sky</td>
           <td th:text="${event.occurrenceCount}">10</td>
           <td>
             <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
@@ -154,8 +154,8 @@
               </button>
             </form>
             <!-- Delete Event Button -->
-            <form
-
+            <form th:action="@{'/adminDashboard/manageEvents/delete/' + ${event.id}}"
+                  method="post"
                   class="confirm-form-submission"
                   data-message="Are you sure you want to delete this event?"
                   style="display: inline;">
@@ -182,13 +182,14 @@
     <div class="d-flex justify-content-end align-items-center mt-3">
       <!-- First Page - Go to first page (index 0)-->
       <button class="btn btn-sm btn btn-light me-1"
-
-            >
+              th:disabled="${currentPage == 1}"
+              onclick="goToPage(0)">
         First Page
       </button>
       <!-- Previous Page - Go to page before current-->
       <button class="btn btn-sm btn btn-light me-2"
-            >
+              th:disabled="${currentPage == 1}"
+              th:onclick="'goToPage(' + (${currentPage} - 2) + ')'">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left"
              viewBox="0 0 16 16">
           <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11
@@ -201,7 +202,8 @@
 
       <!-- Next Page -->
       <button class="btn btn-sm btn btn-light me-1"
-            >
+              th:disabled="${currentPage == totalPages}"
+              th:onclick="'goToPage(' + ${currentPage} + ')'">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right"
              viewBox="0 0 16 16">
           <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5
@@ -211,7 +213,8 @@
 
       <!-- Last Page -->
       <button class="btn btn-sm btn btn-light"
-            >
+              th:disabled="${currentPage == totalPages}"
+              th:onclick="'goToPage(' + (${totalPages} - 1) + ')'">
         Last Page
       </button>
     </div>
@@ -241,8 +244,8 @@
       window.location.href = url.toString(); // Redirect to new URL
     }
 
-    // function for pagination controls
-    function goToPage(pageNumber) {
+      // function for pagination controls
+      function goToPage(pageNumber) {
       const url = new URL(window.location.href);
       url.searchParams.set("page", pageNumber);
 

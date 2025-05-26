@@ -38,4 +38,7 @@ public class EventDto {
 
     // Derived data needed by the client/UI layer. Keeps count of occurrences for every Event.
     private Long occurrenceCount;
+
+    // Stored only in the eventDto for displaying the name of the venue the event is held at
+    private String venueName;
 }

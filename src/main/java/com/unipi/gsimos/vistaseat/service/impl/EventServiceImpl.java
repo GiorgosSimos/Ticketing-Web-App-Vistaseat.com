@@ -3,9 +3,12 @@ package com.unipi.gsimos.vistaseat.service.impl;
 import com.unipi.gsimos.vistaseat.dto.EventDto;
 import com.unipi.gsimos.vistaseat.mapper.EventMapper;
 import com.unipi.gsimos.vistaseat.model.Event;
+import com.unipi.gsimos.vistaseat.model.EventType;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.service.EventService;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,12 +30,17 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventDto createEvent(EventDto eventDto) {
-        // TODO Check creation of events with the same name, in the same Venue
+
+        if (eventRepository.existsByNameAndEventTypeAndVenueId(
+                eventDto.getName(),
+                eventDto.getEventType(),
+                eventDto.getVenueId())) {
+            throw new EntityExistsException("An event with the same name, type, and venue already exists.");
+        }
 
         Event event = eventMapper.toEntity(eventDto);
         Event savedEvent = eventRepository.save(event);
         return eventMapper.toDto(savedEvent);
-
     }
 
     @Override
@@ -51,6 +59,26 @@ public class EventServiceImpl implements EventService {
         return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
         /*return eventRepository.findEventByNameContainingIgnoreCase(searchQuery, pageable)
                 .map(eventMapper::toDto);*/
+    }
+
+    @Override
+    public Page<EventDto> getEventsByEventType(EventType eventType, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Event> events = eventRepository.findAllByEventType(eventType, pageable);
+        return events.map(eventMapper::toDto);
+    }
+
+    @Override
+    @Transactional
+    public void deleteEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(()-> new EntityNotFoundException("Event not found with id: " + eventId));
+
+        if (!event.getOccurrences().isEmpty()) {
+            throw new EntityExistsException("Cannot delete event: it is associated with existing occurrences.");
+        }
+
+        eventRepository.delete(event);
     }
 
     /**

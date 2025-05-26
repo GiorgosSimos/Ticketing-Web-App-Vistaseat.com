@@ -250,6 +250,13 @@ body {
     grid-column: span 2;
 }
 
+/* Styling for manageEvents page */
+th i.fa-solid {
+    margin-left: 5px;
+    font-size: 0.9rem;
+    color: rgb(18, 153, 144);
+}
+
 /* Styling for addEvent, editEvent in manageEvents */
 .add-event-form-card, .edit-event-form-card {
     border-radius: 1.5rem;
