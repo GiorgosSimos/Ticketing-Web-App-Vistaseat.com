@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Venues | Vistaseat.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/adminStyle.css}">
+    <script th:src="@{/js/admin.js}" defer></script>
+</head>
+<body>
+    <!-- Include Header -->
+    <div th:insert="~{fragments/adminHeader :: adminHeader(${firstName}, ${lastName})}"></div>
+
+    <!-- Alert messages for changes made -->
+    <div th:if="${message}" class="alert alert-success" id="success-alert" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" id="access-denied-alert" th:text="${error} "></div>
+
+    <div class="edit-venue-form-card">
+        <!--Title-->
+        <div class="d-flex align-items-center mb-2">
+            <h2 class="mb-0" th:text="${event.name}">Event Name</h2>
+        </div>
+        <!-- Description -->
+        <p class="text-muted mb-4">Edit the information of this Event</p>
+        <!-- Edit Event Form -->
+        <form class="edit-venue-form-grid"
+              th:action="@{/adminDashboard/manageEvents/editEvent/{id}(id=${event.id})}"
+              method="post"
+              id="editEventForm">
+
+            <!-- Event Name -->
+            <label for="name">Event Name:</label>
+            <input type="text" minlength="2" maxlength="100" class="form-control full-span"
+                   id="name" name="name"
+                   th:value="${event.name}"
+                   pattern="^[\w\s\-',.&\u0370-\u03FF\u1F00-\u1FFF]+$"
+                   title="Between 2 and 50 chars. Can contain letters, digits, spaces, hyphens, apostrophes, periods, commas, and ampersands."
+                   disabled required>
+
+            <!-- Event Type -->
+            <label for="eventType">Event Type:</label>
+            <select class="form-select" id="eventType" name="eventType" disabled required>
+                <option th:value="${event.eventType}" th:text="${event.eventType}" selected>Select an event type</option>
+                <th:block th:each="type : ${eventTypes}">
+                    <option th:value="${type}" th:text="${type}">Type</option>
+                </th:block>
+            </select>
+
+            <!-- Event Held at Venue -->
+            <label for="venueId">Event held At</label>
+            <select class="form-select" id="venueId" name="venueId" disabled required>
+                <option th:value="${event.venueId}" th:text="${event.venueName}" selected>Select a venue</option>
+                <th:block th:each="venue : ${venues}">
+                    <option th:value="${venue.id}" th:text="${venue.name}">Venue Name</option>
+                </th:block>
+            </select>
+
+            <!-- Event Description -->
+            <label for="description">Zipcode</label>
+            <textarea class="form-control full-span" id="description" name="description"
+                      th:text="${event.description}" rows="6" maxlength="5000" disabled required>
+            </textarea>
+
+            <!-- Submit button (full row) -->
+            <button type="button" id="editSaveBtn" class="btn btn-primary w-100 rounded-pill mt-3">
+                Edit Event
+            </button>
+        </form>
+    </div>
+
+    <!-- Include Footer-->
+    <div th:insert="~{fragments/footer :: footer}"></div>
+
+    <script>
+        const btn = document.getElementById('editSaveBtn');
+        const form = document.getElementById('editEventForm');
+        const inputs = form.querySelectorAll('input');
+        const options = form.querySelectorAll('select');
+        const textArea = form.querySelector('textarea');
+
+        let editing = false;
+
+        btn.addEventListener('click', function() {
+            if (!editing) {
+                // Enable fields
+                inputs.forEach(input => input.disabled = false);
+                options.forEach(option => option.disabled = false);
+                textArea.disabled = false;
+                btn.textContent = 'Save Event';
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-success');
+                editing = true;
+            } else {
+                // Submit the form (save)
+                form.submit();
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -141,8 +141,8 @@
               </button>
             </form>
             <!-- Button: Edit Event -->
-            <form
-
+            <form th:action="@{'/adminDashboard/manageEvents/editEvent/'+ ${event.id}}"
+                  method="get"
                   class="confirm-form-submission"
                   data-message="Are you sure you want to edit this event?"
                   style="display: inline;">

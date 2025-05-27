@@ -1,8 +1,11 @@
 package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.EventDto;
+import com.unipi.gsimos.vistaseat.mapper.EventMapper;
+import com.unipi.gsimos.vistaseat.model.Event;
 import com.unipi.gsimos.vistaseat.model.EventType;
 import com.unipi.gsimos.vistaseat.model.Venue;
+import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,8 @@ public class EventController {
 
     private final VenueRepository venueRepository;
     private final EventService eventService;
+    private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
 
     @GetMapping("/adminDashboard/manageEvents")
     public String manageEvents(@RequestParam(defaultValue = "0") int page,
@@ -69,10 +74,12 @@ public class EventController {
             }
         }
 
+        // Sort by number of occurrences
         model.addAttribute("sort", sort);
         model.addAttribute("sortDirection", sortDirection);
 
-        //This keeps track of the current filter so the right button can be highlighted or pre-selected in the UI.
+        // This keeps track of the current event type filter
+        // so the right button can be highlighted or pre-selected in the UI.
         model.addAttribute("selectEventType", eventType);
 
         return "manageEvents";
@@ -113,6 +120,57 @@ public class EventController {
             redirectAttributes.addFlashAttribute("error", "Error: "+e.getMessage());
             return "redirect:/adminDashboard/manageEvents/addEvent";
         }
+    }
+
+    @GetMapping("/adminDashboard/manageEvents/editEvent/{eventId}")
+    public String showEditEventForm(@PathVariable Long eventId, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        Event eventEntity = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        EventDto event = eventMapper.toDto(eventEntity);
+
+        List<Venue> venues = venueRepository.findAll();
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("event", event);
+        model.addAttribute("eventTypes", EventType.values());
+        model.addAttribute("venues", venues);
+
+        return "editEvent";
+    }
+
+    @PostMapping("/adminDashboard/manageEvents/editEvent/{eventId}")
+    public String editEvent(@PathVariable Long eventId,
+                            @ModelAttribute EventDto eventDto,
+                            RedirectAttributes redirectAttributes) {
+
+        // Find the current event
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        // Find the updated venue
+        Venue venue = venueRepository.findById(eventDto.getVenueId())
+                .orElseThrow(() -> new RuntimeException("Venue not found"));
+
+        event.setName(eventDto.getName());
+        event.setEventType(eventDto.getEventType());
+        event.setVenue(venue);// Pass the updated venue
+        event.setDescription(eventDto.getDescription());
+
+        try {
+            eventRepository.save(event);
+            redirectAttributes.addFlashAttribute("message", "Event updated successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Event could not be updated because of an unexpected error: "+e.getMessage());
+            return "redirect:/adminDashboard/manageEvents/editEvent/{eventId}";
+        }
+
+        return "redirect:/adminDashboard/manageEvents";
     }
 
     @PostMapping("/adminDashboard/manageEvents/delete/{eventId}")
