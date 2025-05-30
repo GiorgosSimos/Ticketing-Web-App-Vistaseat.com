@@ -1,11 +1,14 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.dto.EventDto;
 import com.unipi.gsimos.vistaseat.dto.VenueDto;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.Venue;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
+import com.unipi.gsimos.vistaseat.service.EventService;
 import com.unipi.gsimos.vistaseat.service.VenueService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,18 +19,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 //A Web controller (@Controller) works with HTML forms (using @ModelAttribute, returns view names for Thymeleaf).
 @Controller
+@RequiredArgsConstructor
 public class VenueController {
 
     private final VenueService venueService;
     private final VenueRepository venueRepository;
-
-
-    public VenueController(VenueService venueService, VenueRepository venueRepository) {
-        this.venueService = venueService;
-        this.venueRepository = venueRepository;
-    }
+    private final EventService eventService;
 
     @GetMapping("/adminDashboard/manageVenues")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
@@ -158,5 +161,55 @@ public class VenueController {
         }
 
         return "redirect:/adminDashboard/manageVenues";
+    }
+
+    @GetMapping("/adminDashboard/manageVenues/eventsForVenue/{venueId}")
+    public String displayEventsForVenue(@PathVariable Long venueId,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "8") int size,
+                                        @RequestParam(required = false) String searchQuery,
+                                        @RequestParam(required = false) String sort,
+                                        @RequestParam(defaultValue = "desc") String sortDirection,
+                                        Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        Venue venue = venueRepository.findById(venueId).
+                orElseThrow(() -> new EntityNotFoundException("Venue not found"));
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EventDto> eventsPage;
+
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            eventsPage = eventService.getEventsByNameAndVenue(searchQuery.trim(), venueId, pageable);
+        } else {
+            eventsPage = eventService.getEventsByVenueId(venueId, pageable);
+        }
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("venue", venue);
+
+        // Paging controls
+        model.addAttribute("currentPage", eventsPage.getNumber() + 1);
+        model.addAttribute("totalPages", eventsPage.getTotalPages());
+
+        List<EventDto> eventsList = new ArrayList<>(eventsPage.getContent());
+        model.addAttribute("events", eventsList);
+
+        // Sort in descending/ascending order by event occurrence count
+        if ("occurrenceCount".equals(sort)) {
+            if ("asc".equalsIgnoreCase(sortDirection)) {
+                eventsList.sort(Comparator.comparingLong(EventDto::getOccurrenceCount));
+            } else {
+                eventsList.sort(Comparator.comparingLong(EventDto::getOccurrenceCount).reversed());
+            }
+        }
+
+        // Sort by number of occurrences
+        model.addAttribute("sort", sort);
+        model.addAttribute("sortDirection", sortDirection);
+
+        return "venueEvents";
     }
 }

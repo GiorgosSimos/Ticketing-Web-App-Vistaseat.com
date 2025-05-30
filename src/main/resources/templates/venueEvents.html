@@ -2,9 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Venues | Vistaseat.com</title>
+    <title>Associated Events | Vistaseat.com</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <link rel="stylesheet" th:href="@{/css/adminStyle.css}">
     <script th:src="@{/js/admin.js}" defer></script>
 </head>
@@ -16,16 +18,18 @@
     <div th:if="${message}" class="alert alert-success" id="success-alert" th:text="${message}"></div>
     <div th:if="${error}" class="alert alert-danger" id="access-denied-alert" th:text="${error} "></div>
 
-    <!-- Section Venue Info -->
+    <!-- Section Event Info -->
     <div class="container mt-5">
-        <h1 class="mb-4">Manage Venues</h1>
+        <h1 th:text="${venue.name}" class="mb-1">Venue Name</h1>
+        <p th:text="${venue.street} + ' ' + ${venue.number} + ' ' + ${venue.city} + ' ' + ${venue.zipcode}"
+           class="text-muted mb-4">Venue Address</p>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <!-- Left: Search Field -->
-            <form th:action="@{/adminDashboard/manageVenues}"
-                  method="get"
-                  class="d-flex w-50">
+            <form
+                    method="get"
+                    class="d-flex w-50">
                 <div class="input-group w-100">
-                    <input type="text" class="form-control" placeholder="Search Venues..." name="searchQuery"
+                    <input type="text" class="form-control" placeholder="Search Events..." name="searchQuery"
                            th:value="${searchQuery}">
                     <button class="btn btn-outline-secondary" type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -38,52 +42,55 @@
                 </div>
             </form>
 
-            <!-- Right: Add Venue Button -->
-            <a href="/adminDashboard/manageVenues/addVenue" class="btn btn-primary d-flex align-items-center">
+            <!-- Right: Add Event Button -->
+            <a href="/adminDashboard/manageEvents/addEvent" class="btn btn-primary d-flex align-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-plus-circle me-2" viewBox="0 0 16 16">
                     <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12z"/>
                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
                 </svg>
-                Add Venue
+                Add Event
             </a>
         </div>
         <hr>
+        <div class="mb-1">
+            <h2 class="mb-1">Events</h2>
+            <p class="text-muted mb-4">Manage all events scheduled for this venue.</p>
+        </div>
 
-        <!-- Venue Table -->
+        <!-- Scheduled Events Table -->
         <div class="table-responsive">
             <table class="table table-striped table-hover align-middle">
                 <thead class="table-secondary">
                 <tr>
-                    <th>Venue Name</th>
-                    <th>Street</th>
-                    <th>Number</th>
-                    <th>Zipcode</th>
-                    <th>City</th>
-                    <th>Capacity</th>
-                    <th>Scheduled Events</th>
+                    <th>Event Name</th>
+                    <th>Event Type</th>
+                    <th>
+                        <a th:href="@{'/adminDashboard/manageVenues/eventsForVenue/'
+                           + ${venue.id}(sort='occurrenceCount',
+                           sortDirection=${sortDirection == 'asc' ? 'desc' : 'asc'})}"
+                           style="text-decoration: none; color: inherit;">
+                           No of Occurrences
+                           <i class="fa-solid" th:classappend="${sortDirection == 'asc'} ? 'fa-circle-up' : 'fa-circle-down'"></i>
+                        </a>
+                    </th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="venue : ${venues}">
-                    <td th:text="${venue.name}">OAKA</td>
-                    <td th:text="${venue.street}">Kifisias</td>
-                    <td th:text="${venue.number}">34</td>
-                    <td th:text="${venue.zipcode}">15123</td>
-                    <td th:text="${venue.city}">Athens</td>
-                    <td th:text="${venue.capacity}">75500</td>
-                    <td  th:text="${venue.eventCount}">10</td>
+                <tr th:each="event : ${events}">
+                    <td th:text="${event.name}">Cinema Paradiso</td>
+                    <td th:text="${event.eventType}">CINEMA</td>
+                    <td th:text="${event.occurrenceCount}">10</td>
                     <td>
                         <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
-                        <!-- Action Button: View Events held in this Venue -->
-                        <form th:action="@{'/adminDashboard/manageVenues/eventsForVenue/' + ${venue.id}}"
-                              method="get"
-                              class="confirm-form-submission"
-                              data-message="View events of this venue?"
-                              style="display: inline;">
-                            <button class="btn btn-sm btn-info me-1" id="btn-events-held"
-                                    title="View Scheduled Events for Venue">
+                        <!-- Action Button: Manage Occurrences -->
+                        <form
+
+                                class="confirm-form-submission"
+                                data-message="Manage the occurrences of this event?"
+                                style="display: inline;">
+                            <button class="btn btn-sm btn-info me-1" id="btn-manage-occurrences" title="Manage Occurrences">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
                                     <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384
                                             1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
@@ -93,27 +100,26 @@
                                 </svg>
                             </button>
                         </form>
-                        <!-- Button: Edit Venue -->
-                        <form th:action="@{'/adminDashboard/manageVenues/editVenue/' + ${venue.id}}"
+                        <!-- Button: Edit Event -->
+                        <form th:action="@{'/adminDashboard/manageEvents/editEvent/'+ ${event.id}}"
                               method="get"
                               class="confirm-form-submission"
-                              data-message="Are you sure you want to edit this venue?"
+                              data-message="Are you sure you want to edit this event?"
                               style="display: inline;">
-                            <button class="btn btn-sm btn-warning me-1" id="btn-edit-venue"
-                                    title="Edit Venue" type="submit" >
+                            <button class="btn btn-sm btn-warning me-1" id="btn-edit-event" title="Edit Event" type="submit" >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
                                     <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004
                                             3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364zm13.37 9.019.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11z"/>
                                 </svg>
                             </button>
                         </form>
-                        <!-- Delete Venue Button -->
-                        <form th:action="@{'/adminDashboard/manageVenues/delete/' + ${venue.id}}"
+                        <!-- Delete Event Button -->
+                        <form th:action="@{'/adminDashboard/manageEvents/delete/' + ${event.id}}"
                               method="post"
                               class="confirm-form-submission"
-                              data-message="Are you sure you want to delete this venue?"
+                              data-message="Are you sure you want to delete this event?"
                               style="display: inline;">
-                            <button class="btn btn-sm btn-danger" id="btn-delete-user"
+                            <button class="btn btn-sm btn-danger" id="btn-delete-event"
                                     title="Delete Venue" type="submit">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                      class="bi bi-trash" viewBox="0 0 16 16">
@@ -171,26 +177,48 @@
                 Last Page
             </button>
         </div>
+
     </div>
 
-    <br>
 
-    <!-- Include Footer-->
-    <div th:insert="~{fragments/footer :: footer}"></div>
 
-    <script>
-        // function for pagination controls
-        function goToPage(pageNumber) {
-            const url = new URL(window.location.href);
-            url.searchParams.set("page", pageNumber);
+<br>
 
-            // Grabs current search filters from the DOM
-            const searchQuery = document.querySelector('input[name="searchQuery"]')?.value;
-            if (searchQuery) url.searchParams.set("searchQuery", searchQuery);
+<!-- Include Footer-->
+<div th:insert="~{fragments/footer :: footer}"></div>
 
-            window.location.href = url.toString();
+<script>
+
+    // function to apply role filters for users display
+    function filterByEvent(eventType) {
+        const url = new URL(window.location.href);
+
+        // Remove search filter when switching role
+        url.searchParams.delete('searchQuery');
+
+        if (eventType === null || eventType === 'null'){
+            url.searchParams.delete('eventType');      // Remove the eventType param to show all events
+        } else {
+            url.searchParams.set('eventType', eventType); // Add or replace the 'eventType' parameter
         }
-    </script>
+
+        url.searchParams.set('page', 0);        // Reset to first page when filter changes
+        window.location.href = url.toString(); // Redirect to new URL
+    }
+
+    // function for pagination controls
+    function goToPage(pageNumber) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("page", pageNumber);
+
+        // Grabs current search filters from the DOM
+        const searchQuery = document.querySelector('input[name="searchQuery"]')?.value;
+        if (searchQuery) url.searchParams.set("searchQuery", searchQuery);
+
+        window.location.href = url.toString();
+    }
+
+</script>
 
 </body>
 </html>

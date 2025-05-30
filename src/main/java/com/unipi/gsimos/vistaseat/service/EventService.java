@@ -15,5 +15,9 @@ public interface EventService {
 
     Page<EventDto> getEventsByName (String searchQuery, Pageable pageable);
 
+    Page<EventDto> getEventsByNameAndVenue(String searchQuery, Long venueId, Pageable pageable);
+
+    Page<EventDto> getEventsByVenueId(Long venueId, Pageable pageable);
+
     Page<EventDto> getEventsByEventType (EventType eventType, int page, int size);
 }

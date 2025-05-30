@@ -16,7 +16,7 @@
     <div th:if="${message}" class="alert alert-success" id="success-alert" th:text="${message}"></div>
     <div th:if="${error}" class="alert alert-danger" id="access-denied-alert" th:text="${error} "></div>
 
-    <div class="edit-venue-form-card">
+    <div class="edit-event-form-card">
         <!--Title-->
         <div class="d-flex align-items-center mb-2">
             <h2 class="mb-0" th:text="${event.name}">Event Name</h2>
@@ -24,7 +24,7 @@
         <!-- Description -->
         <p class="text-muted mb-4">Edit the information of this Event</p>
         <!-- Edit Event Form -->
-        <form class="edit-venue-form-grid"
+        <form class="edit-event-form-grid"
               th:action="@{/adminDashboard/manageEvents/editEvent/{id}(id=${event.id})}"
               method="post"
               id="editEventForm">
@@ -48,7 +48,7 @@
             </select>
 
             <!-- Event Held at Venue -->
-            <label for="venueId">Event held At</label>
+            <label for="venueId">Event held At:</label>
             <select class="form-select" id="venueId" name="venueId" disabled required>
                 <option th:value="${event.venueId}" th:text="${event.venueName}" selected>Select a venue</option>
                 <th:block th:each="venue : ${venues}">
@@ -57,7 +57,7 @@
             </select>
 
             <!-- Event Description -->
-            <label for="description">Zipcode</label>
+            <label for="description">Zipcode:</label>
             <textarea class="form-control full-span" id="description" name="description"
                       th:text="${event.description}" rows="6" maxlength="5000" disabled required>
             </textarea>

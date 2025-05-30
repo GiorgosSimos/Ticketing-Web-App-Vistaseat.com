@@ -10,6 +10,7 @@ import com.unipi.gsimos.vistaseat.service.EventService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,7 +30,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventDto createEvent(EventDto eventDto) {
+    public EventDto createEvent(@NotNull EventDto eventDto) {
 
         if (eventRepository.existsByNameAndEventTypeAndVenueId(
                 eventDto.getName(),
@@ -59,6 +60,20 @@ public class EventServiceImpl implements EventService {
         return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
         /*return eventRepository.findEventByNameContainingIgnoreCase(searchQuery, pageable)
                 .map(eventMapper::toDto);*/
+    }
+
+    @Override
+    public Page<EventDto> getEventsByVenueId(Long venueId, Pageable pageable) {
+        Page<Event> events = eventRepository.findAllByVenueId(venueId, pageable);
+        List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
+        return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
+    }
+
+    @Override
+    public Page<EventDto> getEventsByNameAndVenue(String searchQuery, Long venueId , Pageable pageable) {
+        Page<Event> events = eventRepository.findEventByNameContainingIgnoreCaseAndVenueId(searchQuery, venueId, pageable);
+        List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
+        return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
     }
 
     @Override

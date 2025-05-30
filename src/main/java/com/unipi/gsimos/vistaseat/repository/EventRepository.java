@@ -12,5 +12,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Page<Event> findEventByNameContainingIgnoreCase(String name, Pageable pageable);
 
+    Page<Event> findEventByNameContainingIgnoreCaseAndVenueId(String name, Long venueId, Pageable pageable);
+
     Page<Event> findAllByEventType(EventType eventType, Pageable pageable);
+
+    Page<Event> findAllByVenueId(Long venueId, Pageable pageable);
+
+    Long countByVenueId(Long venueId);
 }

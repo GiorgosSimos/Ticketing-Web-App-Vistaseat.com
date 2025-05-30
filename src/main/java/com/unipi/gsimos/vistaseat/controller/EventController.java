@@ -156,6 +156,7 @@ public class EventController {
         Venue venue = venueRepository.findById(eventDto.getVenueId())
                 .orElseThrow(() -> new RuntimeException("Venue not found"));
 
+        // Update the current event
         event.setName(eventDto.getName());
         event.setEventType(eventDto.getEventType());
         event.setVenue(venue);// Pass the updated venue

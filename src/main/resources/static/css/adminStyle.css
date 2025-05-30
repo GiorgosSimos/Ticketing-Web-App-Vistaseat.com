@@ -225,7 +225,7 @@ body {
 }
 
 /* Styling for addVenue, editVenue in manageUsers */
-.add-venue-form-card, .edit-venue-form-card {
+.add-venue-form-card, .edit-venue-form-card  {
     border-radius: 1.5rem;
     box-shadow: 0 4px 32px rgba(0,0,0,0.08);
     padding: 2rem 2.5rem;
@@ -240,7 +240,7 @@ body {
     gap: 1rem 2rem;
 }
 
-.edit-venue-form-grid {
+.edit-venue-form-grid, .edit-event-form-grid{
     display: grid;
     grid-template-columns: 1fr 3fr;
     gap: 1rem 2rem;
@@ -258,12 +258,21 @@ th i.fa-solid {
 }
 
 /* Styling for addEvent, editEvent in manageEvents */
-.add-event-form-card, .edit-event-form-card {
+.add-event-form-card {
     border-radius: 1.5rem;
     box-shadow: 0 4px 32px rgba(0,0,0,0.08);
     padding: 2rem 2.5rem;
     background: rgb(251, 243, 193);
     max-width: 480px;
+    margin: 2rem auto;
+}
+
+.edit-event-form-card {
+    border-radius: 2rem;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    padding: 2rem 2.5rem;
+    background: rgb(251, 243, 193);
+    max-width: 620px;
     margin: 2rem auto;
 }
 

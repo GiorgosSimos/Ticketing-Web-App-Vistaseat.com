@@ -46,4 +46,7 @@ public class VenueDto {
 
     private Long adminId;
 
+    // Derived data calculated through event repository. Keeps count of events held in a specific Venue.
+    private Long eventCount;
+
 }

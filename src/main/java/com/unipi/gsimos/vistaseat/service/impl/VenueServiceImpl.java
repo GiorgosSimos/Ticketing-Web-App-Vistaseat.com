@@ -5,15 +5,15 @@ import com.unipi.gsimos.vistaseat.mapper.VenueMapper;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.model.Venue;
+import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.VenueService;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class VenueServiceImpl implements VenueService {
@@ -21,11 +21,13 @@ public class VenueServiceImpl implements VenueService {
     private final VenueRepository venueRepository;
     private final UserRepository userRepository;
     private final VenueMapper venueMapper;
+    private final EventRepository eventRepository;
 
-    public VenueServiceImpl(VenueRepository venueRepository, UserRepository userRepository, VenueMapper venueMapper) {
+    public VenueServiceImpl(VenueRepository venueRepository, UserRepository userRepository, VenueMapper venueMapper, EventRepository eventRepository) {
         this.venueRepository = venueRepository;
         this.userRepository = userRepository;
         this.venueMapper = venueMapper;
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -58,13 +60,18 @@ public class VenueServiceImpl implements VenueService {
     public Page<VenueDto> getAllVenues(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("capacity").descending());
         Page<Venue> venues = venueRepository.findAll(pageable);
-        return venues.map(venueMapper::toDto);
+        List<VenueDto> venuesWithEventCount = calculateEventCountOfVenue(venues.getContent());
+        return new PageImpl<>(venuesWithEventCount, pageable, venues.getTotalElements());
+        //return venues.map(venueMapper::toDto);
     }
 
     @Override
     public Page<VenueDto> searchVenueByName(String searchQuery, Pageable pageable) {
-        return venueRepository.findVenueByNameContainingIgnoreCase(searchQuery, pageable)
-                .map(venueMapper::toDto);
+        Page<Venue> venues = venueRepository.findVenueByNameContainingIgnoreCase(searchQuery, pageable);
+        List<VenueDto> venuesWithEventCount = calculateEventCountOfVenue(venues.getContent());
+        return new PageImpl<>(venuesWithEventCount, pageable, venues.getTotalElements());
+        /*return venueRepository.findVenueByNameContainingIgnoreCase(searchQuery, pageable)
+                .map(venueMapper::toDto);*/
     }
 
     @Override
@@ -79,5 +86,26 @@ public class VenueServiceImpl implements VenueService {
         }
 
         venueRepository.deleteById(VenueId);
+    }
+
+    /**
+     * Helper method that maps a list of {@link Venue} entities to their corresponding {@link VenueDto} representations,
+     * enriching each DTO with the count of events for the specific venue.
+     * <p>
+     * This method calls {@code venueMapper.toDto()} for basic mapping and then appends the
+     * event count retrieved from {@link EventRepository} for each venue.
+     *
+     * @param venues the list of Venue entities to convert and enrich
+     * @return a list of VenueDto objects, each including its event count
+     */
+    private List<VenueDto> calculateEventCountOfVenue(List<Venue> venues) {
+        return venues.stream()
+                .map(venue -> {
+                    VenueDto venueDto = venueMapper.toDto(venue);
+                    long eventCount = eventRepository.countByVenueId(venue.getId());
+                    venueDto.setEventCount(eventCount);
+                    return venueDto;
+                })
+                .toList();
     }
 }
