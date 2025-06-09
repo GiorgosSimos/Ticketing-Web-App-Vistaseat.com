@@ -195,7 +195,6 @@ public class VenueController {
         model.addAttribute("totalPages", eventsPage.getTotalPages());
 
         List<EventDto> eventsList = new ArrayList<>(eventsPage.getContent());
-        model.addAttribute("events", eventsList);
 
         // Sort in descending/ascending order by event occurrence count
         if ("occurrenceCount".equals(sort)) {
@@ -205,6 +204,8 @@ public class VenueController {
                 eventsList.sort(Comparator.comparingLong(EventDto::getOccurrenceCount).reversed());
             }
         }
+
+        model.addAttribute("events", eventsList);
 
         // Sort by number of occurrences
         model.addAttribute("sort", sort);

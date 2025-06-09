@@ -32,7 +32,7 @@
             Create a new event at an existing venue. Fill in all the required information.
         </p>
         <!-- TODO - Server side form Validation -->
-        <form th:action="@{/adminDashboard/manageEvents/addEvent/create}"
+        <form th:action="@{/adminDashboard/manageEvents/addEvent/create(fixedVenueId=${fixedVenueId})}"
               method="post"
               class="add-event-form">
             <!-- Event Name -->
@@ -56,7 +56,15 @@
             <!-- Event Held at Venue -->
             <label for="venueId">Event held at</label>
 
-                <select class="form-select" id="venueId" name="venueId" required>
+            <div th:if="${fixedVenueId != null}">
+                <input type="text" class="form-control"
+                       th:value="${fixedVenueName}" readonly />
+                <input type="hidden" name="venueId" th:value="${fixedVenueId}" />
+            </div>
+
+                <!-- Normal selectable <select> when not fixed -->
+                <select th:if="${fixedVenueId == null}"
+                        class="form-select" id="venueId" name="venueId" required>
                     <option value="" disabled selected>Select a venue</option>
                     <th:block th:each="venue : ${venues}">
                         <option th:value="${venue.id}" th:text="${venue.name}">Venue Name</option>

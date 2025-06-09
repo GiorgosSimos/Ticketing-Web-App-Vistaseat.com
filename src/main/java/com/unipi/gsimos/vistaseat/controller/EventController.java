@@ -87,7 +87,7 @@ public class EventController {
     }
 
     @GetMapping("/adminDashboard/manageEvents/addEvent")
-    public String addEvent(Model model) {
+    public String addEvent(@RequestParam(required = false) Long fixedVenueId, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
@@ -101,11 +101,20 @@ public class EventController {
         List<Venue> venues = venueRepository.findAll();
         model.addAttribute("venues", venues);
 
+        // used for adding events to a specific venue
+        if (fixedVenueId != null) {
+            model.addAttribute("fixedVenueId", fixedVenueId);
+            model.addAttribute("fixedVenueName",
+                    venues.stream().filter(v-> v.getId().equals(fixedVenueId))
+                            .findFirst().map(Venue::getName).orElse(""));
+        }
+
         return "addEvent";
     }
 
     @PostMapping("/adminDashboard/manageEvents/addEvent/create")
-    public String createVenue(@ModelAttribute EventDto eventDto,
+    public String createVenue(@RequestParam(required = false) Long fixedVenueId,
+                              @ModelAttribute EventDto eventDto,
                               RedirectAttributes redirectAttributes) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -115,15 +124,23 @@ public class EventController {
         try {
             eventService.createEvent(eventDto);
             redirectAttributes.addFlashAttribute("message", "Event created successfully");
+            if (fixedVenueId != null) {
+                return "redirect:/adminDashboard/manageVenues/eventsForVenue/" + fixedVenueId + "?success";
+            }
             return "redirect:/adminDashboard/manageEvents?success";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error: "+e.getMessage());
+            if (fixedVenueId != null) {
+                return "redirect:/adminDashboard/manageVenues/eventsForVenue/" + fixedVenueId;
+            }
+
             return "redirect:/adminDashboard/manageEvents/addEvent";
         }
     }
 
     @GetMapping("/adminDashboard/manageEvents/editEvent/{eventId}")
-    public String showEditEventForm(@PathVariable Long eventId, Model model) {
+    public String showEditEventForm(@PathVariable Long eventId,
+                                    Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
