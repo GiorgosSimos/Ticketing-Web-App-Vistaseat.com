@@ -49,7 +49,21 @@
 
             <!-- Event Held at Venue -->
             <label for="venueId">Event held At:</label>
-            <select class="form-select" id="venueId" name="venueId" disabled required>
+
+            <!-- Conditional logic which determines if the view is called from Events or VenueEvents page -->
+            <div th:if="${fixedVenueId != null}">
+                <input type="text" class="form-control"
+                       th:value="${fixedVenueName}" readonly/>
+                <!-- Hidden input to include venueId in the eventDto model attribute -->
+                <input type="hidden" name="venueId" th:value="${fixedVenueId}" />
+                <!-- Hidden input to include fixedVenueId request param
+                 if it was set in the GET request of Venue Events-->
+                <input type="hidden" name="fixedVenueId" th:value="${event.venueId}"/>
+            </div>
+
+            <!-- Normal selectable <select> when Venue not fixed -->
+            <select th:if="${fixedVenueId == null}"
+                    class="form-select" id="venueId" name="venueId" disabled required>
                 <option th:value="${event.venueId}" th:text="${event.venueName}" selected>Select a venue</option>
                 <th:block th:each="venue : ${venues}">
                     <option th:value="${venue.id}" th:text="${venue.name}">Venue Name</option>

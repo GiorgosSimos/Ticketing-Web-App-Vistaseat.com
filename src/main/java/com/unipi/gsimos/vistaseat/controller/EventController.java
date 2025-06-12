@@ -139,7 +139,8 @@ public class EventController {
     }
 
     @GetMapping("/adminDashboard/manageEvents/editEvent/{eventId}")
-    public String showEditEventForm(@PathVariable Long eventId,
+    public String showEditEventForm(@RequestParam(required = false) Long fixedVenueId,
+                                    @PathVariable Long eventId,
                                     Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
@@ -157,11 +158,20 @@ public class EventController {
         model.addAttribute("eventTypes", EventType.values());
         model.addAttribute("venues", venues);
 
+        // used for editing events for a specific venue
+        if (fixedVenueId != null) {
+            model.addAttribute("fixedVenueId", fixedVenueId);
+            model.addAttribute("fixedVenueName",
+                    venues.stream().filter(v-> v.getId().equals(fixedVenueId))
+                            .findFirst().map(Venue::getName).orElse(""));
+        }
+
         return "editEvent";
     }
 
     @PostMapping("/adminDashboard/manageEvents/editEvent/{eventId}")
-    public String editEvent(@PathVariable Long eventId,
+    public String editEvent(@RequestParam(required = false) Long fixedVenueId,
+                            @PathVariable Long eventId,
                             @ModelAttribute EventDto eventDto,
                             RedirectAttributes redirectAttributes) {
 
@@ -182,13 +192,18 @@ public class EventController {
         try {
             eventRepository.save(event);
             redirectAttributes.addFlashAttribute("message", "Event updated successfully");
+            if (fixedVenueId != null) {
+                return "redirect:/adminDashboard/manageVenues/eventsForVenue/" + fixedVenueId + "?success";
+            }
+            return "redirect:/adminDashboard/manageEvents?success";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error",
                     "Event could not be updated because of an unexpected error: "+e.getMessage());
+            if (fixedVenueId != null) {
+                return "redirect:/adminDashboard/manageVenues/eventsForVenue/" + fixedVenueId;
+            }
             return "redirect:/adminDashboard/manageEvents/editEvent/{eventId}";
         }
-
-        return "redirect:/adminDashboard/manageEvents";
     }
 
     @PostMapping("/adminDashboard/manageEvents/delete/{eventId}")

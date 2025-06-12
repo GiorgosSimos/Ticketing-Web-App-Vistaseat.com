@@ -75,6 +75,7 @@
                            <i class="fa-solid" th:classappend="${sortDirection == 'asc'} ? 'fa-circle-up' : 'fa-circle-down'"></i>
                         </a>
                     </th>
+                    <th>Test Column: fixedVenueId</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -83,6 +84,7 @@
                     <td th:text="${event.name}">Cinema Paradiso</td>
                     <td th:text="${event.eventType}">CINEMA</td>
                     <td th:text="${event.occurrenceCount}">10</td>
+                    <td th:text="${event.venueId}"></td>
                     <td>
                         <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
                         <!-- Action Button: Manage Occurrences -->
@@ -102,11 +104,13 @@
                             </button>
                         </form>
                         <!-- Button: Edit Event -->
-                        <form th:action="@{'/adminDashboard/manageEvents/editEvent/'+ ${event.id}}"
+                        <form th:action="@{/adminDashboard/manageEvents/editEvent/{id}(id=${event.id})}"
                               method="get"
                               class="confirm-form-submission"
                               data-message="Are you sure you want to edit this event?"
                               style="display: inline;">
+                            <!-- Hidden Input to include the fixedVenueId request param -->
+                            <input type="hidden" name="fixedVenueId" th:value="${event.venueId}"/>
                             <button class="btn btn-sm btn-warning me-1" id="btn-edit-event" title="Edit Event" type="submit" >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
                                     <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004

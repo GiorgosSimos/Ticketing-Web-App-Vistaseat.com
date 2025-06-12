@@ -62,7 +62,7 @@
                 <input type="hidden" name="venueId" th:value="${fixedVenueId}" />
             </div>
 
-                <!-- Normal selectable <select> when not fixed -->
+                <!-- Normal selectable <select> when Venue not fixed -->
                 <select th:if="${fixedVenueId == null}"
                         class="form-select" id="venueId" name="venueId" required>
                     <option value="" disabled selected>Select a venue</option>
