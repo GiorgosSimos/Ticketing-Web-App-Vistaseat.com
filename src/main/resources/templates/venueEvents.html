@@ -25,7 +25,7 @@
            class="text-muted mb-4">Venue Address</p>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <!-- Left: Search Field -->
-            <form
+            <form  th:action="@{'/adminDashboard/manageVenues/eventsForVenue/' + ${venue.id}}"
                     method="get"
                     class="d-flex w-50">
                 <div class="input-group w-100">
@@ -75,7 +75,6 @@
                            <i class="fa-solid" th:classappend="${sortDirection == 'asc'} ? 'fa-circle-up' : 'fa-circle-down'"></i>
                         </a>
                     </th>
-                    <th>Test Column: fixedVenueId</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -84,7 +83,6 @@
                     <td th:text="${event.name}">Cinema Paradiso</td>
                     <td th:text="${event.eventType}">CINEMA</td>
                     <td th:text="${event.occurrenceCount}">10</td>
-                    <td th:text="${event.venueId}"></td>
                     <td>
                         <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
                         <!-- Action Button: Manage Occurrences -->
