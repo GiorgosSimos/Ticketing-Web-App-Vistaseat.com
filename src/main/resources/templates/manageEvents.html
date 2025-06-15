@@ -125,8 +125,8 @@
           <td>
             <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
             <!-- Action Button: Manage Occurrences -->
-            <form
-
+            <form th:action="@{'/adminDashboard/manageOccurrencesForEvent/' + ${event.id}}"
+                  method="get"
                   class="confirm-form-submission"
                   data-message="Manage the occurrences of this event?"
                   style="display: inline;">
@@ -176,7 +176,6 @@
         </tbody>
       </table>
     </div>
-
 
     <!-- Pagination Controls -->
     <div class="d-flex justify-content-end align-items-center mt-3">
