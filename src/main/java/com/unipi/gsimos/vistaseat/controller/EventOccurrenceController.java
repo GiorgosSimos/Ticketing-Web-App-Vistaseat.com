@@ -1,6 +1,11 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.dto.EventDto;
+import com.unipi.gsimos.vistaseat.mapper.EventMapper;
+import com.unipi.gsimos.vistaseat.model.Event;
 import com.unipi.gsimos.vistaseat.model.User;
+import com.unipi.gsimos.vistaseat.repository.EventRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequiredArgsConstructor
 public class EventOccurrenceController {
 
+    public final EventRepository eventRepository;
+    public final EventMapper eventMapper;
+
     @GetMapping("/adminDashboard/manageOccurrencesForEvent/{eventId}")
     public String displayOccurrencesForEvent (@PathVariable Long eventId, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -20,6 +28,16 @@ public class EventOccurrenceController {
 
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
+
+        Integer numberOfOccurrences = event.getOccurrences().size();
+
+        EventDto eventDto = eventMapper.toDto(event);
+
+        model.addAttribute("numberOfEventOccurrences", numberOfOccurrences);
+        model.addAttribute("event", eventDto);
 
         return "manageOccurrences";
 

@@ -298,8 +298,43 @@ th i.fa-solid {
     padding: 1rem;
     justify-items: center;
     background: rgb(245, 236, 213);
-    border: 1px solid black;
+    border: 1px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     font-size: 1.5rem;
+}
+
+.eventOccurrences-head {
+    background: rgb(245, 236, 213);
+    margin-left: 1rem;
+    margin-right: 1rem;
+    border: 1px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    align-items: center;
+}
+
+.event-img{
+    flex: 0 0 20%;
+    min-width:180px;
+}
+
+.event-img img {
+    aspect-ratio: 4 / 3;   /* keeps the box from jumping if the image hasn’t loaded yet */
+    object-fit: cover;
+}
+
+.event-info{
+    flex:1 1 55%;
+    min-width:320px;
+}
+
+/* Tighten up on small viewports */
+@media (max-width: 576px) {
+    .eventOccurrences-head { padding: 1rem; }
+}
+
+.add-event-occurrence-cta {
+    flex:0 0 22%;
+    min-width:190px;
 }
