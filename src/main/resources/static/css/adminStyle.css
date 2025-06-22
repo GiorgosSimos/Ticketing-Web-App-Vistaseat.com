@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-image: url('/images/background.jpg');
+    background: rgb(140, 205, 235);
 }
 
 /* Header Styling*/
@@ -297,7 +297,7 @@ th i.fa-solid {
     display: grid;
     padding: 1rem;
     justify-items: center;
-    background: rgb(245, 236, 213);
+    background: rgb(243, 248, 255);
     border: 1px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -305,7 +305,7 @@ th i.fa-solid {
 }
 
 .eventOccurrences-head {
-    background: rgb(245, 236, 213);
+    background: rgb(243, 248, 255);
     margin-left: 1rem;
     margin-right: 1rem;
     border: 1px;

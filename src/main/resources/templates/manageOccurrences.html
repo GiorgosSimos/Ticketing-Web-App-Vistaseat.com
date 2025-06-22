@@ -25,10 +25,51 @@
     <div class="d-flex flex-row flex-wrap align-items-start gap-3">
 
       <!-- Event Image (20%) -->
-      <figure class="event-img flex-shrink-0">
-        <img src="event-cover.jpg" class="img-fluid rounded-2 w-100"
-             alt="Cover image for Event">
+      <figure class="event-img flex-shrink-0" th:switch="${event.eventType}">
+        <!-- CINEMA -->
+        <img th:case="${T(com.unipi.gsimos.vistaseat.model.EventType).CINEMA}"
+             th:src="@{/images/feature_film.jpg}"
+             class="img-fluid rounded-2 w-100"
+             alt="Feature Film">
+
+        <!-- THEATER -->
+        <img th:case="${T(com.unipi.gsimos.vistaseat.model.EventType).THEATER}"
+             th:src="@{/images/theater_play.jpg}"
+             class="img-fluid rounded-2 w-100"
+             alt="Theater event">
+
+        <!-- SPORT -->
+        <img th:case="${T(com.unipi.gsimos.vistaseat.model.EventType).SPORTS}"
+             th:src="@{/images/sport_event.png}"
+             class="img-fluid rounded-2 w-100"
+             alt="Sport event">
+
+        <!-- CONCERT -->
+        <img th:case="${T(com.unipi.gsimos.vistaseat.model.EventType).CONCERT}"
+             th:src="@{/images/music_concert.jpg}"
+             class="img-fluid rounded-2 w-100"
+             alt="Concert event">
+
+        <!-- MUSEUM -->
+        <img th:case="${T(com.unipi.gsimos.vistaseat.model.EventType).MUSEUM}"
+             th:src="@{/images/museum_visit.jpg}"
+             class="img-fluid rounded-2 w-100"
+             alt="Museum visit">
+
+        <!-- ARCHAEOLOGICAL -->
+        <img th:case="${T(com.unipi.gsimos.vistaseat.model.EventType).ARCHAEOLOGICAL}"
+             th:src="@{/images/archaeological_site.jpg}"
+             class="img-fluid rounded-2 w-100"
+             alt="Archaeological Site visit">
+
+        <!-- default / fallback -->
+        <img th:case="*"
+             th:src="@{/images/events_generic.jpg}"
+             class="img-fluid rounded-2 w-100"
+             alt="Event image">
+
       </figure>
+
 
       <!-- Event Info (55%) -->
       <article class="event-info">
