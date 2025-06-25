@@ -35,7 +35,7 @@ public class EventOccurrence {
     @Min(value = 0, message = "Duration of an event cannot be negative")
     private int duration;
 
-    //WARNING: Initialization of available seats should match the capacity of the corresponding venue
+    //WARNING: Initialization of available seats should not exceed the capacity of the corresponding venue
     @Column(name = "available_seats", nullable = false)
     private int availableSeats;
 

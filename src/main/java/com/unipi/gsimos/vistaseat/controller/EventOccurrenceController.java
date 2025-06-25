@@ -42,4 +42,22 @@ public class EventOccurrenceController {
         return "manageOccurrences";
 
     }
+
+    @GetMapping("/adminDashboard/manageOccurrencesForEvent/{eventId}/addOccurrence")
+    public String addEventOccurrence(@PathVariable Long eventId, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
+
+        EventDto eventDto = eventMapper.toDto(event);
+
+        model.addAttribute("event", eventDto);
+
+        return "addOccurrence";
+    }
 }
