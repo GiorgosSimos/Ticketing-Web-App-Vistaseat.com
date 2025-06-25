@@ -17,7 +17,7 @@ public class EventOccurrenceDto {
 
     private Long id;
 
-    private LocalDateTime eventDate;
+    private LocalDateTime eventDateTime;
 
     @Min(value = 0, message = "Event price cannot be negative")
     private BigDecimal price;

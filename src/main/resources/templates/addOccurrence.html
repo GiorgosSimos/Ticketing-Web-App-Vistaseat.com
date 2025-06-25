@@ -43,14 +43,11 @@
             Schedule a new showing for this event. Fill in all the required information.
         </p>
         <!-- TODO - Server side form Validation -->
-        <form
-
+        <form th:action="@{'/adminDashboard/manageOccurrencesForEvent/' + ${event.id} + '/createOccurrence'}"
+              method="POST"
               class="add-occurrence-form">
             <!-- Occurrence Date & Time -->
-            <label for="eventDate">Date</label>
-            <label for="eventTime">Time</label>
-            <input type="date" id="eventDate" name="eventDate">
-            <input type="time" id="eventTime" name="eventTime">
+            <label for="eventDateTime">Date & Time</label>
 
             <!-- Ticket Price -->
             <div>
@@ -59,8 +56,11 @@
                 </svg>
                 <label for="price">Ticket Price</label>
             </div>
-            <input type="number" min="0" max="10000" step="0.01" class="form-control full-span"
-                   id="price" name="price">
+
+            <input type="datetime-local" id="eventDateTime" name="eventDateTime">
+
+            <input type="number" min="0" max="10000" step="0.01" class="form-control"
+                   id="price" name="price" required>
             <!-- Duration (Minutes) -->
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-clock me-1" viewBox="0 0 16 16">
@@ -71,15 +71,15 @@
             </div>
             <input type="number" min="1" max="1000" step="1" class="form-control full-span"
                    id="duration" name="duration" required>
-            <!-- Available Seats (should not exceed Venue capacity)-->
+            <!-- Available Seats -->
             <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-people me-1" viewBox="0 0 16 16">
                     <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
                 </svg>
                 <label for="availableSeats">Available Seats</label>
             </div>
-            <!-- Available Seats input (full row) -->
-            <input type="number" min="1" max="200000" step="1" class="form-control full-span"
+            <!-- Available Seats input (should not exceed Venue capacity) -->
+            <input type="number" min="1" th:max="${venueCapacity}" step="1" class="form-control full-span"
                    id="availableSeats" name="availableSeats" required>
 
             <!-- Submit button (full row) -->
@@ -88,7 +88,6 @@
             </button>
         </form>
     </div>
-
 
     <!-- Include Footer-->
     <div th:insert="~{fragments/footer :: footer}"></div>
