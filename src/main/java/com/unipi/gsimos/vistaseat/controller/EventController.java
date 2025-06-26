@@ -35,7 +35,7 @@ public class EventController {
 
     @GetMapping("/adminDashboard/manageEvents")
     public String manageEvents(@RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "8") int size,
+                               @RequestParam(defaultValue = "10") int size,
                                @RequestParam(required = false) EventType eventType,
                                @RequestParam(required = false) String searchQuery,
                                @RequestParam(required = false) String sort,

@@ -34,7 +34,7 @@ public class VenueController {
 
     @GetMapping("/adminDashboard/manageVenues")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "8") int size,
+                              @RequestParam(defaultValue = "10") int size,
                               @RequestParam(required = false) String searchQuery,
                               Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -166,7 +166,7 @@ public class VenueController {
     @GetMapping("/adminDashboard/manageVenues/eventsForVenue/{venueId}")
     public String displayEventsForVenue(@PathVariable Long venueId,
                                         @RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "8") int size,
+                                        @RequestParam(defaultValue = "10") int size,
                                         @RequestParam(required = false) String searchQuery,
                                         @RequestParam(required = false) String sort,
                                         @RequestParam(defaultValue = "desc") String sortDirection,

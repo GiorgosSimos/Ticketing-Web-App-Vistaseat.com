@@ -117,7 +117,7 @@
         <thead class="table-secondary">
         <tr>
           <th>Date & Time</th>
-          <th>Ticket Price</th>
+          <th>Ticket Price (€)</th>
           <th>Duration</th>
           <th>Available Seats</th>
           <th>No of Bookings</th>
@@ -126,13 +126,22 @@
         </tr>
         </thead>
         <tbody>
-        <tr >
-          <td >20/12/2025 20:30</td>
-          <td >10 $</td>
-          <td >2h 12m</td>
-          <td >286/300</td>
-          <td >14</td>
-          <td >High</td>
+        <tr th:each="occurrence : ${occurrences}">
+          <td th:text="${#temporals.format(
+                         occurrence.eventDateTime,
+                         'EEE dd-MM-yyyy HH:mm z')}"
+                          >20/12/2025 20:30</td>
+          <td th:text="${occurrence.price}">10 $</td>
+          <td th:text="|${occurrence.duration / 60}h ${occurrence.duration % 60}m|">2h 12m</td>
+          <td th:text="${occurrence.availableSeats} - ${occurrence.bookingCount} + '/' + ${occurrence.availableSeats}">286/300</td>
+          <td th:text="${occurrence.bookingCount}">14</td>
+          <!-- Availability badge -->
+          <td>
+            <span class="badge rounded-pill"
+                  th:text="${occurrence.availabilityLevel.label}"
+                  th:classappend="${occurrence.availabilityLevel.css}">
+            </span>
+          </td>
           <td>
             <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
             <!-- Action Button: Manage Bookings -->
@@ -248,7 +257,7 @@
         </svg>
         <span> Total Event Bookings</span>
       </div>
-      <span>120</span>
+      <span th:text="${totalEventBookings}">120</span>
     </div>
     <div class="eventOccurrence-card">
       <div class="d-flex align-items-center mb-2">

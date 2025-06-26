@@ -54,7 +54,7 @@ public class UserController {
      */
     @GetMapping("/adminDashboard/manageUsers")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "8") int size,
+                              @RequestParam(defaultValue = "10") int size,
                               @RequestParam(required = false) UserRole role,
                               @RequestParam(required = false) String searchQuery,
                               Model model) {

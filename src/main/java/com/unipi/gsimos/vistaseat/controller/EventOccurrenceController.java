@@ -5,19 +5,24 @@ import com.unipi.gsimos.vistaseat.dto.EventOccurrenceDto;
 import com.unipi.gsimos.vistaseat.mapper.EventMapper;
 import com.unipi.gsimos.vistaseat.model.Event;
 import com.unipi.gsimos.vistaseat.model.User;
+import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.service.EventOccurrenceService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,23 +31,39 @@ public class EventOccurrenceController {
     public final EventRepository eventRepository;
     public final EventMapper eventMapper;
     public final EventOccurrenceService eventOccurrenceService;
+    private final EventOccurrenceRepository eventOccurrenceRepository;
 
     @GetMapping("/adminDashboard/manageOccurrencesForEvent/{eventId}")
-    public String displayOccurrencesForEvent (@PathVariable Long eventId, Model model) {
+    public String displayOccurrencesForEvent (@PathVariable Long eventId,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size,
+                                              Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
 
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EventOccurrenceDto> occurrencesPage = eventOccurrenceService.getOccurrencesByEventId(eventId, pageable);
+
+        List<EventOccurrenceDto> occurrencesListWithBookingCount = new ArrayList<>(occurrencesPage.getContent());
+        model.addAttribute("occurrences", occurrencesListWithBookingCount);
+
+        // Paging controls
+        model.addAttribute("currentPage", occurrencesPage.getNumber() + 1);
+        model.addAttribute("totalPages", occurrencesPage.getTotalPages());
+
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found"));
 
-        Integer numberOfOccurrences = event.getOccurrences().size();
+        Long numberOfOccurrences = eventOccurrenceRepository.countEventOccurrenceByEventId(eventId);
+        long totalEventBookings = sumBookingCounts(occurrencesListWithBookingCount);
 
         EventDto eventDto = eventMapper.toDto(event);
 
         model.addAttribute("numberOfEventOccurrences", numberOfOccurrences);
+        model.addAttribute("totalEventBookings", totalEventBookings);
         model.addAttribute("event", eventDto);
 
         return "manageOccurrences";
@@ -84,5 +105,24 @@ public class EventOccurrenceController {
             return  "redirect:/adminDashboard/manageOccurrencesForEvent/{eventId}/addOccurrence";
         }
 
+    }
+
+    /**
+     * Helper method that calculates the total number of bookings for the given collection
+     * of {@link EventOccurrenceDto} objects.
+     *
+     * <p>Each element’s {@code bookingCount} may be {@code null}; such
+     * values are treated as zero and ignored in the sum.</p>
+     *
+     * @param occurrencesList a <strong>non-{@code null}</strong> list of event-occurrence DTOs
+     * @return the sum of all non-null {@code bookingCount} values, or {@code 0} if the list is empty
+     * @throws NullPointerException if {@code occurrences} is {@code null}
+     */
+    public static long sumBookingCounts(List<EventOccurrenceDto> occurrencesList) {
+        return occurrencesList.stream()
+                .map(EventOccurrenceDto::getBookingCount)
+                .filter(Objects::nonNull)
+                .mapToLong(Long::longValue)
+                .sum();
     }
 }
