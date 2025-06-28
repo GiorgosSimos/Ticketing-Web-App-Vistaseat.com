@@ -73,7 +73,6 @@
             <span th:text="${totalRevenue}"></span>
         </div>
         <div class="history-section">
-
         </div>
     </section>
 
@@ -96,7 +95,7 @@
                     <td th:text="${user.firstName}">Jane</td>
                     <td th:text="${user.lastName}">Doe</td>
                     <td th:text="${user.email}">jane@example.com</td>
-                    <td th:text="${user.registrationDate}"></td>
+                    <td th:text="${#temporals.format(user.registrationDate, 'EEE dd-mm-yyyy HH:mm:ss z')}"></td>
                 </tr>
                 </tbody>
             </table>
