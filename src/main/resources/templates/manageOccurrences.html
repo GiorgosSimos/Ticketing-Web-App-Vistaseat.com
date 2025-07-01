@@ -175,8 +175,8 @@
               </button>
             </form>
             <!-- Delete Occurrence Button -->
-            <form
-
+            <form th:action="@{'/adminDashboard/manageOccurrencesForEvent/' + ${event.id} +'/delete/' + ${occurrence.id}}"
+                  method="post"
                   class="confirm-form-submission"
                   data-message="Are you sure you want to delete this occurrence?"
                   style="display: inline;">

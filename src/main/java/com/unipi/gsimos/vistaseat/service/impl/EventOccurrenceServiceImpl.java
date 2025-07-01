@@ -7,6 +7,8 @@ import com.unipi.gsimos.vistaseat.model.Venue;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.service.EventOccurrenceService;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,6 +40,20 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
 
         EventOccurrence eventOccurrence = eventOccurrenceMapper.toEntity(eventOccurrenceDto);
         eventOccurrenceRepository.save(eventOccurrence);
+    }
+
+    @Override
+    @Transactional
+    public void deleteEventOccurrence(Long eventOccurrenceId) {
+       EventOccurrence eventOccurrence = eventOccurrenceRepository.findById(eventOccurrenceId)
+               .orElseThrow(()-> new EntityNotFoundException(
+                       "Occurrence with id: "+eventOccurrenceId + " not found"));
+
+       if (!eventOccurrence.getBookings().isEmpty()) {
+           throw new EntityExistsException("Cannot delete occurrence: it is associated with existing bookings.");
+       }
+
+       eventOccurrenceRepository.delete(eventOccurrence);
     }
 
     @Override

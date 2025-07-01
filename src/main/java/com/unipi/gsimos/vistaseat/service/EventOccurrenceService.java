@@ -9,5 +9,7 @@ public interface EventOccurrenceService {
 
     void createEventOccurrence(EventOccurrenceDto eventOccurrenceDto, Venue eventVenue);
 
+    void deleteEventOccurrence(Long eventOccurrenceId);
+
     Page<EventOccurrenceDto> getOccurrencesByEventId(Long eventId, Pageable pageable);
 }

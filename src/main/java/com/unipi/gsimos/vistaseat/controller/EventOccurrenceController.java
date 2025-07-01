@@ -117,6 +117,21 @@ public class EventOccurrenceController {
 
     }
 
+    @PostMapping("/adminDashboard/manageOccurrencesForEvent/{eventId}/delete/{occurrenceId}")
+    public String deleteEventOccurrence(@PathVariable Long eventId,
+                                        @PathVariable Long occurrenceId,
+                                        RedirectAttributes redirectAttributes) {
+
+        try {
+            eventOccurrenceService.deleteEventOccurrence(occurrenceId);
+            redirectAttributes.addFlashAttribute("message", "Occurrence deleted successfully");
+            return "redirect:/adminDashboard/manageOccurrencesForEvent/" + eventId + "?success";
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("error", "Error: "+ex.getMessage());
+            return "redirect:/adminDashboard/manageOccurrencesForEvent/" +eventId;
+        }
+    }
+
     /**
      * Helper method that calculates the total number of bookings for the given collection
      * of {@link EventOccurrenceDto} objects.

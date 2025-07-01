@@ -22,8 +22,8 @@ public interface EventOccurrenceRepository extends JpaRepository<EventOccurrence
      * <p>The window is expressed as <strong>[dayStart&nbsp;…&nbsp;nextDayStart)</strong>:
      *
      * <ul>
-     *   <li>{@code dayStart} 00:00 of the **day before** the candidate date&nbsp;(inclusive)</li>
-     *   <li>{@code nextDayStart} 00:00 of the **day after** the candidate date&nbsp;(exclusive)</li>
+     *   <li>{@code windowStart} 00:00 of the **day before** the candidate date&nbsp;(inclusive)</li>
+     *   <li>{@code windowEnd} 00:00 of the **day after** the candidate date&nbsp;(exclusive)</li>
      * </ul>
      *
      * Fetching only these rows keeps the result set small; the service layer then
@@ -31,18 +31,18 @@ public interface EventOccurrenceRepository extends JpaRepository<EventOccurrence
      * returned occurrences actually collide with the new slot.
      *
      * @param venueId       ID of the venue being checked
-     * @param dayStart      inclusive lower bound of the window (previous-day 00:00)
-     * @param nextDayStart  exclusive upper bound of the window (next-day 00:00)
+     * @param windowStart      inclusive lower bound of the window (previous-day 00:00)
+     * @param windowEnd  exclusive upper bound of the window (next-day 00:00)
      * @return all occurrences whose {@code eventDate} falls inside the window
      */
     @Query("""
             SELECT o
             FROM EventOccurrence o
             WHERE o.event.venue.id = :venueId
-            AND o.eventDate >= :dayStart
-            AND o.eventDate < :nextDayStart
+            AND o.eventDate >= :windowStart
+            AND o.eventDate < :windowEnd
            """)
     List<EventOccurrence> findOccurrencesInWindow(Long venueId,
-                                                  LocalDateTime dayStart,
-                                                  LocalDateTime nextDayStart);
+                                                  LocalDateTime windowStart,
+                                                  LocalDateTime windowEnd);
 }
