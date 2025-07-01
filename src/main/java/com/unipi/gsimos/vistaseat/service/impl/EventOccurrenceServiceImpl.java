@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -74,25 +75,34 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
      * @return true if venue is free (incl. 30-min buffer), false otherwise
      */
     public boolean isVenueAvailable(Venue venue, LocalDateTime newOccurrenceStart, int newOccurrenceDuration) {
-        // Create the buffered window for the new occurrence that will be created
 
-        LocalDateTime newEndBuffered = newOccurrenceStart
+        // Setting a 3-day window to search for potential clashes
+        LocalDate newOccurrenceDate = newOccurrenceStart.toLocalDate();
+        LocalDateTime windowStart = newOccurrenceDate.atStartOfDay().minusDays(1);
+        LocalDateTime windowEnd = windowStart.plusDays(3);
+
+        // Fetch occurrences within the 3-day window that could overlap with the new occurrence
+        List<EventOccurrence> possibleClashes = eventOccurrenceRepository.findOccurrencesInWindow(
+                venue.getId(), windowStart, windowEnd);
+
+        LocalDateTime newOccurrenceEndBuffered = newOccurrenceStart
                                         .plusMinutes(newOccurrenceDuration)
                                         .plusMinutes(BUFFER_MINUTES);
 
-        // Fetch occurrences that could overlap with the new occurrence
-        List<EventOccurrence> possibleClashes = eventOccurrenceRepository.findOccurrencesInWindow(
-                                                venue.getId(), newEndBuffered);
-        // Test each possible clash
+        // Test each possible clash with the new occurrence
         boolean overlap = possibleClashes.stream().anyMatch(currentOccurrence ->{
-            LocalDateTime exStartBuffered = currentOccurrence.getEventDate().minusMinutes(BUFFER_MINUTES);
+            LocalDateTime currentOccurrenceStart = currentOccurrence.getEventDate();
 
-            LocalDateTime exEndBuffered = currentOccurrence.getEventDate()
+            LocalDateTime currentOccurrenceEnd = currentOccurrence.getEventDate()
                                                   .plusMinutes(currentOccurrence.getDuration())
                                                   .plusMinutes(BUFFER_MINUTES);
 
-            return newOccurrenceStart.isBefore(exEndBuffered) &&
-                   newEndBuffered.isAfter(exStartBuffered);
+            // If it returns true, there is an overlap
+            // We ask, “Does the new show’s start come before the other show’s (end + 30 min)
+            // and does the new show’s (end + 30 min) come after the other show’s start?”
+            // if both are true, the times overlap.
+            return newOccurrenceStart.isBefore(currentOccurrenceEnd) &&
+                    newOccurrenceEndBuffered.isAfter(currentOccurrenceStart);
         });
         return !overlap;//The venue is available if nothing overlapped
     }

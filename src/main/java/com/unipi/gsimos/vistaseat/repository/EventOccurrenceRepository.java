@@ -16,21 +16,33 @@ public interface EventOccurrenceRepository extends JpaRepository<EventOccurrence
     Page<EventOccurrence> findAllByEventId(Long eventId, Pageable pageable);
 
     /**
-     * Fetches all occurrences for a given venue that start before or at the given window end.
-     * <p>
-     * Used to retrieve potential conflicting events when checking venue availability
-     * against a candidate time slot. The returned occurrences are further filtered
-     * in the service layer to confirm actual overlaps based on event durations and buffers.
+     * Retrieves every {@link EventOccurrence} that *starts* within the three-day
+     * window centred on a candidate date for the given venue.
      *
-     * @param venueId   the ID of the venue
-     * @param windowEnd the upper limit of the candidate time window
-     * @return list of EventOccurrences starting before or at the specified window end
+     * <p>The window is expressed as <strong>[dayStart&nbsp;…&nbsp;nextDayStart)</strong>:
+     *
+     * <ul>
+     *   <li>{@code dayStart} 00:00 of the **day before** the candidate date&nbsp;(inclusive)</li>
+     *   <li>{@code nextDayStart} 00:00 of the **day after** the candidate date&nbsp;(exclusive)</li>
+     * </ul>
+     *
+     * Fetching only these rows keeps the result set small; the service layer then
+     * applies the 30-minute buffer/duration logic to decide whether any of the
+     * returned occurrences actually collide with the new slot.
+     *
+     * @param venueId       ID of the venue being checked
+     * @param dayStart      inclusive lower bound of the window (previous-day 00:00)
+     * @param nextDayStart  exclusive upper bound of the window (next-day 00:00)
+     * @return all occurrences whose {@code eventDate} falls inside the window
      */
     @Query("""
             SELECT o
             FROM EventOccurrence o
             WHERE o.event.venue.id = :venueId
-            AND o.eventDate <= :windowEnd
-            """)
-    List<EventOccurrence> findOccurrencesInWindow(Long venueId, LocalDateTime windowEnd);
+            AND o.eventDate >= :dayStart
+            AND o.eventDate < :nextDayStart
+           """)
+    List<EventOccurrence> findOccurrencesInWindow(Long venueId,
+                                                  LocalDateTime dayStart,
+                                                  LocalDateTime nextDayStart);
 }
