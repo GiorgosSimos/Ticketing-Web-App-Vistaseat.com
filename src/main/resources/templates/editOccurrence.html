@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Occurrence | Vistaseat.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/adminStyle.css}">
+    <script th:src="@{/js/admin.js}" defer></script>
+</head>
+<body>
+    <!-- Include Header -->
+    <div th:insert="~{fragments/adminHeader :: adminHeader(${firstName}, ${lastName})}"></div>
+
+    <!-- Alert messages for changes made -->
+    <div th:if="${message}" class="alert alert-success" id="success-alert" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" id="access-denied-alert" th:text="${error} "></div>
+
+    <div class="add-occurrence-form-card">
+        <h2 class="h4 fw-semibold mb-1" th:text="${event.name}">Event Name</h2>
+        <span class="badge rounded-pill text-bg-dark mb-2">
+              <span class="text-bg-dark" th:text="${event.eventType}"></span>
+            </span>
+        <div class="d-flex align-items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-geo-alt me-1" viewBox="0 0 16 16">
+                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
+                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+            </svg>
+            <span th:text="${event.venueName}">Event Held At</span>
+        </div>
+        <!-- Title & Icon -->
+        <div class="d-flex align-items-center mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square me-2" viewBox="0 0 16 16">
+                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+            </svg>
+            <h3 class="mb-0">Edit Event Occurrence</h3>
+        </div>
+
+        <!-- Description -->
+        <p class="text-muted mb-4">
+            Edit details for this Event Occurrence.
+        </p>
+        <!-- TODO - Server side form Validation -->
+        <form
+              method="POST"
+              class="add-occurrence-form"
+              id="editOccurrenceForm">
+
+            <!-- Occurrence Date & Time -->
+            <label for="eventDateTime">Date & Time</label>
+
+            <!-- Ticket Price -->
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-currency-euro" viewBox="0 0 16 16">
+                    <path d="M4 9.42h1.063C5.4 12.323 7.317 14 10.34 14c.622 0 1.167-.068 1.659-.185v-1.3c-.484.119-1.045.17-1.659.17-2.1 0-3.455-1.198-3.775-3.264h4.017v-.928H6.497v-.936q-.002-.165.008-.329h4.078v-.927H6.618c.388-1.898 1.719-2.985 3.723-2.985.614 0 1.175.05 1.659.177V2.194A6.6 6.6 0 0 0 10.341 2c-2.928 0-4.82 1.569-5.244 4.3H4v.928h1.01v1.265H4v.928z"/>
+                </svg>
+                <label for="price">Ticket Price</label>
+            </div>
+
+            <input type="datetime-local" id="eventDateTime" name="eventDateTime"
+                   th:value="${occurrence.eventDateTime}"
+                   disabled required>
+
+            <input type="number" min="0" max="10000" step="0.01" class="form-control"
+                   id="price" name="price"
+                   th:value="${occurrence.price}"
+                   disabled required>
+            <!-- Duration (Minutes) -->
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-clock me-1" viewBox="0 0 16 16">
+                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                </svg>
+                <label for="duration">Duration (minutes)</label>
+            </div>
+            <input type="number" min="1" max="1000" step="1" class="form-control full-span"
+                   id="duration" name="duration"
+                   th:value="${occurrence.duration}"
+                   disabled required>
+            <!-- Available Seats -->
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-people me-1" viewBox="0 0 16 16">
+                    <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
+                </svg>
+                <label for="availableSeats">Available Seats</label>
+            </div>
+            <!-- Available Seats input (should not exceed Venue capacity) -->
+            <input type="number" min="1" th:max="${venueCapacity}" step="1" class="form-control full-span"
+                   id="availableSeats" name="availableSeats"
+                   th:value="${occurrence.availableSeats}"
+                   disabled required>
+
+            <!-- Submit button (full row) -->
+            <button type="button" id="editSaveBtn" class="btn btn-dark w-100 rounded-pill mt-3 full-span">
+                Edit Occurrence
+            </button>
+        </form>
+    </div>
+
+    <!-- Include Footer-->
+    <div th:insert="~{fragments/footer :: footer}"></div>
+
+    <script>
+        const btn = document.getElementById('editSaveBtn');
+        const form = document.getElementById('editOccurrenceForm');
+        const inputs = form.querySelectorAll('input');
+
+        let editing = false;
+
+        btn.addEventListener('click', function() {
+            if (!editing) {
+                // Enable fields
+                inputs.forEach(input => input.disabled = false);
+                btn.textContent = 'Save Occurrence';
+                btn.classList.remove('btn-dark');
+                btn.classList.add('btn-success');
+                editing = true;
+            } else {
+                // Submit the form (save)
+                form.submit();
+            }
+        });
+    </script>
+
+</body>
+</html>

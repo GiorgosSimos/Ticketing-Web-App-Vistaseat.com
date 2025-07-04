@@ -44,6 +44,26 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
 
     @Override
     @Transactional
+    public void updateEventOccurrence(EventOccurrenceDto eventOccurrenceDto, Venue eventVenue) {
+
+        // Before making the update check if the venue is available
+        if (!isVenueAvailable(eventVenue, eventOccurrenceDto.getEventDateTime(), eventOccurrenceDto.getDuration())) {
+            throw new IllegalStateException("Venue "+eventVenue.getName()+ " is not available at that time");
+        }
+
+        EventOccurrence occurrence = eventOccurrenceRepository.findById(eventOccurrenceDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Event occurrence not found"));
+
+        occurrence.setEventDate(eventOccurrenceDto.getEventDateTime());
+        occurrence.setPrice(eventOccurrenceDto.getPrice());
+        occurrence.setDuration(eventOccurrenceDto.getDuration());
+        occurrence.setAvailableSeats(eventOccurrenceDto.getAvailableSeats());
+
+        eventOccurrenceRepository.save(occurrence);
+    }
+
+    @Override
+    @Transactional
     public void deleteEventOccurrence(Long eventOccurrenceId) {
        EventOccurrence eventOccurrence = eventOccurrenceRepository.findById(eventOccurrenceId)
                .orElseThrow(()-> new EntityNotFoundException(
