@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,16 +34,18 @@ public interface EventOccurrenceRepository extends JpaRepository<EventOccurrence
      * @param venueId       ID of the venue being checked
      * @param windowStart      inclusive lower bound of the window (previous-day 00:00)
      * @param windowEnd  exclusive upper bound of the window (next-day 00:00)
+     * @param skipId ID of occurrence to be excluded from the result set, useful for update operations
      * @return all occurrences whose {@code eventDate} falls inside the window
      */
     @Query("""
             SELECT o
             FROM EventOccurrence o
             WHERE o.event.venue.id = :venueId
-            AND o.eventDate >= :windowStart
-            AND o.eventDate < :windowEnd
-           """)
-    List<EventOccurrence> findOccurrencesInWindow(Long venueId,
-                                                  LocalDateTime windowStart,
-                                                  LocalDateTime windowEnd);
+            AND o.eventDate BETWEEN :windowStart AND :windowEnd
+            AND (:skipId IS NULL OR o.id <> :skipId)
+          """)
+    List<EventOccurrence> findOccurrencesInWindow(@Param("venueId") Long venueId,
+                                                  @Param("windowStart") LocalDateTime windowStart,
+                                                  @Param("windowEnd") LocalDateTime windowEnd,
+                                                  @Param("skipId") Long skipId);
 }

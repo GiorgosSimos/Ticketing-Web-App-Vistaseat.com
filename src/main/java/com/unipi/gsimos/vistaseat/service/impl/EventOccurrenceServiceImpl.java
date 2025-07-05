@@ -34,7 +34,11 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
     @Transactional
     public void createEventOccurrence(EventOccurrenceDto eventOccurrenceDto, Venue eventVenue) {
 
-        if (!isVenueAvailable(eventVenue, eventOccurrenceDto.getEventDateTime(), eventOccurrenceDto.getDuration())) {
+        // Check if the venue is available
+        if (!isVenueAvailable(eventVenue,
+                eventOccurrenceDto.getEventDateTime(),
+                eventOccurrenceDto.getDuration(),
+                null)) {
             throw new IllegalStateException("Venue "+eventVenue.getName()+ " is not available at that time");
         }
 
@@ -47,7 +51,10 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
     public void updateEventOccurrence(EventOccurrenceDto eventOccurrenceDto, Venue eventVenue) {
 
         // Before making the update check if the venue is available
-        if (!isVenueAvailable(eventVenue, eventOccurrenceDto.getEventDateTime(), eventOccurrenceDto.getDuration())) {
+        if (!isVenueAvailable(eventVenue,
+                eventOccurrenceDto.getEventDateTime(),
+                eventOccurrenceDto.getDuration(),
+                eventOccurrenceDto.getId())) {
             throw new IllegalStateException("Venue "+eventVenue.getName()+ " is not available at that time");
         }
 
@@ -110,7 +117,10 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
      * @param newOccurrenceDuration   duration in minutes of the new occurrence
      * @return true if venue is free (incl. 30-min buffer), false otherwise
      */
-    public boolean isVenueAvailable(Venue venue, LocalDateTime newOccurrenceStart, int newOccurrenceDuration) {
+    public boolean isVenueAvailable(Venue venue,
+                                    LocalDateTime newOccurrenceStart,
+                                    int newOccurrenceDuration,
+                                    Long skipId) {
 
         // Setting a 3-day window to search for potential clashes
         LocalDate newOccurrenceDate = newOccurrenceStart.toLocalDate();
@@ -119,7 +129,7 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
 
         // Fetch occurrences within the 3-day window that could overlap with the new occurrence
         List<EventOccurrence> possibleClashes = eventOccurrenceRepository.findOccurrencesInWindow(
-                venue.getId(), windowStart, windowEnd);
+                venue.getId(), windowStart, windowEnd, skipId);
 
         LocalDateTime newOccurrenceEndBuffered = newOccurrenceStart
                                         .plusMinutes(newOccurrenceDuration)

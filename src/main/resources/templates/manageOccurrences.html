@@ -81,7 +81,11 @@
             <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
             <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
           </svg>
-          <span class="mb-1" th:text="${event.venueName}">Madison Square Garden</span>
+            <a th:href="@{'/adminDashboard/manageVenues/eventsForVenue/' +${event.venueId} }"
+               class="mb-1 text-decoration-none text-dark"
+               th:text="${event.venueName}">
+              Madison Square Garden
+            </a>
         </div>
         <strong>Description: </strong><span class="mt-2 mb-0 small text-muted" th:text="${event.description}">
           Event Description</span>
@@ -150,7 +154,7 @@
                     data-message="Manage the booking of this occurrence?"
                     style="display: inline;">
               <button class="btn btn-sm btn-info me-1" id="btn-manage-bookings" title="Manage Bookings">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-calendar3" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
                   <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384
                                             1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
                   <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0
@@ -167,7 +171,7 @@
                   data-message="Are you sure you want to edit this occurrence?"
                   style="display: inline;">
               <button class="btn btn-sm btn-warning me-1" id="btn-edit-occurrence" title="Edit Occurrence" type="submit" >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-wrench" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
                   <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004
                                             3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364zm13.37 9.019.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11z"/>
                 </svg>
@@ -181,7 +185,7 @@
                   style="display: inline;">
               <button class="btn btn-sm btn-danger" id="btn-delete-occurrence"
                       title="Delete Occurrence" type="submit">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-trash" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0
                                         1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                   <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1
@@ -200,13 +204,14 @@
     <div class="d-flex justify-content-end align-items-center mt-3">
       <!-- First Page - Go to first page (index 0)-->
       <button class="btn btn-sm btn btn-light me-1"
-
-      >
+              th:disabled="${currentPage == 1}"
+              onclick="goToPage(0)">
         First Page
       </button>
       <!-- Previous Page - Go to page before current-->
       <button class="btn btn-sm btn btn-light me-2"
-      >
+              th:disabled="${currentPage == 1}"
+              th:onclick="'goToPage(' + (${currentPage} - 2) + ')'">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-caret-left" viewBox="0 0 16 16">
           <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11
                             3.204v9.592a1 1 0 0 1-1.659.753"/>
@@ -218,7 +223,8 @@
 
       <!-- Next Page -->
       <button class="btn btn-sm btn btn-light me-1"
-      >
+              th:disabled="${currentPage == totalPages}"
+              th:onclick="'goToPage(' + ${currentPage} + ')'">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-caret-right" viewBox="0 0 16 16">
           <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5
                             2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
@@ -227,7 +233,8 @@
 
       <!-- Last Page -->
       <button class="btn btn-sm btn btn-light"
-      >
+              th:disabled="${currentPage == totalPages}"
+              th:onclick="'goToPage(' + (${totalPages} - 1) + ')'">
         Last Page
       </button>
     </div>
