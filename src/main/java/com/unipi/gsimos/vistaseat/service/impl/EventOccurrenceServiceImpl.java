@@ -90,6 +90,15 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
         return new PageImpl<>(occurrencesWithBookingCount, pageable, eventOccurrences.getTotalElements());
     }
 
+    @Override
+    public Page<EventOccurrenceDto> getOccurrencesByVenueId(Long venueId, Pageable pageable) {
+        Page<EventOccurrence> eventOccurrences = eventOccurrenceRepository
+                .findByEvent_Venue_IdOrderByEventDateAsc(venueId, pageable);
+        List<EventOccurrenceDto> occurrencesWithBookingCount = calculateBookingCountOfOccurrences(
+                eventOccurrences.getContent());
+        return new PageImpl<>(occurrencesWithBookingCount, pageable, eventOccurrences.getTotalElements());
+    }
+
     /**
      * Helper method that maps a list of {@link EventOccurrence} entities to their corresponding
      * @link {EventOccurrenceDto} representations, enriching each DTO with the number of associated bookings.

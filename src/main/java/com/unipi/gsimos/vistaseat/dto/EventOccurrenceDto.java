@@ -30,6 +30,8 @@ public class EventOccurrenceDto {
 
     private Long eventId;
 
+    private String eventName;
+
     private Long bookingCount;
 
     /**

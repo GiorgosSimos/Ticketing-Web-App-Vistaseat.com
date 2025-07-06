@@ -1,10 +1,13 @@
 package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.EventDto;
+import com.unipi.gsimos.vistaseat.dto.EventOccurrenceDto;
 import com.unipi.gsimos.vistaseat.dto.VenueDto;
+import com.unipi.gsimos.vistaseat.mapper.VenueMapper;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.Venue;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
+import com.unipi.gsimos.vistaseat.service.EventOccurrenceService;
 import com.unipi.gsimos.vistaseat.service.EventService;
 import com.unipi.gsimos.vistaseat.service.VenueService;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +35,8 @@ public class VenueController {
     private final VenueService venueService;
     private final VenueRepository venueRepository;
     private final EventService eventService;
+    private final VenueMapper  venueMapper;
+    private final EventOccurrenceService eventOccurrenceService;
 
     @GetMapping("/adminDashboard/manageVenues")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
@@ -212,5 +218,34 @@ public class VenueController {
         model.addAttribute("sortDirection", sortDirection);
 
         return "venueEvents";
+    }
+
+    @GetMapping("/adminDashboard/manageVenues/occurrencesForVenue/{venueId}")
+    public String displayVenueOccurrences(@PathVariable Long venueId,
+                                          @RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size,
+                                          Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        Venue venue = venueRepository.findById(venueId)
+                .orElseThrow(() -> new EntityNotFoundException("Venue not found"));
+
+        VenueDto venueDto = venueMapper.toDto(venue);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("eventDate").ascending());
+        Page<EventOccurrenceDto> occurrencesPage = eventOccurrenceService.getOccurrencesByVenueId(venueId, pageable);
+        List<EventOccurrenceDto> occurrencesList = new ArrayList<>(occurrencesPage.getContent());
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("venue", venueDto);
+        model.addAttribute("occurrences", occurrencesList);
+        // Paging controls
+        model.addAttribute("currentPage", occurrencesPage.getNumber() + 1);
+        model.addAttribute("totalPages", occurrencesPage.getTotalPages());
+
+        return "venueOccurrences";
+
     }
 }

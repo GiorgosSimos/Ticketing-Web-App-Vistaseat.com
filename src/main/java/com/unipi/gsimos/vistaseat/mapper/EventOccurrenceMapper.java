@@ -21,9 +21,9 @@ public class EventOccurrenceMapper {
         eventOccurrence.setDuration(eventOccurrenceDto.getDuration());
         eventOccurrence.setAvailableSeats(eventOccurrenceDto.getAvailableSeats());
 
-        Event eventOfOccurrences = eventRepository.findById(eventOccurrenceDto.getEventId())
+        Event event = eventRepository.findById(eventOccurrenceDto.getEventId())
                 .orElseThrow(()-> new IllegalArgumentException("Event not found"));
-        eventOccurrence.setEvent(eventOfOccurrences);
+        eventOccurrence.setEvent(event);
 
         return eventOccurrence;
     }
@@ -37,6 +37,7 @@ public class EventOccurrenceMapper {
         eventOccurrenceDto.setDuration(eventOccurrence.getDuration());
         eventOccurrenceDto.setAvailableSeats(eventOccurrence.getAvailableSeats());
         eventOccurrenceDto.setEventId(eventOccurrence.getEvent().getId());
+        eventOccurrenceDto.setEventName(eventOccurrence.getEvent().getName());
 
         return eventOccurrenceDto;
     }

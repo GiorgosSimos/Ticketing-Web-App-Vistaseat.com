@@ -14,4 +14,6 @@ public interface EventOccurrenceService {
     void deleteEventOccurrence(Long eventOccurrenceId);
 
     Page<EventOccurrenceDto> getOccurrencesByEventId(Long eventId, Pageable pageable);
+
+    Page<EventOccurrenceDto> getOccurrencesByVenueId(Long venueId, Pageable pageable);
 }

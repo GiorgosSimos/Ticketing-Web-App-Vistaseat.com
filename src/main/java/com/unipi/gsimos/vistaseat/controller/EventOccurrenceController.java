@@ -4,6 +4,7 @@ import com.unipi.gsimos.vistaseat.dto.EventDto;
 import com.unipi.gsimos.vistaseat.dto.EventOccurrenceDto;
 import com.unipi.gsimos.vistaseat.mapper.EventMapper;
 import com.unipi.gsimos.vistaseat.mapper.EventOccurrenceMapper;
+import com.unipi.gsimos.vistaseat.mapper.VenueMapper;
 import com.unipi.gsimos.vistaseat.model.Event;
 import com.unipi.gsimos.vistaseat.model.EventOccurrence;
 import com.unipi.gsimos.vistaseat.model.User;
