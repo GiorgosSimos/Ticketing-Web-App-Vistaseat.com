@@ -195,7 +195,8 @@ public class EventOccurrenceController {
             redirectAttributes.addFlashAttribute("error",
                     "Occurrence could not be updated because of an unexpected error: "+ex.getMessage());
             if (fixedVenueId != null) {
-                return "redirect:/adminDashboard/manageOccurrencesForEvent/"+eventId +"/editOccurrence/" +occurrenceId;
+                return "redirect:/adminDashboard/manageOccurrencesForEvent/" + eventId +
+                               "/editOccurrence/" + occurrenceId + "?fixedVenueId="+fixedVenueId;
             }
             return "redirect:/adminDashboard/manageOccurrencesForEvent/" + eventId +"/editOccurrence/" + occurrenceId;
         }
