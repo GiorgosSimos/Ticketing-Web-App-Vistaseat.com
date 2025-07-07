@@ -4,8 +4,10 @@ import com.unipi.gsimos.vistaseat.dto.EventDto;
 import com.unipi.gsimos.vistaseat.dto.EventOccurrenceDto;
 import com.unipi.gsimos.vistaseat.dto.VenueDto;
 import com.unipi.gsimos.vistaseat.mapper.VenueMapper;
+import com.unipi.gsimos.vistaseat.model.Event;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.Venue;
+import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.EventOccurrenceService;
 import com.unipi.gsimos.vistaseat.service.EventService;
@@ -37,6 +39,7 @@ public class VenueController {
     private final EventService eventService;
     private final VenueMapper  venueMapper;
     private final EventOccurrenceService eventOccurrenceService;
+    private final EventRepository eventRepository;
 
     @GetMapping("/adminDashboard/manageVenues")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
@@ -246,6 +249,29 @@ public class VenueController {
         model.addAttribute("totalPages", occurrencesPage.getTotalPages());
 
         return "venueOccurrences";
+
+    }
+
+    @GetMapping("/adminDashboard/manageVenues/occurrencesForVenue/{venueId}/addOccurrence")
+    public String addVenueOccurrence(@PathVariable Long venueId, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+
+        Venue venue = venueRepository.findById(venueId)
+                .orElseThrow(() -> new EntityNotFoundException("Venue not found"));
+
+        VenueDto venueDto = venueMapper.toDto(venue);
+
+        // Pre-load all available events for this venue
+        List<Event> events = eventRepository.findAllByVenueId(venueId);
+        model.addAttribute("events", events);
+
+        model.addAttribute("venue", venueDto);
+
+        return "addVenueOccurrence";
 
     }
 }

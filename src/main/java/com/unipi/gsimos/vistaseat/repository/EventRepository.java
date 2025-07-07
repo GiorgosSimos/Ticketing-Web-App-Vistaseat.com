@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface EventRepository extends JpaRepository<Event, Long> {
 
     boolean existsByNameAndEventTypeAndVenueId(String name, EventType eventType, Long venueId);
@@ -15,6 +17,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Page<Event> findEventByNameContainingIgnoreCaseAndVenueId(String name, Long venueId, Pageable pageable);
 
     Page<Event> findAllByEventType(EventType eventType, Pageable pageable);
+
+    List<Event> findAllByVenueId(Long venueId);
 
     Page<Event> findAllByVenueId(Long venueId, Pageable pageable);
 
