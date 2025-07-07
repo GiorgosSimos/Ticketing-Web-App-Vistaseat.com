@@ -121,12 +121,14 @@
                             </form>
                             <!-- Button: Edit Occurrence -->
                             <!-- TODO: On success -> redirect on occurrences for Venue page -->
-                            <form th:action="@{'/adminDashboard/manageOccurrencesForEvent/' + ${occurrence.eventId} +
-                              '/editOccurrence/' + ${occurrence.id}}"
+                            <form th:action="@{/adminDashboard/manageOccurrencesForEvent/{eventId}/editOccurrence/{occurrenceId}
+                                             (eventId=${occurrence.eventId}, occurrenceId=${occurrence.id})}"
                                   method="get"
                                   class="confirm-form-submission"
                                   data-message="Are you sure you want to edit this occurrence?"
                                   style="display: inline;">
+                                <!-- Hidden Input to include the fixedVenueId request param -->
+                                <input type="hidden" name="fixedVenueId" th:value="${venue.id}"/>
                                 <button class="btn btn-sm btn-warning me-1" id="btn-edit-occurrence" title="Edit Occurrence" type="submit" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
                                         <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004

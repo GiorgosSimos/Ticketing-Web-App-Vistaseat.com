@@ -21,7 +21,7 @@
     <!-- Section Event Info -->
     <div class="container mt-5">
         <div class="d-flex align-items-center mb-2">
-             <h2 th:text="${venue.name}" class="mb-1 me-2">Venue Name</h2>
+             <h2 th:text="${venue.name}" class="fw-semibold mb-1 me-2">Venue Name</h2>
              <a th:href="@{'/adminDashboard/manageVenues/occurrencesForVenue/' + ${venue.id}}"
                 class="btn btn-outline-dark btn-sm d-inline-flex align-items-center"
                 role="button"

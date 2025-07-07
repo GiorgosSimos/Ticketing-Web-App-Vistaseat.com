@@ -4,7 +4,6 @@ import com.unipi.gsimos.vistaseat.dto.EventDto;
 import com.unipi.gsimos.vistaseat.dto.EventOccurrenceDto;
 import com.unipi.gsimos.vistaseat.mapper.EventMapper;
 import com.unipi.gsimos.vistaseat.mapper.EventOccurrenceMapper;
-import com.unipi.gsimos.vistaseat.mapper.VenueMapper;
 import com.unipi.gsimos.vistaseat.model.Event;
 import com.unipi.gsimos.vistaseat.model.EventOccurrence;
 import com.unipi.gsimos.vistaseat.model.User;
@@ -137,7 +136,8 @@ public class EventOccurrenceController {
     }
 
     @GetMapping("/adminDashboard/manageOccurrencesForEvent/{eventId}/editOccurrence/{occurrenceId}")
-    public String showEditEventOccurrenceForm(@PathVariable Long eventId,
+    public String showEditEventOccurrenceForm(@RequestParam(required = false) Long fixedVenueId,
+                                              @PathVariable Long eventId,
                                               @PathVariable Long occurrenceId,
                                               Model model) {
 
@@ -160,11 +160,18 @@ public class EventOccurrenceController {
         model.addAttribute("occurrence", occurrenceDto);
         model.addAttribute("venueCapacity", event.getVenue().getCapacity());
 
+        // Used for editing the occurrences of a specific venue
+        if (fixedVenueId != null) {
+            model.addAttribute("fixedVenueId", fixedVenueId);
+        }
+
+
         return "editOccurrence";
     }
 
     @PostMapping("/adminDashboard/manageOccurrencesForEvent/{eventId}/editOccurrence/{occurrenceId}")
-    public String editEventOccurrence(@PathVariable Long eventId,
+    public String editEventOccurrence(@RequestParam(required = false) Long fixedVenueId,
+                                      @PathVariable Long eventId,
                                       @PathVariable Long occurrenceId,
                                       @ModelAttribute EventOccurrenceDto eventOccurrenceDto,
                                       RedirectAttributes redirectAttributes) {
@@ -180,10 +187,16 @@ public class EventOccurrenceController {
         try {
             eventOccurrenceService.updateEventOccurrence(eventOccurrenceDto, eventVenue);
             redirectAttributes.addFlashAttribute("message", "Occurrence updated successfully");
+            if (fixedVenueId != null) {
+                return "redirect:/adminDashboard/manageVenues/occurrencesForVenue/" + fixedVenueId + "?success";
+            }
             return "redirect:/adminDashboard/manageOccurrencesForEvent/" + eventId + "?success";
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("error",
                     "Occurrence could not be updated because of an unexpected error: "+ex.getMessage());
+            if (fixedVenueId != null) {
+                return "redirect:/adminDashboard/manageOccurrencesForEvent/"+eventId +"/editOccurrence/" +occurrenceId;
+            }
             return "redirect:/adminDashboard/manageOccurrencesForEvent/" + eventId +"/editOccurrence/" + occurrenceId;
         }
 

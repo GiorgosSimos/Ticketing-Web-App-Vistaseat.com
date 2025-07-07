@@ -42,7 +42,8 @@
             Edit details for this Event Occurrence.
         </p>
         <!-- TODO - Server side form Validation -->
-        <form
+        <form th:action="@{'/adminDashboard/manageOccurrencesForEvent/' + ${event.id} +
+                          '/editOccurrence/' + ${occurrence.id} }"
               method="POST"
               class="add-occurrence-form"
               id="editOccurrenceForm">
@@ -90,6 +91,10 @@
                    id="availableSeats" name="availableSeats"
                    th:value="${occurrence.availableSeats}"
                    disabled required>
+
+            <div th:if="${fixedVenueId != null}">
+                <input type="hidden" name="fixedVenueId" th:value="${event.venueId}">
+            </div>
 
             <!-- Submit button (full row) -->
             <button type="button" id="editSaveBtn" class="btn btn-dark w-100 rounded-pill mt-3 full-span">
