@@ -274,4 +274,24 @@ public class VenueController {
         return "addVenueOccurrence";
 
     }
+
+    @PostMapping("/adminDashboard/manageVenues/occurrencesForVenue/{venueId}/createOccurrence")
+    public String createVenueOccurrence(@PathVariable Long venueId,
+                                        @ModelAttribute EventOccurrenceDto eventOccurrenceDto,
+                                        RedirectAttributes redirectAttributes) {
+
+        Venue occurrenceVenue = venueRepository.findById(venueId)
+                .orElseThrow(() -> new EntityNotFoundException("Venue not found"));
+
+        try {
+            eventOccurrenceService.createEventOccurrence(eventOccurrenceDto,  occurrenceVenue);
+            redirectAttributes.addFlashAttribute("message", "Occurrence created successfully");
+            return "redirect:/adminDashboard/manageVenues/occurrencesForVenue/"  + venueId + "?success";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Occurrence could not be created due to an unexpected error" + e.getMessage());
+            return "redirect:/adminDashboard/manageVenues/occurrencesForVenue/" + venueId + "/addOccurrence";
+        }
+
+    }
 }

@@ -40,8 +40,8 @@
         Schedule a new occurrence for this venue. Fill in all the required information.
     </p>
     <!-- TODO - Server side form Validation -->
-    <form
-
+    <form th:action="@{'/adminDashboard/manageVenues/occurrencesForVenue/' + ${venue.id} + '/createOccurrence'}"
+          method="post"
           class="add-occurrence-form">
 
         <!-- Events held at Venue -->
