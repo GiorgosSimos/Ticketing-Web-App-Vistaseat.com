@@ -40,6 +40,29 @@
                class="mb-0 text-decoration-none text-dark me-2">
                Venue Capacity:
             </p>
+            <form class="row g-2 mb-3"
+                  method="get"
+                  th:action="@{/adminDashboard/manageVenues/occurrencesForVenue/{id}(id=${venue.id})}">
+                <input type="hidden" name="size" th:value="${param.size ?: 10}"/>
+
+                <div class="col-auto">
+                    <label for="dateFilter" class="col-form-label fw-semibold">Filter by date:</label>
+                </div>
+                <div class="col-auto">
+                    <input id="dateFilter"
+                           type="date"
+                           name="date"
+                           class="form-control"
+                           th:value="${dateFilter}"
+                           onchange="this.form.submit()">
+                </div>
+                <div class="col-auto">
+                    <a th:if="${dateFilter}" class="btn btn-outline-secondary"
+                       th:href="@{/adminDashboard/manageVenues/occurrencesForVenue/{id}(id=${venue.id})}">
+                        Clear
+                    </a>
+                </div>
+            </form>
             <div class="d-flex justify-content-md-end flex-fill">
                 <a  th:href="@{'/adminDashboard/manageVenues/occurrencesForVenue/' + ${venue.id} + '/addOccurrence'}"
                     class="btn btn-primary">
@@ -53,6 +76,8 @@
         </div>
         <hr>
     </section>
+
+
 
 
     <!-- Section Venue Occurrence Info -->
@@ -120,7 +145,6 @@
                                 </button>
                             </form>
                             <!-- Button: Edit Occurrence -->
-                            <!-- TODO: On success -> redirect on occurrences for Venue page -->
                             <form th:action="@{/adminDashboard/manageOccurrencesForEvent/{eventId}/editOccurrence/{occurrenceId}
                                              (eventId=${occurrence.eventId}, occurrenceId=${occurrence.id})}"
                                   method="get"

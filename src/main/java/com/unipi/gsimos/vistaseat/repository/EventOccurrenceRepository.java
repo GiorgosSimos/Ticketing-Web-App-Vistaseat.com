@@ -18,6 +18,12 @@ public interface EventOccurrenceRepository extends JpaRepository<EventOccurrence
 
     Page<EventOccurrence> findByEvent_Venue_IdOrderByEventDateAsc(Long venueId, Pageable pageable);
 
+    Page<EventOccurrence> findByEvent_Venue_IdAndEventDateBetweenOrderByEventDateAsc(
+            Long venueId,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay,
+            Pageable pageable);
+
     /**
      * Retrieves every {@link EventOccurrence} that *starts* within the three-day
      * window centred on a candidate date for the given venue.

@@ -74,7 +74,6 @@ public class EventOccurrenceController {
         model.addAttribute("event", eventDto);
 
         return "manageOccurrences";
-
     }
 
     @GetMapping("/adminDashboard/manageOccurrencesForEvent/{eventId}/addOccurrence")
@@ -117,7 +116,6 @@ public class EventOccurrenceController {
             redirectAttributes.addFlashAttribute("error", "Error: "+ex.getMessage());
             return  "redirect:/adminDashboard/manageOccurrencesForEvent/{eventId}/addOccurrence";
         }
-
     }
 
     @PostMapping("/adminDashboard/manageOccurrencesForEvent/{eventId}/delete/{occurrenceId}")
@@ -165,7 +163,6 @@ public class EventOccurrenceController {
             model.addAttribute("fixedVenueId", fixedVenueId);
         }
 
-
         return "editOccurrence";
     }
 
@@ -198,7 +195,8 @@ public class EventOccurrenceController {
                 return "redirect:/adminDashboard/manageOccurrencesForEvent/" + eventId +
                                "/editOccurrence/" + occurrenceId + "?fixedVenueId="+fixedVenueId;
             }
-            return "redirect:/adminDashboard/manageOccurrencesForEvent/" + eventId +"/editOccurrence/" + occurrenceId;
+            return "redirect:/adminDashboard/manageOccurrencesForEvent/" + eventId +
+                           "/editOccurrence/" + occurrenceId;
         }
 
     }

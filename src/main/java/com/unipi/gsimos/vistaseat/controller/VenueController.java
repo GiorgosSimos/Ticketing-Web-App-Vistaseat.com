@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -227,6 +229,7 @@ public class VenueController {
     public String displayVenueOccurrences(@PathVariable Long venueId,
                                           @RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
+                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                           Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
@@ -237,7 +240,8 @@ public class VenueController {
         VenueDto venueDto = venueMapper.toDto(venue);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("eventDate").ascending());
-        Page<EventOccurrenceDto> occurrencesPage = eventOccurrenceService.getOccurrencesByVenueId(venueId, pageable);
+        Page<EventOccurrenceDto> occurrencesPage = eventOccurrenceService.
+                getOccurrencesByVenueIdAndDate(venueId, date, pageable);
         List<EventOccurrenceDto> occurrencesList = new ArrayList<>(occurrencesPage.getContent());
 
         model.addAttribute("firstName", user.getFirstName());
@@ -247,6 +251,7 @@ public class VenueController {
         // Paging controls
         model.addAttribute("currentPage", occurrencesPage.getNumber() + 1);
         model.addAttribute("totalPages", occurrencesPage.getTotalPages());
+        model.addAttribute("dateFilter", date);
 
         return "venueOccurrences";
 

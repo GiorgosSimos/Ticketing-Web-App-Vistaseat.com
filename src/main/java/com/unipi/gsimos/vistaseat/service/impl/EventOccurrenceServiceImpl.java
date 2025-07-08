@@ -91,9 +91,22 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
     }
 
     @Override
-    public Page<EventOccurrenceDto> getOccurrencesByVenueId(Long venueId, Pageable pageable) {
-        Page<EventOccurrence> eventOccurrences = eventOccurrenceRepository
-                .findByEvent_Venue_IdOrderByEventDateAsc(venueId, pageable);
+    public Page<EventOccurrenceDto> getOccurrencesByVenueIdAndDate(Long venueId,
+                                                                   LocalDate date,
+                                                                   Pageable pageable) {
+        Page<EventOccurrence> eventOccurrences;
+
+        if (date == null) {
+            eventOccurrences = eventOccurrenceRepository
+                    .findByEvent_Venue_IdOrderByEventDateAsc(venueId, pageable);
+        } else {
+            LocalDateTime start = date.atStartOfDay();
+            LocalDateTime end = start.plusDays(1);
+            eventOccurrences = eventOccurrenceRepository
+                    .findByEvent_Venue_IdAndEventDateBetweenOrderByEventDateAsc(
+                            venueId, start, end, pageable);
+        }
+
         List<EventOccurrenceDto> occurrencesWithBookingCount = calculateBookingCountOfOccurrences(
                 eventOccurrences.getContent());
         return new PageImpl<>(occurrencesWithBookingCount, pageable, eventOccurrences.getTotalElements());
