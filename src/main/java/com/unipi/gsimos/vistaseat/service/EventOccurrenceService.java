@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface EventOccurrenceService {
 
@@ -23,4 +24,6 @@ public interface EventOccurrenceService {
             @Nullable LocalDate fromDate,
             @Nullable LocalDate toDate,
             Pageable pageable);
+
+    long sumBookingCounts(List<EventOccurrenceDto> occurrencesList);
 }

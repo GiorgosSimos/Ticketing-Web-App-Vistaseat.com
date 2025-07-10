@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.model.Event;
 import com.unipi.gsimos.vistaseat.model.EventOccurrence;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.Venue;
+import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
@@ -27,7 +28,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -39,6 +39,7 @@ public class EventOccurrenceController {
     public final EventOccurrenceService eventOccurrenceService;
     private final EventOccurrenceRepository eventOccurrenceRepository;
     private final VenueRepository venueRepository;
+    private final BookingRepository bookingRepository;
 
     @GetMapping("/adminDashboard/manageOccurrencesForEvent/{eventId}")
     public String displayOccurrencesForEvent (@PathVariable Long eventId,
@@ -65,7 +66,9 @@ public class EventOccurrenceController {
                 .orElseThrow(() -> new EntityNotFoundException("Event not found"));
 
         Long numberOfOccurrences = eventOccurrenceRepository.countEventOccurrenceByEventId(eventId);
-        long totalEventBookings = sumBookingCounts(occurrencesListWithBookingCount);
+        long totalEventBookings = bookingRepository.countBookingsByEventOccurrence_Event_Id(eventId);
+
+        // TODO Calculate total event revenue
 
         EventDto eventDto = eventMapper.toDto(event);
 
@@ -198,25 +201,5 @@ public class EventOccurrenceController {
             return "redirect:/adminDashboard/manageOccurrencesForEvent/" + eventId +
                            "/editOccurrence/" + occurrenceId;
         }
-
-    }
-
-    /**
-     * Helper method that calculates the total number of bookings for the given collection
-     * of {@link EventOccurrenceDto} objects.
-     *
-     * <p>Each element’s {@code bookingCount} may be {@code null}; such
-     * values are treated as zero and ignored in the sum.</p>
-     *
-     * @param occurrencesList a <strong>non-{@code null}</strong> list of event-occurrence DTOs
-     * @return the sum of all non-null {@code bookingCount} values, or {@code 0} if the list is empty
-     * @throws NullPointerException if {@code occurrences} is {@code null}
-     */
-    public static long sumBookingCounts(List<EventOccurrenceDto> occurrencesList) {
-        return occurrencesList.stream()
-                .map(EventOccurrenceDto::getBookingCount)
-                .filter(Objects::nonNull)
-                .mapToLong(Long::longValue)
-                .sum();
     }
 }

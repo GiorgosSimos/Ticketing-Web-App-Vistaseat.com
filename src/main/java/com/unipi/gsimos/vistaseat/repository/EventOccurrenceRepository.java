@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface EventOccurrenceRepository extends JpaRepository<EventOccurrence, Long> {
 
-    long countEventOccurrenceByEventId(long eventId);
+    Long countEventOccurrenceByEventId(long eventId);
 
     Page<EventOccurrence> findAllByEventId(Long eventId, Pageable pageable);
 

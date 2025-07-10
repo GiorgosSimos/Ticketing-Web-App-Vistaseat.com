@@ -106,16 +106,33 @@
 
   <!-- Section Event Occurrence Info -->
   <section class="container mt-4">
-    <div class="d-flex align-items-center mb-2">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-calendar3 me-2" viewBox="0 0 16 16">
-        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"></path>
-        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path>
+
+    <!-- Display Message when no occurrences are found -->
+    <div th:if="${numberOfEventOccurrences == 0}"
+         class="empty-state d-flex flex-column justify-content-center align-items-center text-center">
+      <svg xmlns="http://www.w3.org/2000/svg"
+           class="bi bi-calendar3 empty-icon mb-3" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384
+                 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
+        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
       </svg>
-      <span>Event Occurrences</span>
+      <h3 class="fw-semibold mb-1">No occurrences found</h3>
     </div>
 
     <!-- Scheduled Event Occurrences Table -->
-    <div class="table-responsive">
+    <div th:if="${numberOfEventOccurrences > 0}"
+            class="table-responsive">
+      <div class="d-flex align-items-center mb-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-calendar3 me-2" viewBox="0 0 16 16">
+          <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"></path>
+          <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"></path>
+        </svg>
+        <span>Event Occurrences</span>
+      </div>
       <table class="table table-striped table-hover align-middle">
         <thead class="table-secondary">
         <tr>
@@ -201,7 +218,8 @@
     </div>
 
     <!-- Pagination Controls -->
-    <div class="d-flex justify-content-end align-items-center mt-3">
+    <div th:if="${totalPages > 0}"
+            class="d-flex justify-content-end align-items-center mt-3">
       <!-- First Page - Go to first page (index 0)-->
       <button class="btn btn-sm btn btn-light me-1"
               th:disabled="${currentPage == 1}"

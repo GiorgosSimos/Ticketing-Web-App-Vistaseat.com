@@ -7,6 +7,7 @@ import com.unipi.gsimos.vistaseat.mapper.VenueMapper;
 import com.unipi.gsimos.vistaseat.model.Event;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.Venue;
+import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.EventOccurrenceService;
@@ -42,6 +43,7 @@ public class VenueController {
     private final VenueMapper  venueMapper;
     private final EventOccurrenceService eventOccurrenceService;
     private final EventRepository eventRepository;
+    private final BookingRepository bookingRepository;
 
     @GetMapping("/adminDashboard/manageVenues")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
@@ -217,6 +219,7 @@ public class VenueController {
         }
 
         model.addAttribute("events", eventsList);
+        model.addAttribute("eventsCount", eventsList.size());
 
         // Sort by number of occurrences
         model.addAttribute("sort", sort);
@@ -247,16 +250,24 @@ public class VenueController {
                 getOccurrencesByVenueIdAndDate(venueId, from, to, pageable);
         List<EventOccurrenceDto> occurrencesList = new ArrayList<>(occurrencesPage.getContent());
 
+        long occurrencesCount = occurrencesPage.getTotalElements();
+        // TODO Calculate total venue bookings dynamically with date filter
+        long totalVenueBookings = bookingRepository.countBookingsByEventOccurrence_Event_Venue_Id(venueId);
+
+        // TODO Calculate total venue revenue dynamically with date filter
+
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("venue", venueDto);
         model.addAttribute("occurrences", occurrencesList);
-        model.addAttribute("occurrenceCount", occurrencesList.size());
+        model.addAttribute("occurrenceCount", occurrencesCount);
+        model.addAttribute("totalVenueBookings", totalVenueBookings);
+        model.addAttribute("from", from);
+        model.addAttribute("to", to);
         // Paging controls
         model.addAttribute("currentPage", occurrencesPage.getNumber() + 1);
         model.addAttribute("totalPages", occurrencesPage.getTotalPages());
-        model.addAttribute("from", from);
-        model.addAttribute("to", to);
+
 
         return "venueOccurrences";
 

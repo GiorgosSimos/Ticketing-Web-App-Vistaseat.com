@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -180,4 +181,24 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
         });
         return !overlap;//The venue is available if nothing overlapped
     }
+
+    /**
+     * Helper service that calculates the total number of bookings for the given collection
+     * of {@link EventOccurrenceDto} objects.
+     *
+     * <p>Each element’s {@code bookingCount} may be {@code null}; such
+     * values are treated as zero and ignored in the sum.</p>
+     *
+     * @param occurrencesList a <strong>non-{@code null}</strong> list of event-occurrence DTOs
+     * @return the sum of all non-null {@code bookingCount} values, or {@code 0} if the list is empty
+     * @throws NullPointerException if {@code occurrences} is {@code null}
+     */
+    public long sumBookingCounts(List<EventOccurrenceDto> occurrencesList) {
+        return occurrencesList.stream()
+                .map(EventOccurrenceDto::getBookingCount)
+                .filter(Objects::nonNull)
+                .mapToLong(Long::longValue)
+                .sum();
+    }
 }
+
