@@ -20,8 +20,8 @@ public interface EventOccurrenceRepository extends JpaRepository<EventOccurrence
 
     Page<EventOccurrence> findByEvent_Venue_IdAndEventDateBetweenOrderByEventDateAsc(
             Long venueId,
-            LocalDateTime startOfDay,
-            LocalDateTime endOfDay,
+            LocalDateTime windowStart,
+            LocalDateTime windowEnd,
             Pageable pageable);
 
     /**

@@ -4,6 +4,7 @@ import com.unipi.gsimos.vistaseat.dto.EventOccurrenceDto;
 import com.unipi.gsimos.vistaseat.model.Venue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
 
@@ -19,6 +20,7 @@ public interface EventOccurrenceService {
 
     Page<EventOccurrenceDto> getOccurrencesByVenueIdAndDate(
             Long venueId,
-            LocalDate date,
+            @Nullable LocalDate fromDate,
+            @Nullable LocalDate toDate,
             Pageable pageable);
 }

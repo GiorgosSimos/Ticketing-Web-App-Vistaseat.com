@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -92,16 +93,21 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
 
     @Override
     public Page<EventOccurrenceDto> getOccurrencesByVenueIdAndDate(Long venueId,
-                                                                   LocalDate date,
+                                                                   @Nullable LocalDate fromDate,
+                                                                   @Nullable LocalDate toDate,
                                                                    Pageable pageable) {
         Page<EventOccurrence> eventOccurrences;
 
-        if (date == null) {
+        if (fromDate == null && toDate == null) {
             eventOccurrences = eventOccurrenceRepository
                     .findByEvent_Venue_IdOrderByEventDateAsc(venueId, pageable);
         } else {
-            LocalDateTime start = date.atStartOfDay();
-            LocalDateTime end = start.plusDays(1);
+            LocalDateTime start = (fromDate != null ?
+                    fromDate.atStartOfDay() : LocalDate.of(2000,1,1).atStartOfDay());
+
+            LocalDateTime end = (toDate != null ?
+                    toDate.plusDays(1).atStartOfDay() : LocalDate.of(2100,1,1).atStartOfDay());
+
             eventOccurrences = eventOccurrenceRepository
                     .findByEvent_Venue_IdAndEventDateBetweenOrderByEventDateAsc(
                             venueId, start, end, pageable);

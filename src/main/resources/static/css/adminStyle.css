@@ -358,3 +358,23 @@ th i.fa-solid {
 .add-occurrence-form .full-span {
     grid-column: span 2;
 }
+
+/* Empty-state block: take up some vertical space and fade in */
+.empty-state {
+    min-height: 40vh;                 /* adjust to taste */
+    animation: fade-slide 0.4s ease-out;
+}
+
+/* Resize and dim the icon */
+.empty-state .empty-icon {
+    width: 3rem;                      /* ~48 px */
+    height: 3rem;
+    opacity: .65;
+}
+
+/* Keyframes */
+@keyframes fade-slide {
+    0%   { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+

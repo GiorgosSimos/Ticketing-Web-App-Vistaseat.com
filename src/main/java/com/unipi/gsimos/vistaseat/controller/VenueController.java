@@ -229,7 +229,10 @@ public class VenueController {
     public String displayVenueOccurrences(@PathVariable Long venueId,
                                           @RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "10") int size,
-                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                          @RequestParam(required = false)
+                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                                          @RequestParam(required = false)
+                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
                                           Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
@@ -241,17 +244,19 @@ public class VenueController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("eventDate").ascending());
         Page<EventOccurrenceDto> occurrencesPage = eventOccurrenceService.
-                getOccurrencesByVenueIdAndDate(venueId, date, pageable);
+                getOccurrencesByVenueIdAndDate(venueId, from, to, pageable);
         List<EventOccurrenceDto> occurrencesList = new ArrayList<>(occurrencesPage.getContent());
 
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("venue", venueDto);
         model.addAttribute("occurrences", occurrencesList);
+        model.addAttribute("occurrenceCount", occurrencesList.size());
         // Paging controls
         model.addAttribute("currentPage", occurrencesPage.getNumber() + 1);
         model.addAttribute("totalPages", occurrencesPage.getTotalPages());
-        model.addAttribute("dateFilter", date);
+        model.addAttribute("from", from);
+        model.addAttribute("to", to);
 
         return "venueOccurrences";
 
