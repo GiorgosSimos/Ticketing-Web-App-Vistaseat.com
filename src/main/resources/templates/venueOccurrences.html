@@ -50,21 +50,27 @@
                   th:action="@{/adminDashboard/manageVenues/occurrencesForVenue/{id}(id=${venue.id})}">
                 <input type="hidden" name="size" th:value="${param.size ?: 10}"/>
 
-                <div class="col-auto form-floating me-2">
+                <div class="col-auto form-floating me-2 position-relative">
                     <input id="rangePicker"
                            type="text"
-                           name="date"
                            class="form-control"
                            placeholder="From... to..."
-                           data-from="${from}" data-to="${to}">
-                    <label for="rangePicker">Filter by date</label>
+                           data-from="${from}"
+                           data-to="${to}">
+                    <label for="rangePicker">Date Filter</label>
+
+                    <span id="rangeBadge"
+                          class="badge rounded-pill text-bg-success position-absolute top-0 start-100 translate-middle-y ms-2
+                          small ${from or to ? '' : 'd-none'}"
+                          th:text="${from} ?
+                                  (${from} + ' → ' + (${to ?: '…'})) :
+                                  (${to} ? ('… → ' + ${to}) : '-')">
+                    </span>
                 </div>
-                <!--<div class="col-auto">
-                    <a th:if="${dateFilter}" class="btn btn-outline-dark me-2"
-                       th:href="@{/adminDashboard/manageVenues/occurrencesForVenue/{id}(id=${venue.id})}">
-                        Clear
-                    </a>
-                </div>-->
+                <button id="clearRangeBtn"
+                        class="btn btn-outline-dark btn-sm me-2 ${from or to ? '' : 'd-none'}">
+                    Clear
+                </button>
             </form>
             <div class="d-flex justify-content-md-end flex-fill">
                 <a  th:href="@{'/adminDashboard/manageVenues/occurrencesForVenue/' + ${venue.id} + '/addOccurrence'}"
@@ -269,27 +275,53 @@
 
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', () => {
-            const rp  = document.getElementById('rangePicker');
-            const url = new URL(window.location.href);
 
-            flatpickr(rp, {
+            const rp        = document.getElementById('rangePicker');
+            const badge     = document.getElementById('rangeBadge');
+            const clearBtn  = document.getElementById('clearRangeBtn');
+            const url       = new URL(window.location.href);
+
+            const fp = flatpickr(rp, {
                 mode: 'range',
                 dateFormat: 'Y-m-d',
                 defaultDate: [rp.dataset.from, rp.dataset.to].filter(Boolean),
+
+                /* user picked or changed the range */
                 onClose: (sel) => {
                     if (sel.length === 2) {
-                        url.searchParams.set('from', sel[0].toISOString().slice(0,10));
-                        url.searchParams.set('to',   sel[1].toISOString().slice(0,10));
-                    } else {                    // cleared
-                        url.searchParams.delete('from');
-                        url.searchParams.delete('to');
+                        const from = sel[0].toISOString().slice(0, 10);
+                        const to   = sel[1].toISOString().slice(0, 10);
+
+                        url.searchParams.set('from', from);
+                        url.searchParams.set('to',   to);
+
+                        badge.classList.remove('d-none');
+                        badge.textContent = `${from} → ${to}`;
+                        clearBtn.classList.remove('d-none');
+
+                    } else {                    // range cleared inside the calendar
+                        clearFilter();
                     }
                     window.location.href = url;
                 }
             });
+
+            /* explicit Clear button */
+            clearBtn?.addEventListener('click', e => {
+                e.preventDefault();
+                fp.clear();          // wipes the input & Flatpickr’s state
+                clearFilter();
+                window.location.href = url;   // reload without params
+            });
+
+            function clearFilter() {
+                url.searchParams.delete('from');
+                url.searchParams.delete('to');
+                badge.classList.add('d-none');
+                clearBtn.classList.add('d-none');
+            }
         });
     </script>
-
 
 </body>
 </html>
