@@ -7,9 +7,9 @@ import com.unipi.gsimos.vistaseat.mapper.VenueMapper;
 import com.unipi.gsimos.vistaseat.model.Event;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.Venue;
-import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
+import com.unipi.gsimos.vistaseat.service.BookingService;
 import com.unipi.gsimos.vistaseat.service.EventOccurrenceService;
 import com.unipi.gsimos.vistaseat.service.EventService;
 import com.unipi.gsimos.vistaseat.service.VenueService;
@@ -43,7 +43,7 @@ public class VenueController {
     private final VenueMapper  venueMapper;
     private final EventOccurrenceService eventOccurrenceService;
     private final EventRepository eventRepository;
-    private final BookingRepository bookingRepository;
+    private final BookingService bookingService;
 
     @GetMapping("/adminDashboard/manageVenues")
     public String manageUsers(@RequestParam(defaultValue = "0") int page,
@@ -251,8 +251,8 @@ public class VenueController {
         List<EventOccurrenceDto> occurrencesList = new ArrayList<>(occurrencesPage.getContent());
 
         long occurrencesCount = occurrencesPage.getTotalElements();
-        // TODO Calculate total venue bookings dynamically with date filter
-        long totalVenueBookings = bookingRepository.countBookingsByEventOccurrence_Event_Venue_Id(venueId);
+
+        long totalVenueBookings = bookingService.countBookingsByVenueAndDateBetween(venueId, from, to);
 
         // TODO Calculate total venue revenue dynamically with date filter
 
