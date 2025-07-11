@@ -315,6 +315,9 @@
             const clearBtn  = document.getElementById('clearRangeBtn');
             const url       = new URL(window.location.href);
 
+            /* helper that formats a JS Date in local timezone as yyyy-MM-dd */
+            const ymd = d => rp._flatpickr.formatDate(d, 'Y-m-d');
+
             const fp = flatpickr(rp, {
                 mode: 'range',
                 dateFormat: 'Y-m-d',
@@ -323,8 +326,8 @@
                 /* user picked or changed the range */
                 onClose: (sel) => {
                     if (sel.length === 2) {
-                        const from = sel[0].toISOString().slice(0, 10);
-                        const to   = sel[1].toISOString().slice(0, 10);
+                        const from = ymd(sel[0]);
+                        const to   = ymd(sel[1]);
 
                         url.searchParams.set('from', from);
                         url.searchParams.set('to',   to);
