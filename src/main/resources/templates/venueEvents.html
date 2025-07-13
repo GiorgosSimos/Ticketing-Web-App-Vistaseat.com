@@ -89,83 +89,85 @@
                 <h2 class="mb-1">Events</h2>
                 <p class="text-muted mb-4">Manage all events scheduled for this venue.</p>
             </div>
-            <table class="table table-striped table-hover align-middle">
-                <thead class="table-secondary">
-                <tr>
-                    <th>Event Name</th>
-                    <th>Event Type</th>
-                    <th>
-                        <a th:href="@{'/adminDashboard/manageVenues/eventsForVenue/'
+            <div class="rounded-3 overflow-hidden shadow">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-secondary">
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Event Type</th>
+                        <th>
+                            <a th:href="@{'/adminDashboard/manageVenues/eventsForVenue/'
                            + ${venue.id}(sort='occurrenceCount',
                            sortDirection=${sortDirection == 'asc' ? 'desc' : 'asc'})}"
-                           style="text-decoration: none; color: inherit;">
-                           No of Occurrences
-                           <i class="fa-solid" th:classappend="${sortDirection == 'asc'} ? 'fa-circle-up' : 'fa-circle-down'"></i>
-                        </a>
-                    </th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="event : ${events}">
-                    <td th:text="${event.name}">Cinema Paradiso</td>
-                    <td th:text="${event.eventType}">CINEMA</td>
-                    <td th:text="${event.occurrenceCount}">10</td>
-                    <td>
-                        <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
-                        <!-- Action Button: Manage Occurrences -->
-                        <form th:action="@{'/adminDashboard/manageOccurrencesForEvent/' + ${event.id}}"
-                              method="get"
-                              class="confirm-form-submission"
-                              data-message="Manage the occurrences of this event?"
-                              style="display: inline;">
-                            <button class="btn btn-sm btn-info me-1" id="btn-manage-occurrences" title="Manage Occurrences">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
-                                    <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384
+                               style="text-decoration: none; color: inherit;">
+                                No of Occurrences
+                                <i class="fa-solid" th:classappend="${sortDirection == 'asc'} ? 'fa-circle-up' : 'fa-circle-down'"></i>
+                            </a>
+                        </th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="event : ${events}">
+                        <td th:text="${event.name}">Cinema Paradiso</td>
+                        <td th:text="${event.eventType}">CINEMA</td>
+                        <td th:text="${event.occurrenceCount}">10</td>
+                        <td>
+                            <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
+                            <!-- Action Button: Manage Occurrences -->
+                            <form th:action="@{'/adminDashboard/manageOccurrencesForEvent/' + ${event.id}}"
+                                  method="get"
+                                  class="confirm-form-submission"
+                                  data-message="Manage the occurrences of this event?"
+                                  style="display: inline;">
+                                <button class="btn btn-sm btn-info me-1" id="btn-manage-occurrences" title="Manage Occurrences">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
+                                        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384
                                             1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-                                    <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0
+                                        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0
                                             0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0
                                             2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-                                </svg>
-                            </button>
-                        </form>
-                        <!-- Button: Edit Event -->
-                        <form th:action="@{/adminDashboard/manageEvents/editEvent/{id}(id=${event.id})}"
-                              method="get"
-                              class="confirm-form-submission"
-                              data-message="Are you sure you want to edit this event?"
-                              style="display: inline;">
-                            <!-- Hidden Input to include the fixedVenueId request param -->
-                            <input type="hidden" name="fixedVenueId" th:value="${event.venueId}"/>
-                            <button class="btn btn-sm btn-warning me-1" id="btn-edit-event" title="Edit Event" type="submit" >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
-                                    <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004
+                                    </svg>
+                                </button>
+                            </form>
+                            <!-- Button: Edit Event -->
+                            <form th:action="@{/adminDashboard/manageEvents/editEvent/{id}(id=${event.id})}"
+                                  method="get"
+                                  class="confirm-form-submission"
+                                  data-message="Are you sure you want to edit this event?"
+                                  style="display: inline;">
+                                <!-- Hidden Input to include the fixedVenueId request param -->
+                                <input type="hidden" name="fixedVenueId" th:value="${event.venueId}"/>
+                                <button class="btn btn-sm btn-warning me-1" id="btn-edit-event" title="Edit Event" type="submit" >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
+                                        <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004
                                             3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364zm13.37 9.019.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11z"/>
-                                </svg>
-                            </button>
-                        </form>
-                        <!-- Delete Event Button -->
-                        <form th:action="@{'/adminDashboard/manageEvents/delete/' + ${event.id}}"
-                              method="post"
-                              class="confirm-form-submission"
-                              data-message="Are you sure you want to delete this event?"
-                              style="display: inline;">
-                            <button class="btn btn-sm btn-danger" id="btn-delete-event"
-                                    title="Delete Venue" type="submit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                     class="bi bi-trash" viewBox="0 0 16 16">
-                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0
+                                    </svg>
+                                </button>
+                            </form>
+                            <!-- Delete Event Button -->
+                            <form th:action="@{'/adminDashboard/manageEvents/delete/' + ${event.id}}"
+                                  method="post"
+                                  class="confirm-form-submission"
+                                  data-message="Are you sure you want to delete this event?"
+                                  style="display: inline;">
+                                <button class="btn btn-sm btn-danger" id="btn-delete-event"
+                                        title="Delete Venue" type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0
                                         1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1
+                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1
                                         0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4
                                         4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                                </svg>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                                    </svg>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Pagination Controls -->

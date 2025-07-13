@@ -149,8 +149,9 @@
                 </svg>
                 <span>Scheduled Occurrences</span>
             </div>
-            <table class="table table-dark table-striped table-hover align-middle">
-                <thead class="table-secondary">
+            <div class="rounded-3 overflow-hidden shadow">
+                <table class="table table-secondary table-striped table-hover align-middle">
+                    <thead class="table-secondary">
                     <tr>
                         <th>Event</th>
                         <th>Date & Time</th>
@@ -161,8 +162,8 @@
                         <th>Availability</th>
                         <th>Action</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr th:each="occurrence : ${occurrences}">
                         <td th:text="${occurrence.eventName}">
                             Event Name
@@ -236,8 +237,9 @@
                             </form>
                         </td>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Pagination Controls -->
