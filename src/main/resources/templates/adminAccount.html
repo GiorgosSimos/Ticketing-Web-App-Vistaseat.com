@@ -13,43 +13,50 @@
     <!-- Include Header-->
     <div th:replace="fragments/adminHeader :: adminHeader(${firstName}, ${lastName})"></div>
 
-    <!--Success Message for Update-->
-    <div th:if="${successMessage}" class="alert alert-success" id="success-alert" role="alert"
-         th:text="${successMessage}">Account updated successfully!
-    </div>
+    <div class="account-settings-layout">
+        <div th:replace="fragments/adminSidebar :: adminSidebar('adminAccount')"></div>
 
-    <!--Account Settings-->
-    <section class="account-container">
-        <div class="d-flex align-items-center mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" fill="currentColor" class="bi bi-person-vcard me-2" viewBox="0 0 16 16">
-                <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5"/>
-                <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z"/>
-            </svg>
-            <h2 class="mb-0">My Account</h2>
-        </div>
-        <p class="text-muted mb-4">Modify the information of your account.</p>
-        <form id="accountForm"  th:action="@{/adminAccount/update}" method="post">
-            <div class="account-grid">
-                <div class="grid-item">First Name:</div>
-                <div class="grid-item">
-                    <input type="text" id="firstName" name="firstName" th:value="${firstName}" disabled>
+        <section class="account-settings-section">
+            <!--Update alert messages-->
+            <div th:if="${message}" class="alert alert-success" id="success-alert" role="alert" th:text="${message}"></div>
+            <div th:if="${error}" class="alert alert-danger" id="error-alert" role="alert" th:text="${error}"></div>
+
+            <!--Account Settings Card-->
+            <div class="account-container">
+                <div class="d-flex align-items-center mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" fill="currentColor" class="bi bi-person-vcard me-2" viewBox="0 0 16 16">
+                        <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5"/>
+                        <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z"/>
+                    </svg>
+                    <h2 class="mb-0">My Account</h2>
                 </div>
-                <div class="grid-item">Last Name:</div>
-                <div class="grid-item">
-                    <input type="text" id="lastName" name="lastName" th:value="${lastName}" disabled>
-                </div>
-                <div class="grid-item">Email:</div>
-                <div class="grid-item">
-                    <input type="email" id="email" name="email" class="permanently-disabled" th:value="${email}" disabled>
-                </div>
-                <div class="grid-item">Phone:</div>
-                <div class="grid-item">
-                    <input type="text" id="phone" name="phone" th:value="${phone}" disabled>
-                </div>
+                <p class="text-muted mb-4">Modify the information of your account.
+                    Your <strong>email address</strong> is your unique account identifier and <strong>cannot be modified</strong>.
+                </p>
+                <form id="accountForm"  th:action="@{/adminAccount/update}" method="post">
+                    <div class="account-grid">
+                        <div class="grid-item">First Name:</div>
+                        <div class="grid-item">
+                            <input type="text" id="firstName" name="firstName" th:value="${firstName}" disabled>
+                        </div>
+                        <div class="grid-item">Last Name:</div>
+                        <div class="grid-item">
+                            <input type="text" id="lastName" name="lastName" th:value="${lastName}" disabled>
+                        </div>
+                        <div class="grid-item">Email:</div>
+                        <div class="grid-item">
+                            <input type="email" id="email" name="email" class="permanently-disabled" th:value="${email}" disabled>
+                        </div>
+                        <div class="grid-item">Phone:</div>
+                        <div class="grid-item">
+                            <input type="text" id="phone" name="phone" th:value="${phone}" disabled>
+                        </div>
+                    </div>
+                    <button type="button" id="editBtn" class="btn btn-primary w-100 rounded-pill mt-3 full-span">Edit</button>
+                </form>
             </div>
-            <button type="button" id="editBtn" class="btn btn-primary">Edit</button>
-        </form>
-    </section>
+        </section>
+    </div>
 
     <!-- Include Footer-->
     <div th:replace="fragments/footer :: footer"></div>

@@ -113,17 +113,23 @@ public class AdminController {
         user.setLastName(lastName);
         user.setPhone(phone);
 
-        userRepository.save(user);
+        try{
+            userRepository.save(user);
 
-        // Refresh the user in SecurityContextHolder after update
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                user,                      // the updated User object
-                null,                     // credentials -> not providing a password, the user is already authenticated
-                user.getAuthorities());  // the roles/authorities of the user
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+            // Refresh the user in SecurityContextHolder after update
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    user,                      // the updated User object
+                    null,                     // credentials -> not providing a password, the user is already authenticated
+                    user.getAuthorities());  // the roles/authorities of the user
+            SecurityContextHolder.getContext().setAuthentication(authToken);
 
-        redirectAttributes.addFlashAttribute("successMessage",
-                "Your account details ware updated successfully!");
+            redirectAttributes.addFlashAttribute("message",
+                    "Your account details were updated successfully!");
+
+        } catch (Exception e){
+            redirectAttributes.addFlashAttribute("error",
+                    "An unexpected error occurred while updating the account details!" + e.getMessage());
+        }
 
         return "redirect:/adminAccount";
     }
