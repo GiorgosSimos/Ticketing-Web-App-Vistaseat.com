@@ -1,0 +1,13 @@
+/* Footer Styling*/
+.footer-style {
+    padding: 1rem 1.5rem;
+    justify-content: center;
+    text-align: center;
+    color: rgb(102, 0, 102);
+    background-color: rgb(245, 239, 255);
+}
+
+.footer-style a {
+    color: rgb(9, 32, 63);
+
+}

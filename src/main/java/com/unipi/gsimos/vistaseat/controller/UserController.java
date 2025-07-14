@@ -29,7 +29,7 @@ public class UserController {
 
     @GetMapping("/")
     public String home() {
-        return "index"; // This should correspond to index.html in /templates/
+        return "index";
     }
 
     @GetMapping("/userSignUp")

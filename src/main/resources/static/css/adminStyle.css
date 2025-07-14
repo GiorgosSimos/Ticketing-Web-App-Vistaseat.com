@@ -80,8 +80,12 @@ body {
     padding: 1rem 1.5rem;
     justify-content: center;
     text-align: center;
-    color: white;
+    color: rgb(242, 229, 255);
     background-color: rgb(105, 36, 124);
+}
+
+.admin-footer a {
+    color: rgb(180, 170, 180);
 }
 
 /* Admin Account Styling */

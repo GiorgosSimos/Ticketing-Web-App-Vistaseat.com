@@ -1,6 +1,116 @@
 
-<div th:fragment="footer">
-  <footer class="admin-footer">
-    <p>Copyright © Georgios Simos - University of Pireaus, Department of Informatics</p>
-  </footer>
+
+<div th:fragment="footer"
+     xmlns:th="http://www.thymeleaf.org">
+    <div class="footer-style">
+        <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5">
+            <!-- Section Logo -->
+            <div class="col mb-3">
+                <a href="#" class="d-flex align-items-center mb-3" aria-label="Bootstrap">
+                    <img class="img-fluid rounded w-100" th:src="@{/images/logo.png}" alt="Vistaseat.com Logo">
+                </a>
+                <p class="insignia">Vistaseat.com</p>
+            </div>
+
+            <!-- Section Blank -->
+            <div class="col mb-3">
+
+            </div>
+
+            <!-- Section 1 -->
+            <div class="col mb-3">
+                <h5>Section 1</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            Features
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            Pricing
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            FAQs
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            About
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Section 2 -->
+            <div class="col mb-3">
+                <h5>Section 2</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            Features
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            Pricing
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            FAQs
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            About
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Section 3 -->
+            <div class="col mb-3">
+                <h5>Community</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            Write a testimonial
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            FAQs
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            About us
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link p-0">
+                            Contact
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="/adminLogin" class="nav-link p-0">
+                            Log in as Admin
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </footer>
+        <p>© 2025 Georgios Simos — University of Pireaus, Department of Informatics. All rights reserved.</p>
+    </div>
 </div>
