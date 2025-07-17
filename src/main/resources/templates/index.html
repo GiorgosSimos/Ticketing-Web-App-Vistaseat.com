@@ -5,11 +5,103 @@
     <title>Welcome to Vistaseat.com</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        #searchForm .form-control:focus, #searchForm .form-select:focus {
+            box-shadow: none;
+            border-color: transparent;
+            outline: none;
+        }
+    </style>
 </head>
 <body>
-    <p>Welcome to vistaseat.com</p>
+
+    <div th:insert="~{fragments/header :: header}"></div>
+
+    <section class="hero-styling d-flex flex-column align-items-center py-5">
+        <h1 class="text-center mx-auto d-block">Welcome to Vistaseat.com<br>Discover amazing events near you!</h1>
+        <p class="text-muted fw-semibold text-center">From theater plays, cinema and music concerts to sports games,
+            museums and more, find and book tickets<br> for the best entertainment experiences in your city.</p>
+        <div class="d-flex position-relative justify-content-between align-items-center mt-3 mb-5"
+             style="max-width: 640px">
+            <!-- Search Field for Venues or Events -->
+            <form id="searchForm"
+                  class="input-group input-group-lg flex-nowrap rounded-pill bg-light shadow-sm w-100">
+
+                    <select class="form-select border-0 rounded-pill overflow-hidden flex-shrink-0" name="type"
+                            style="max-width: 120px;">
+                        <option value="venue">Venues</option>
+                        <option value="event" selected>Events</option>
+                    </select>
+
+                    <input  id="searchQuery"
+                            type="text"
+                            class="form-control rounded-pill border-0"
+                            placeholder="Search…"
+                            autocomplete="off"/>
+
+                <!-- Clear search input button – hidden by default -->
+                <button id="clearBtn"
+                        type="button"
+                        class="btn btn-light px-4 py-0 d-none rounded-pill border-0"
+                        style="background-color: transparent;">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </form>
+            <!-- Results Dropdown-->
+            <ul id="suggestions"
+                class="list-group">
+            </ul>
+        </div>
+    </section>
 
     <div th:insert="~{fragments/footer :: footer}"></div>
 </body>
+
+    <script type="module">
+        document.getElementById('searchForm')
+            .addEventListener('submit', e => e.preventDefault() );
+
+        const input = document.getElementById('searchQuery');
+        const list = document.getElementById('suggestions');
+        const clearBtn = document.getElementById('clearBtn');
+        let timer;
+
+        input.addEventListener('input', () => {
+            clearTimeout(timer);
+            timer = setTimeout(loadResults, 300);  // ❶ debounce
+
+            clearBtn.classList.toggle('d-none', input.value.trim() === '');
+        });
+
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            input.focus();
+            clearBtn.classList.add('d-none');
+            list.innerHTML = '';
+        });
+
+        list.addEventListener('click', e => {    // ❸ choose item
+            const li = e.target.closest('[data-id]');
+            if (li) location.href = li.dataset.href;
+        });
+
+        async function loadResults() {
+            const query = input.value.trim();
+            if (!query) {list.innerHTML = ''; return; }  // ❷ fetch matches
+
+            const type = document.querySelector('select[name="type"]').value;
+            const results = await fetch(`/api/suggest?type=${type}&query=` + encodeURIComponent(query));
+            const data = await results.json();
+
+            list.innerHTML = data.length
+                ? data.map(({id, name, url}) =>
+                    `<li class="list-group-item list-group-item-action"
+               data-id="${id}" data-href="${url}">${name}</li>`).join('')
+                : `<li class="list-group-item disabled">No matches</li>`;
+        }
+    </script>
+
 </html>

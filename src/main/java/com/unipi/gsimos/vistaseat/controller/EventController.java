@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.model.Venue;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.EventService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -217,8 +218,17 @@ public class EventController {
             redirectAttributes.addFlashAttribute("error", "Error: "+e.getMessage());
             return "redirect:/adminDashboard/manageEvents";
         }
+    }
+
+    @GetMapping("/api/events/{eventId}")
+    public String displayEvent(@PathVariable Long eventId, Model model) {
 
 
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
 
+        model.addAttribute("event", event);
+
+        return "displayEvent";
     }
 }

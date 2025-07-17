@@ -7,9 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface VenueRepository extends JpaRepository<Venue, Long> {
 
     Page<Venue> findVenueByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    List<Venue> findTop5ByNameContainingIgnoreCase(String venueName);
 
     /**
      * Counts the number of venues managed by a specific user (admin).

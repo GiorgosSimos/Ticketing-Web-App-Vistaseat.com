@@ -313,6 +313,17 @@ public class VenueController {
                     "Occurrence could not be created due to an unexpected error" + e.getMessage());
             return "redirect:/adminDashboard/manageVenues/occurrencesForVenue/" + venueId + "/addOccurrence";
         }
+    }
 
+    @GetMapping("/api/venues/{venueId}")
+    public String displayEvent(@PathVariable Long venueId, Model model) {
+
+
+        Venue venue = venueRepository.findById(venueId)
+                .orElseThrow(() -> new EntityNotFoundException("Venue not found"));
+
+        model.addAttribute("venue", venue);
+
+        return "displayVenue";
     }
 }

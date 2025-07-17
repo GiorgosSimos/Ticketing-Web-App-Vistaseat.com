@@ -70,7 +70,7 @@ public class SecurityConfig {
 
                 .logout(logout -> logout
                         .logoutUrl("/adminLogout")// the endpoint that performs logout
-                        .logoutSuccessUrl("/?logout=true") // redirect to log in with a message
+                        .logoutSuccessUrl("/home?logout=true") // redirect to home
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
@@ -83,7 +83,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/users/register").permitAll()
 
                             // Public pages
-                            .requestMatchers("/","/adminLogin","/adminLogin/**","/userSignUp",
+                            .requestMatchers("/home","/api/**","/adminLogin","/adminLogin/**","/userSignUp",
                                     "/css/**", "/js/**", "/images/**")
                             .permitAll()
 

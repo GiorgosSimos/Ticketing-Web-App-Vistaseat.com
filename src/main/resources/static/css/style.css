@@ -1,13 +1,44 @@
+/* Header Styling*/
+.header-style {
+    padding: 0.5rem 1.5rem;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    background-color: rgb(245, 239, 255);
+}
+
+.header-style a {
+    color: rgb(9, 32, 63);
+}
+
+.logo {
+    height: 34px;
+    border-radius: 15px;
+    margin-right: 10px;
+}
+
 /* Footer Styling*/
 .footer-style {
     padding: 1rem 1.5rem;
     justify-content: center;
     text-align: center;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.2);
     color: rgb(102, 0, 102);
     background-color: rgb(245, 239, 255);
 }
 
 .footer-style a {
     color: rgb(9, 32, 63);
+}
 
+.hero-styling {
+    background-color: rgb(228, 228, 231);
+}
+
+#suggestions {
+    position: absolute;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    top: 100%;
+    width: 100%;
+    z-index: 3;
 }
