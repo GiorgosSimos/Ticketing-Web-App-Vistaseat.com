@@ -42,3 +42,23 @@
     width: 100%;
     z-index: 3;
 }
+
+.event-slide {
+    flex: 0 0 auto;
+    width: auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    overflow: hidden;
+    border-radius: .75rem;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+    width: 48px;                 /* square pill */
+    height: 48px;
+    border-radius: 50%;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;                 /* above slides */
+}

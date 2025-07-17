@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record EventCardDto(
         Long id,
         String title,
+        String eventType,
         String venueName,
         String thumbnailUrl,
         LocalDateTime firstDate,
@@ -29,6 +30,7 @@ public record EventCardDto(
         return new EventCardDto(
                 event.getId(),
                 event.getName(),
+                event.getEventType().toString(),
                 event.getVenue().getName(),
                 thumbUrl,
                 event.getOccurrences().stream()
