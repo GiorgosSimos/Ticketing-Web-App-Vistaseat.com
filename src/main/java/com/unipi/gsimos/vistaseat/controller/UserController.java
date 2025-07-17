@@ -1,8 +1,10 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.dto.EventCardDto;
 import com.unipi.gsimos.vistaseat.dto.UserDto;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.UserRole;
+import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +22,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final EventRepository eventRepository;
 
     @GetMapping("/home")
-    public String home() {
+    public String home(Model model) {
+        List<EventCardDto> cards = eventRepository.findAllWithAtLeastOneOccurrence()
+                .stream().map(EventCardDto::from)
+                .toList();
+        model.addAttribute("cards", cards);
         return "index";
     }
 

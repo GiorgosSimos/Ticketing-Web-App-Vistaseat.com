@@ -5,6 +5,7 @@ import com.unipi.gsimos.vistaseat.model.EventType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -25,4 +26,14 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Page<Event> findAllByVenueId(Long venueId, Pageable pageable);
 
     Long countByVenueId(Long venueId);
+
+    @Query("""
+        select distinct e
+        from Event e
+        where exists (
+            select 1 from EventOccurrence o
+            where o.event = e
+        )
+    """)
+    List<Event> findAllWithAtLeastOneOccurrence();
 }
