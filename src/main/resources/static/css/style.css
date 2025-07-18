@@ -43,7 +43,7 @@
     z-index: 3;
 }
 
-.event-slide {
+.event-slide .card {
     flex: 0 0 auto;
     width: auto;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -51,14 +51,26 @@
     border-radius: .75rem;
 }
 
+.event-slide .card-body {
+    display: inline-block;
+    height: 11rem;
+}
+
+.line-clamp-2 {
+    overflow: hidden;             /* hide spill‑over text           */
+    display: -webkit-box;         /* creates an anonymous flex box  */
+    -webkit-line-clamp: 2;        /* number of visible lines        */
+    -webkit-box-orient: vertical; /* vertical stacking              */
+}
+
 .swiper-button-prev,
 .swiper-button-next {
     width: 48px;                 /* square pill */
     height: 48px;
     border-radius: 50%;
-    opacity: 0.7;
+    opacity: 0.5;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10;                 /* above slides */
+    z-index: 1;
 }
