@@ -24,6 +24,7 @@
 
     <div th:insert="~{fragments/header :: header}"></div>
 
+    <!-- Hero section-->
     <section class="hero-styling d-flex flex-column align-items-center py-5">
         <h1 class="text-center mx-auto d-block">Welcome to Vistaseat.com<br>Discover amazing events near you!</h1>
         <p class="text-muted fw-semibold text-center">From theater plays, cinema and music concerts to sports games,
@@ -68,16 +69,29 @@
         </div>
     </section>
 
+    <!-- Browse by category section-->
+    <section class="container py-5">
+        <h2 class="text-center mx-auto d-block fw-bold mb-2">Browse by category</h2>
+        <p class="text-muted fw-semibold text-center mb-5">
+            Explore our wide range of entertainment and find the perfect event for you.</p>
+        <!-- Loop through each category and create a categoryCard-->
+        <div class="browse-by-category-grid">
+            <div th:each="category : ${categories}">
+                <div th:replace="~{fragments/categoryCard :: card(${category})}"></div>
+            </div>
+        </div>
+    </section>
+
     <!-- Events slider section-->
-    <section class="container my-5">
-        <h2 class="fw-bold mb-3">Featured Events</h2>
-        <p class=" text-muted-foreground mb-4"> Don't miss these popular events happening soon</p>
+    <section class="container slider-layout my-5">
+        <h2 class="fw-bold mb-2">Featured Events</h2>
+        <p class="text-muted fw-semibold mb-4"> Don't miss these popular events happening soon</p>
         <!-- Slider main container -->
-        <div class="swiper">
+        <div class="swiper py-2">
             <div class="swiper-wrapper">
                 <!-- Card slide per event -->
                 <div th:each="card : ${cards}"
-                     class="swiper-slide px-0 event-slide">
+                     class="swiper-slide event-slide">
 
                     <div class="card shadow-sm">
                         <div class="ratio ratio-4x3">

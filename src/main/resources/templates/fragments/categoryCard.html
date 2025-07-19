@@ -1,0 +1,21 @@
+
+<!--fragments/categoryCard.html-->
+<a th:fragment="card(category)"
+   th:href="@{${category.link}}"
+   class="text-decoration-none">
+   <div class="card h-100 shadow-sm">
+        <img th:src="@{${category.image}}"
+             class="card-img-top category-image"
+             th:alt="${category.title}">
+        <div class="card-body text-center">
+             <h4 class="card-title fw-semibold mb-2"
+                 th:text="${category.title}"></h4>
+
+             <p class="text-muted fw-semibold mb-2"
+                th:text="${category.description}"></p>
+
+             <span class="badge rounded-pill text-bg-light"
+                   th:text="${category.eventCount}"></span>
+        </div>
+   </div>
+</a>

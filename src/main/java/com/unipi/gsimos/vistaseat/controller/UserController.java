@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.dto.CategoryCardDto;
 import com.unipi.gsimos.vistaseat.dto.EventCardDto;
 import com.unipi.gsimos.vistaseat.dto.UserDto;
 import com.unipi.gsimos.vistaseat.model.User;
@@ -33,10 +34,29 @@ public class UserController {
 
     @GetMapping("/home")
     public String home(Model model) {
+
+        List<CategoryCardDto> categories = List.of(
+                new CategoryCardDto("Theater", "/images/theater_play.jpg",
+                        "Ancient tragedies, comedies, plays and all kinds of theatrical shows and performances",
+                        "100+ shows", "/api/events/theater"),
+                new CategoryCardDto("Cinema", "/images/feature_film.jpg",
+                        "Latest, classic movies and film screenings", "300+ movies", "/api/events/cinema"),
+                new CategoryCardDto("Music Concerts", "/images/music_concert.png",
+                        "Live concerts, festivals and musical events", "300+ concerts", "/api/events/concerts"),
+                new CategoryCardDto("Sports", "/images/sport_event.png",
+                        "Football, basketball, tennis and more", "100+ events", "/api/events/sports"),
+                new CategoryCardDto("Museums", "/images/museum_visit.png",
+                        "Art galleries, exhibitions and cultural sites", "80+ museums", "/api/events/museums"),
+                new CategoryCardDto("Archaeological Sites", "/images/archaeological_site.jpg",
+                        "Historical Sites and archaeological tours", "30+ sites", "/api/events/archaeological")
+        );
+        model.addAttribute("categories", categories);
+
         List<EventCardDto> cards = eventRepository.findAllWithAtLeastOneOccurrence()
                 .stream().map(EventCardDto::from)
                 .toList();
         model.addAttribute("cards", cards);
+
         return "index";
     }
 
