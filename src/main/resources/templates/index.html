@@ -85,12 +85,12 @@
     <!-- Events slider section-->
     <section class="container slider-layout my-5">
         <h2 class="fw-bold mb-2">Featured Events</h2>
-        <p class="text-muted fw-semibold mb-4"> Don't miss these popular events happening soon</p>
+        <p class="text-muted fw-semibold mb-4">Don't miss these popular events happening soon</p>
         <!-- Slider main container -->
         <div class="swiper py-2">
             <div class="swiper-wrapper">
                 <!-- Card slide per event -->
-                <div th:each="card : ${cards}"
+                <div th:each="card : ${eventCards}"
                      class="swiper-slide event-slide">
 
                     <div class="card shadow-sm">
@@ -123,8 +123,52 @@
                 </div>
             </div>
             <!-- nav buttons -->
-            <button id="prevEvents" class="swiper-button-prev btn btn-light border-0 rounded-circle shadow"></button>
-            <button id="nextEvents" class="swiper-button-next btn btn-light border-0 rounded-circle shadow"></button>
+            <button id="" class="button-prev swiper-button-prev btn btn-light border-0 rounded-circle shadow"></button>
+            <button id="" class="button-next swiper-button-next btn btn-light border-0 rounded-circle shadow"></button>
+        </div>
+    </section>
+
+    <!-- Venues slider section-->
+    <section class="container slider-layout my-5">
+        <h2 class="fw-bold mb-2">Featured Venues</h2>
+        <p class="text-muted fw-semibold mb-4">Explore events at venues near you</p>
+        <!-- Slider main container -->
+        <div class="swiper py-2">
+            <div class="swiper-wrapper">
+                <!-- Card slide per venue -->
+                <div th:each="card : ${venueCards}"
+                     class="swiper-slide event-slide">
+
+                    <div class="card shadow-sm">
+                        <div class="ratio ratio-4x3">
+                            <img th:src="${card.thumbnailUrl}"
+                                 class="img-fluid object-fit-fill rounded-top"
+                                 th:alt="${card.name}">
+                        </div>
+                        <!-- Venue Details: Name, Address -->
+                        <div class="card-body p-2">
+
+                            <h6 class="card-title line-clamp-2 mb-4" th:text="${card.name}">Venue Name</h6>
+                            <div class="d-flex align-items-center mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="bi bi-geo-alt me-1" viewBox="0 0 16 16">
+                                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"></path>
+                                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path>
+                                </svg>
+                                <p th:text="${card.street} + ' ' + ${card.number} + ' ' + ${card.city} + ' ' + ${card.zipcode}"
+                                   class="line-clamp-2 text-decoration-none text-dark mb-1">
+                                   Venue Address
+                                </p>
+                            </div>
+
+
+                            <a th:href="${card.hrefLink}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- nav buttons -->
+            <button id="" class="button-prev swiper-button-prev btn btn-light border-0 rounded-circle shadow"></button>
+            <button id="" class="button-next swiper-button-next btn btn-light border-0 rounded-circle shadow"></button>
         </div>
     </section>
 
@@ -188,8 +232,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             new Swiper('.swiper', {
                 navigation: {
-                    nextEl: '#nextEvents',
-                    prevEl: '#prevEvents',
+                    nextEl: '.button-next',
+                    prevEl: '.button-prev',
                 },
                 slidesPerView: 1.2,          // mobile
                 spaceBetween : 16,

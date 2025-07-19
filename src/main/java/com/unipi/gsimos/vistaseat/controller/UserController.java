@@ -3,9 +3,11 @@ package com.unipi.gsimos.vistaseat.controller;
 import com.unipi.gsimos.vistaseat.dto.CategoryCardDto;
 import com.unipi.gsimos.vistaseat.dto.EventCardDto;
 import com.unipi.gsimos.vistaseat.dto.UserDto;
+import com.unipi.gsimos.vistaseat.dto.VenueCardDto;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
+import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class UserController {
 
     private final UserService userService;
     private final EventRepository eventRepository;
+    private final VenueRepository venueRepository;
 
     @GetMapping("/home")
     public String home(Model model) {
@@ -52,10 +55,16 @@ public class UserController {
         );
         model.addAttribute("categories", categories);
 
-        List<EventCardDto> cards = eventRepository.findAllWithAtLeastOneOccurrence()
+        List<EventCardDto> eventCards = eventRepository.findAllWithAtLeastOneOccurrence()
                 .stream().map(EventCardDto::from)
                 .toList();
-        model.addAttribute("cards", cards);
+        model.addAttribute("eventCards", eventCards);
+
+        List<VenueCardDto> venueCards = venueRepository.findAll()
+                .stream().map(VenueCardDto::from)
+                .toList();
+
+        model.addAttribute("venueCards", venueCards);
 
         return "index";
     }
