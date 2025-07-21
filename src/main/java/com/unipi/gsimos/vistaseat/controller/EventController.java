@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.dto.CategoriesEventCardDto;
 import com.unipi.gsimos.vistaseat.dto.EventDto;
 import com.unipi.gsimos.vistaseat.mapper.EventMapper;
 import com.unipi.gsimos.vistaseat.model.Event;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -220,7 +222,7 @@ public class EventController {
         }
     }
 
-    @GetMapping("/api/events/{eventId}")
+    @GetMapping("/api/events/{eventId:\\d+}")
     public String displayEvent(@PathVariable Long eventId, Model model) {
 
 
@@ -231,4 +233,99 @@ public class EventController {
 
         return "displayEvent";
     }
+
+    /**
+     * Handles *all* event‑listing pages that belong to the six supported categories
+     * (theater, cinema, concert, sports, museum, archaeological).
+     *
+     * <p>The incoming URL is constrained by a regular‑expression segment in
+     * {@code @GetMapping}, so only the recognised slugs can reach this method:
+     *
+     * <pre>
+     * /api/events/theater
+     * /api/events/cinema
+     * /api/events/concert
+     * /api/events/sports
+     * /api/events/museum
+     * /api/events/archaeological
+     * </pre>
+     *
+     * <p>Processing steps:</p>
+     * <ol>
+     *   <li>Convert the lowercase&nbsp;{@code category} slug to an {@link EventType} enum.</li>
+     *   <li>Look‑up static UI metadata (title, icon URL, description) from
+     *       an in‑memory map.</li>
+     *   <li>Fetch all events of that type from {@code eventService}.</li>
+     *   <li>Add metadata, event list and count to the {@link Model} so that the
+     *       <em>categoryEvents.html</em> view can render them.</li>
+     * </ol>
+     *
+     * @param category the path variable identifying the category
+     *                 (must match one of the slugs in the mapping regex)
+     * @param model    the model that will be populated for the Thymeleaf view
+     * @return the logical view name {@code "categoryEvents"}
+     * @throws IllegalArgumentException if the slug cannot be mapped to an {@code EventType}
+     */
+
+    @GetMapping("/api/events/{category:theater|cinema|concert|sports|museum|archaeological}")
+    private String displayEventsByCategory(@PathVariable("category") String category, Model model) {
+
+        EventType eventType = EventType.valueOf(category.toUpperCase());
+
+        CategoryMeta metadata = META_MAP.get(eventType);
+
+        model.addAttribute("pageTitle",          metadata.title());
+        model.addAttribute("categoryIconURL",    metadata.iconURL());
+        model.addAttribute("categoryDescription",metadata.description());
+
+        List<CategoriesEventCardDto> events = eventService.getEventsByEventType(eventType);
+
+        model.addAttribute("events", events);
+        model.addAttribute("eventsCount", events.size());
+
+        return "categoryEvents";
+    }
+
+    /**
+     * Immutable lookup table that supplies the UI metadata for each
+     * {@link EventType} shown on a category‑listing page.
+     *
+     * <p>The map key is the enum constant and the value is a {@link CategoryMeta}
+     * record that holds:</p>
+     * <ul>
+     *   <li>a human‑readable page title,</li>
+     *   <li>the relative URL of the category icon, and</li>
+     *   <li>a short marketing description displayed beneath the heading.</li>
+     * </ul>
+     *
+     * <p>Created via {@code Map.of(…)} at class‑initialisation time, so the
+     * collection is unmodifiable and thread‑safe. When a new
+     * {@code EventType} is introduced, make sure to add its corresponding
+     * entry here; otherwise the controller will lack the metadata needed to
+     * render that category’s page.</p>
+     */
+    private static final Map<EventType, CategoryMeta> META_MAP = Map.of(
+            EventType.THEATER, new CategoryMeta(
+                    "Theater Plays", "/images/theater_icon.png",
+                    "Discover amazing theatrical performances, from ancient tragedies to classical dramas and comedies."),
+            EventType.CINEMA, new CategoryMeta(
+                    "Cinema Movies", "/images/movie_reel_icon.png",
+                    "Discover great movies, from european and world cinema."),
+            EventType.CONCERT, new CategoryMeta(
+                    "Music Concerts", "/images/music_concert_icon.png",
+                    "Enjoy unforgettable live performances, from artists from all around the globe."),
+            EventType.SPORTS, new CategoryMeta(
+                    "Sport Events", "/images/sports_icon.png",
+                    "Football, basketball and more great matches."),
+            EventType.MUSEUM, new CategoryMeta(
+                    "Museum Visits","/images/museum_icon.png",
+                    "Visit wonderful museums, art galleries and exhibitions."),
+            EventType.ARCHAEOLOGICAL, new CategoryMeta(
+                    "Visit Archaeological Sites", "/images/archaeological_site_icon.png",
+                    "Historical, cultural sites and archaeological tours."
+            )
+    );
+
+    private record CategoryMeta(String title, String iconURL, String description) {}
+
 }

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Theater Events | Vistaseat.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <script defer
+            src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:insert="~{fragments/header :: header}"></div>
+
+    <!-- Section Events Info -->
+    <section class="hero-styling">
+        <div class="container py-5">
+            <div class="d-flex align-items-center gap-5">
+                <div class="flex-shrink-auto flex-grow-auto">
+                    <img th:src="@{${categoryIconURL}}" style="max-width: 64px; border-radius: 50%;" th:alt="${pageTitle}">
+                </div>
+                <div class="d-flex-column">
+                    <h2 class="fw-bold mb-1" th:text="${pageTitle}">Theater Events</h2>
+                    <p class="text-muted fw-semibold mb-0"
+                       th:text="${categoryDescription}">
+                        Discover amazing theatrical performances, from ancient tragedies to classical dramas and comedies.</p>
+                </div>
+                <div class="d-flex flex-grow-1 justify-content-end">
+                <span class="badge bg-light-subtle border border-light-subtle text-light-emphasis rounded-pill"
+                      th:text="${eventsCount} +' Events Available'">Events Available
+                </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="events-filter-layout py-2 my-4">
+        <!-- Filters -->
+        <div class="filtersBar mx-4">
+            <div class="container border rounded">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-funnel fs-3 me-1"></i>
+                    <h2 class="fw-bold mb-0">Filters</h2>
+                </div>
+                <!-- TODO: Search Field -->
+                <form
+
+                      class="d-flex w-100 mb-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search Events..." name="searchQuery"
+                                    >
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-search"
+                                 viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0
+                                    1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <div th:if="${eventsCount == 0}"
+             class="empty-state d-flex flex-column align-items-center text-center">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="bi bi-calendar3 empty-icon mb-3" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384
+                 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
+                <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+            </svg>
+            <h3 class="fw-semibold mb-1">Sorry, no events found at that time!</h3>
+        </div>
+        <!-- Events Details -->
+        <div th:if="${eventsCount > 0}"
+             class="mx-5">
+            <div th:each="event: ${events}" class="text-decoration-none mb-2">
+                <a th:href="@{'/api/events/'+${event.eventId}}" class="text-decoration-none">
+                    <article class="event-card">
+                        <!-- 30% – Event image -->
+                        <div class="event-card-image">
+                            <img th:src="@{${event.eventImageURL}}" alt="Theater">
+                        </div>
+                        <!-- 70% – Event info -->
+                        <div class="event-card-body">
+                            <div class="event-type two-column-span"
+                                 th:text="${event.eventType}">Theater</div>
+                            <h2 class="event-title two-column-span"
+                                th:text="${event.eventTitle}">The Lion King</h2>
+                            <p class="event-description two-column-span"
+                               th:text="${event.eventDescription}">Event Description</p>
+
+                            <div class="event-meta">
+                                <span class="meta-label">
+                                    <i class="bi bi-geo-fill"></i>
+                                    Location:
+                                </span>
+                                <span class="meta-value" th:text="${event.eventVenueName}">Athens Open Theatre</span>
+
+                                <span class="meta-label">
+                                    <i class="bi bi-calendar-week"></i>
+                                    Date:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="'From ' +${#temporals.format(event.fromDate,'MMM d, yyyy')}">
+                                    14 Aug 2025
+                                </span>
+
+                                <span class="meta-label">
+                                    <i class="bi bi-hourglass"></i>
+                                    Duration:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="|${event.duration / 60}h ${event.duration % 60}m|">2h 30m</span>
+
+                                <span class="meta-label">
+                                    <i class="bi bi-cash-coin"></i>
+                                    Price:
+                                </span>
+                                <span class="meta-value"
+                                    th:text="'From ' + ${event.price} + '€'">€45.00</span>
+                            </div>
+                        </div>
+                    </article>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

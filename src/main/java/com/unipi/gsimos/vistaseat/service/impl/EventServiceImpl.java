@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.service.impl;
 
+import com.unipi.gsimos.vistaseat.dto.CategoriesEventCardDto;
 import com.unipi.gsimos.vistaseat.dto.EventDto;
 import com.unipi.gsimos.vistaseat.mapper.EventMapper;
 import com.unipi.gsimos.vistaseat.model.Event;
@@ -81,6 +82,12 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Event> events = eventRepository.findAllByEventType(eventType, pageable);
         return events.map(eventMapper::toDto);
+    }
+
+    @Override
+    public List<CategoriesEventCardDto> getEventsByEventType(EventType eventType) {
+        List<Event> events = eventRepository.findAllWithAtLeastOneOccurrenceByType(eventType);
+        return events.stream().map(CategoriesEventCardDto::from).toList();
     }
 
     @Override
