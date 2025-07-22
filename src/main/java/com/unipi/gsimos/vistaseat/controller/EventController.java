@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.ui.Model;
 import com.unipi.gsimos.vistaseat.model.User;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -268,20 +270,31 @@ public class EventController {
      */
 
     @GetMapping("/api/events/{category:theater|cinema|concert|sports|museum|archaeological}")
-    private String displayEventsByCategory(@PathVariable("category") String category, Model model) {
+    private String displayEventsByCategory(@PathVariable("category") String category,
+                                           @RequestParam(name = "searchQuery", required = false) String searchQuery,
+                                           @RequestParam(required = false)
+                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                                           @RequestParam(required = false)
+                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+                                           Model model) {
 
         EventType eventType = EventType.valueOf(category.toUpperCase());
 
         CategoryMeta metadata = META_MAP.get(eventType);
 
+        model.addAttribute("category", category);
         model.addAttribute("pageTitle",          metadata.title());
         model.addAttribute("categoryIconURL",    metadata.iconURL());
         model.addAttribute("categoryDescription",metadata.description());
 
-        List<CategoriesEventCardDto> events = eventService.getEventsByEventType(eventType);
+        List<CategoriesEventCardDto> events = eventService.getEvents(eventType, searchQuery, from, to);
 
         model.addAttribute("events", events);
         model.addAttribute("eventsCount", events.size());
+
+        model.addAttribute("searchQuery", searchQuery);
+        model.addAttribute("from", from);
+        model.addAttribute("to", to);
 
         return "categoryEvents";
     }

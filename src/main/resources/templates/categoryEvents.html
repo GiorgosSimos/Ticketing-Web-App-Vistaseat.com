@@ -7,10 +7,12 @@
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <script defer
             src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
@@ -47,13 +49,18 @@
                     <i class="bi bi-funnel fs-3 me-1"></i>
                     <h2 class="fw-bold mb-0">Filters</h2>
                 </div>
-                <!-- TODO: Search Field -->
-                <form
+                <!-- Search by name filter -->
+                <h4 class="fw-semibold mb-2">Name</h4>
+                <form th:action="@{'/api/events/' + ${category}}"
+                      method="get"
+                      class="d-flex w-100 mb-3">
 
-                      class="d-flex w-100 mb-2">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search Events..." name="searchQuery"
-                                    >
+                               th:value="${searchQuery}">
+                        <!-- preserve date range if already set -->
+                        <input type="hidden" name="from" th:if="${from != null}" th:value="${from}">
+                        <input type="hidden" name="to"   th:if="${to   != null}" th:value="${to}">
                         <button class="btn btn-outline-secondary" type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  class="bi bi-search"
@@ -64,9 +71,54 @@
                         </button>
                     </div>
                 </form>
+                <!-- Search by date filter -->
+                <h4 class="fw-semibold mb-2">Date</h4>
+                <form th:action="@{'/api/events/' + ${category}}"
+                      method="get" class="mb-3" id="dateForm">
+
+                    <!-- Visible range picker -->
+                    <div class="col-auto form-floating position-relative">
+                        <input id="rangePicker"
+                               type="text"
+                               class="form-control"
+                               placeholder="From... to..."
+                               th:attr="data-from=${from}, data-to=${to}">
+                        <label for="rangePicker">Filter By Date</label>
+                    </div>
+
+                    <!-- Hidden fields actually sent to the server -->
+                    <input type="hidden" name="from" id="fromHidden" th:value="${from}">
+                    <input type="hidden" name="to"   id="toHidden"   th:value="${to}">
+                    <!-- Preserve name filter if set -->
+                    <input type="hidden" name="q" th:if="${searchQuery != null}" th:value="${searchQuery}">
+                </form>
+                <!--<form th:action="@{'/api/events/' + ${category}}" method="get" class="mb-3">
+                    <div class="row g-2 align-items-end">
+                        <div class="col">
+                            <label for="fromInput" class="form-label">From</label>
+                            <input type="date" name="from" id="fromInput" class="form-control" th:value="${from}">
+                        </div>
+                        <div class="col">
+                            <label for="toInput" class="form-label">To</label>
+                            <input type="date" id="toInput" name="to" class="form-control" th:value="${to}">
+                        </div>
+
+                        &lt;!&ndash; preserve name if already set &ndash;&gt;
+                        <input type="hidden" name="searchQuery" th:if="${searchQuery != null}" th:value="${searchQuery}">
+
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                        </div>
+                    </div>
+                </form>-->
+                <button class="w-100 btn btn-outline-dark mb-2"
+                        type="button" id="clearFilterBtn">
+                    Clear Filters
+                </button>
             </div>
 
         </div>
+
         <div th:if="${eventsCount == 0}"
              class="empty-state d-flex flex-column align-items-center text-center">
             <svg xmlns="http://www.w3.org/2000/svg"
@@ -79,13 +131,13 @@
                  0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
                  0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
             </svg>
-            <h3 class="fw-semibold mb-1">Sorry, no events found at that time!</h3>
+            <h3 class="fw-semibold mb-1">Sorry, no events found!</h3>
         </div>
         <!-- Events Details -->
         <div th:if="${eventsCount > 0}"
              class="mx-5">
             <div th:each="event: ${events}" class="text-decoration-none mb-2">
-                <a th:href="@{'/api/events/'+${event.eventId}}" class="text-decoration-none">
+                <a th:href="@{'/api/events/'+ ${event.eventId}}" class="text-decoration-none" style="color: inherit">
                     <article class="event-card">
                         <!-- 30% – Event image -->
                         <div class="event-card-image">
@@ -137,7 +189,52 @@
         </div>
     </section>
 
-
     <div th:insert="~{fragments/footer :: footer}"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const clearFilterBtn = document.getElementById("clearFilterBtn");
+
+            const form       = document.getElementById('dateForm');
+            const input      = document.getElementById('rangePicker');
+            const fromHidden = document.getElementById('fromHidden');
+            const toHidden   = document.getElementById('toHidden');
+            let alreadySubmitting = false;
+
+            flatpickr(input, {
+                mode: "range",
+                dateFormat: "Y-m-d",
+                defaultDate: [input.dataset.from, input.dataset.to].filter(Boolean),
+                onChange(selectedDates, _dateStr, fp) {   // <-- grab the flatpickr instance
+                    if (selectedDates.length === 2) {
+                        const [from, to] = selectedDates;
+
+                        // format without converting to UTC
+                        fromHidden.value = fp.formatDate(from, "Y-m-d");
+                        toHidden.value   = fp.formatDate(to,   "Y-m-d");
+
+                        if (!alreadySubmitting) {
+                            alreadySubmitting = true;
+                            form.requestSubmit?.() ?? form.submit();
+                        }
+                    } else {
+                        fromHidden.value = "";
+                        toHidden.value   = "";
+                    }
+                }
+            });
+
+            if (clearFilterBtn) {
+                clearFilterBtn.addEventListener("click", function() {
+                    // Get the current base URL (without query parameters)
+                    // Example: from /api/events/sports?searchQuery=football
+                    // It will extract /api/events/sports
+                    const baseUrl = window.location.origin + window.location.pathname;
+                    // Navigate to the base URL, effectively clearing all query parameters
+                    window.location.href = baseUrl;
+                });
+            }
+        });
+    </script>
 </body>
 </html>

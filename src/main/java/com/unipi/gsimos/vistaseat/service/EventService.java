@@ -5,7 +5,9 @@ import com.unipi.gsimos.vistaseat.dto.EventDto;
 import com.unipi.gsimos.vistaseat.model.EventType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface EventService {
@@ -24,5 +26,8 @@ public interface EventService {
 
     Page<EventDto> getEventsByEventType (EventType eventType, int page, int size);
 
-    List<CategoriesEventCardDto> getEventsByEventType(EventType eventType);
+    List<CategoriesEventCardDto> getEvents(EventType eventType,
+                                           @Nullable String eventName,
+                                           @Nullable LocalDate from,
+                                           @Nullable LocalDate to);
 }

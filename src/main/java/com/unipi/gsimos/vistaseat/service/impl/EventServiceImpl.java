@@ -19,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -85,8 +87,26 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<CategoriesEventCardDto> getEventsByEventType(EventType eventType) {
-        List<Event> events = eventRepository.findAllWithAtLeastOneOccurrenceByType(eventType);
+    public List<CategoriesEventCardDto> getEvents(EventType eventType, String eventName, LocalDate from, LocalDate to) {
+
+        boolean isNameFilterFilled = eventName != null && !eventName.isBlank();
+        boolean isDateFilterFilled = from != null && to != null;
+
+        LocalDateTime fromDate = isDateFilterFilled ? from.atStartOfDay() : null;
+        LocalDateTime toDate = isDateFilterFilled ? to.plusDays(1).atStartOfDay().minusNanos(1) : null;
+
+        List<Event> events;
+
+        if (!isNameFilterFilled && !isDateFilterFilled) {
+            events = eventRepository.findAllWithAtLeastOneOccurrenceByType(eventType);
+        } else if (isNameFilterFilled && !isDateFilterFilled) {
+            events = eventRepository.findAllWithAtLeastOneOccurrenceByTypeAndNameLike(eventType, eventName);
+        } else if (!isNameFilterFilled && isDateFilterFilled) {
+            events = eventRepository.findAllWithAtLeastOneOccurrenceByTypeAndDateRange(eventType, fromDate, toDate);
+        } else {
+            events = eventRepository.findAllWithAtLeastOneOccurrenceByTypeAndNameLikeAndDateRange(eventType, eventName, fromDate, toDate);
+        }
+
         return events.stream().map(CategoriesEventCardDto::from).toList();
     }
 

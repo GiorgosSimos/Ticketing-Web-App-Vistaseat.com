@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
@@ -31,22 +32,65 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("""
         select distinct e
         from Event e
-        where exists (
-            select 1 from EventOccurrence o
-            where o.event = e
-        )
+        where exists (select 1
+                      from EventOccurrence o
+                      where o.event = e
+                     )
     """)
     List<Event> findAllWithAtLeastOneOccurrence();
 
     @Query("""
-    select distinct e
-    from Event e
-    where e.eventType = :type
-      and exists (
-          select 1
-          from EventOccurrence o
-          where o.event = e
-          )
+        select distinct e
+        from Event e
+        where e.eventType = :type
+            and exists (select 1
+                        from EventOccurrence o
+                        where o.event = e
+                        )
     """)
     List<Event> findAllWithAtLeastOneOccurrenceByType(@Param("type") EventType type);
+
+    @Query("""
+        select distinct e
+        from Event e
+        where e.eventType = :type
+            and lower(e.name) like lower(concat('%', :name, '%'))
+            and exists (select 1
+                        from EventOccurrence o
+                        where o.event = e
+                        )
+    """)
+    List<Event> findAllWithAtLeastOneOccurrenceByTypeAndNameLike(@Param("type") EventType type,
+                                                                 @Param("name") String name);
+
+    @Query("""
+        select distinct e
+        from Event e
+        where e.eventType = :type
+          and exists (
+             select 1 from EventOccurrence o
+             where o.event = e
+               and o.eventDate between :from and :to
+          )
+        """)
+    List<Event> findAllWithAtLeastOneOccurrenceByTypeAndDateRange(@Param("type") EventType type,
+                                                                  @Param("from") LocalDateTime from,
+                                                                  @Param("to")   LocalDateTime to);
+
+    @Query("""
+        select distinct e
+        from Event e
+        where e.eventType = :type
+          and lower(e.name) like lower(concat('%', :name, '%'))
+          and exists (
+             select 1 from EventOccurrence o
+             where o.event = e
+               and o.eventDate between :from and :to
+          )
+        """)
+    List<Event> findAllWithAtLeastOneOccurrenceByTypeAndNameLikeAndDateRange(
+            @Param("type") EventType type,
+            @Param("name") String name,
+            @Param("from") LocalDateTime from,
+            @Param("to")   LocalDateTime to);
 }
