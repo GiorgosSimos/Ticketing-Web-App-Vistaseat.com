@@ -236,3 +236,94 @@
     0%   { opacity: 0; transform: translateY(15px); }
     100% { opacity: 1; transform: translateY(0); }
 }
+
+/* Display Events Page */
+.event-page-hero {
+    display: flex;
+    gap: 3rem;
+    padding: 1rem 1.25rem;
+    font-family: system-ui, sans-serif;
+}
+
+.event-page-image {
+    flex: 0 0 35%;
+    min-width: 350px;
+}
+
+.event-page-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.event-page-hero-details {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+}
+
+.meta-label-event-page {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: black;
+    white-space: nowrap;
+}
+
+.meta-value-event-page {
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.about-event-text {
+    text-align: justify;
+    color: rgb(113, 113, 122);
+    font-size: 1.15rem;
+    line-height: 1.4;
+}
+
+.book-occurrence-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.availability-ribbon {
+    flex: 0 0 .4rem;
+    background-color: green;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.occurrence-details-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 2rem;
+}
+
+.availability-badge {
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+    border-left: 0;
+}
+
+.booking-price {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.cta-tickets {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: center;
+    align-items: center;
+    min-width: 8rem;
+}

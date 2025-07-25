@@ -44,7 +44,7 @@
                class="mb-0 text-decoration-none text-dark me-4">
                Venue Capacity:
             </p>
-            <!-- Date filter -->
+            <!-- TODO: Optimize Date filter -->
             <form class="d-flex justify-content-end flex-fill mb-0 me-2"
                   method="get"
                   th:action="@{/adminDashboard/manageVenues/occurrencesForVenue/{id}(id=${venue.id})}">
@@ -152,7 +152,7 @@
             <div class="rounded-3 overflow-hidden shadow">
                 <table class="table table-secondary table-striped table-hover align-middle">
                     <thead class="table-secondary">
-                    <tr>
+                    <tr class="text-nowrap">
                         <th>Event</th>
                         <th>Date & Time</th>
                         <th>Ticket Price</th>
@@ -184,7 +184,7 @@
                                   th:classappend="${occurrence.availabilityLevel.css}">
                             </span>
                         </td>
-                        <td>
+                        <td class="text-nowrap">
                             <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
                             <!-- TODO Action Button: Manage Bookings -->
                             <form

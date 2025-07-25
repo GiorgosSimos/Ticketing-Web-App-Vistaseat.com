@@ -47,6 +47,10 @@ public class Booking {
     @Column(name = "booking_date", nullable = false)
     private LocalDateTime bookingDate;
 
+    // One seat per ticket
+    @Column(name = "number_of_tickets", nullable = false) @Min(1)
+    private int numberOfTickets;
+
     @Min(value = 0, message = "Booking price cannot be negative")
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;

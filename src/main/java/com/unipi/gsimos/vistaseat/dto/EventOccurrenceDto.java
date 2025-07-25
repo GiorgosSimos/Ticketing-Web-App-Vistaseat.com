@@ -25,7 +25,10 @@ public class EventOccurrenceDto {
     @Min(value = 0, message = "Duration of an event cannot be negative")
     private int duration;
 
-    //WARNING: Initialization of available seats should not exceed the capacity of the corresponding venue
+    /**
+     * Total seat capacity for this event occurrence.
+     * Set once on creation — must not exceed the hosting venue’s capacity and is never updated thereafter.
+     */
     private int availableSeats;
 
     private Long eventId;
@@ -34,16 +37,18 @@ public class EventOccurrenceDto {
 
     private Long bookingCount;
 
+    private int seatsSold;
+
     /**
      * Availability expressed as a decimal in the range {@code 0.0 – 1.0}
-     * (returns 0 when availableSeats is 0 to avoid divisions-by-zero).
+     * (returns 0 when remaining seats is 0 to avoid divisions-by-zero).
      */
     private float getAvailability() {
-        if  (availableSeats == 0) {
+        if  (seatsSold >= availableSeats) {
             return 0;
         }
-        long bookedSeats = bookingCount == null ? 0 : bookingCount;
-        return (availableSeats - bookedSeats) / (float)availableSeats;
+
+        return (availableSeats - seatsSold) / (float)availableSeats;
     }
 
     /**

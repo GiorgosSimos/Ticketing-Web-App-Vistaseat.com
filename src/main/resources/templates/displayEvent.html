@@ -2,9 +2,115 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${event.name}"></title>
+    <title th:text="${eventCard.eventTitle} + '| Vistaseat.com'"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <h2 th:text="${event.name}"></h2>
+
+    <div th:insert="~{fragments/header :: header}"></div>
+
+    <!--Event Details Section-->
+    <section class="container my-5 border rounded shadow-lg">
+        <div class="event-page-hero">
+            <figure class="event-page-image my-2">
+                <img src="/images/feature_film.jpg" alt="Event Image">
+            </figure>
+            <div class="event-page-hero-details gap-3">
+                <span class="badge rounded-pill text-bg-light border border-dark my-2">
+                    <span class="text-bg-light" th:text="${eventCard.eventType}">CONCERT</span>
+                </span>
+                <h2 class="two-column-span fw-bold mb-2" th:text="${eventCard.eventTitle}"></h2>
+                <div class="event-meta">
+                                <span class="meta-label-event-page">
+                                    <i class="bi bi-geo-fill"></i>
+                                    Venue:
+                                </span>
+                    <span class="meta-value-event-page" th:text="${eventCard.eventVenueName}">Athens Open Theatre</span>
+
+                    <span class="meta-label-event-page">
+                                    <i class="bi bi-calendar-week"></i>
+                                    Date:
+                    </span>
+                    <span class="meta-value-event-page"
+                          th:text="'From ' +${#temporals.format(eventCard.fromDate,'MMM d, yyyy')}">
+                        14 Aug 2025
+                    </span>
+                    <span class="meta-label-event-page">
+                                    <i class="bi bi-hourglass"></i>
+                                    Duration:
+                                </span>
+                    <span class="meta-value-event-page"
+                          th:text="|${eventCard.duration / 60}h ${eventCard.duration % 60}m|">2h 30m</span>
+
+                    <span class="meta-label-event-page">
+                                    <i class="bi bi-cash-coin"></i>
+                                    Price:
+                                </span>
+                    <span class="meta-value-event-page"
+                          th:text="'From ' + ${eventCard.price} + '€'">€45.00</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- About Section -->
+    <section class="container my-5">
+        <h3 class="fw-bold my-3">About this Event</h3>
+        <p class="about-event-text" th:text="${eventCard.eventDescription}">
+            Quisque eu nisl id risus laoreet scelerisque ut at purus. Vivamus sed tristique dui. Curabitur semper sem risus, ut ultricies quam ornare sed. Integer lacinia lorem in nisi porttitor interdum. Aliquam blandit sit amet turpis ac dapibus. Maecenas euismod, ex et tempor congue, nisi ex ornare augue, et pretium est nisl ut nisi. In sed nulla sed sem feugiat gravida egestas a nunc. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla posuere urna vitae diam elementum, tincidunt semper enim maximus. Mauris ligula urna, aliquam sed consectetur vel, lobortis eu dolor. Nulla sed eros ornare, blandit massa non, dictum risus. Vivamus ut felis at ligula porttitor consequat. In hac habitasse platea dictumst. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Praesent nec ullamcorper lacus. Aliquam consequat ipsum sed metus euismod blandit.
+        </p>
+    </section>
+
+    <!-- Available Showtimes section -->
+    <section class="container my-5">
+        <h2 class="fw-bold my-3">Available Showtimes</h2>
+        <!-- Event Occurrences -->
+        <div th:each="occurrenceCard :${occurrenceCards}" class="text-decoration-none mb-2">
+            <div class="book-occurrence-card">
+                <div class="availability-ribbon"></div>
+                <div class="occurrence-details-grid mx-2">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-calendar-event me-2"></i>
+                        <span th:text="${#temporals.format(occurrenceCard.dateTime, 'EEEE, MMM d, yyyy')}"
+                              class="mb-0">Wednesday, Dec 23, 2024</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-clock me-2"></i>
+                        <span th:text="${#temporals.format(occurrenceCard.dateTime, 'h:mm a')}"
+                              class="mb-0">7:30 PM</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-0 two-column-span">
+                        <i class="bi bi-geo-alt me-2"></i>
+                        <span th:text="${occurrenceCard.venueName}" class="mb-0">Athens Open Theatre</span>
+                    </div>
+                    <div class="d-flex align-items-center text-muted ms-4 mb-2 two-column-span">
+                        <span th:text="${occurrenceCard.venueStreet} + ' ' + ${occurrenceCard.venueNumber} +
+                                        ' ' + ${occurrenceCard.venueCity} + ' ' + ${occurrenceCard.venueZipcode()}"
+                              class="mb-0">Aiolou 69, Athens 64100</span>
+                    </div>
+                </div>
+                <div class="col-3"></div>
+                <div class="availability-badge">
+                    <span class="badge rounded-pill bg-success">Available</span>
+                </div>
+                <div class="booking-price">
+                    <p th:text="${occurrenceCard.price} + '€'" class="mb-0 fw-bold">From 89$</p>
+                    <p class="text-muted">per ticket</p>
+                </div>
+                <div class="cta-tickets">
+                    <button class="btn btn-lg btn-dark">
+                        <i class="bi bi-ticket-perforated"></i>
+                        Tickets
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>

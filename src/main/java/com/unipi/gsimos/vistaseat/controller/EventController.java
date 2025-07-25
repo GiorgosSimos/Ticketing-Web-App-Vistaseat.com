@@ -2,10 +2,10 @@ package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.CategoriesEventCardDto;
 import com.unipi.gsimos.vistaseat.dto.EventDto;
+import com.unipi.gsimos.vistaseat.dto.EventOccurrenceCardDto;
 import com.unipi.gsimos.vistaseat.mapper.EventMapper;
-import com.unipi.gsimos.vistaseat.model.Event;
-import com.unipi.gsimos.vistaseat.model.EventType;
-import com.unipi.gsimos.vistaseat.model.Venue;
+import com.unipi.gsimos.vistaseat.model.*;
+import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.EventService;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.ui.Model;
-import com.unipi.gsimos.vistaseat.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -37,6 +36,7 @@ public class EventController {
     private final EventService eventService;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final EventOccurrenceRepository eventOccurrenceRepository;
 
     @GetMapping("/adminDashboard/manageEvents")
     public String manageEvents(@RequestParam(defaultValue = "0") int page,
@@ -231,7 +231,15 @@ public class EventController {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found"));
 
-        model.addAttribute("event", event);
+        CategoriesEventCardDto eventCard = CategoriesEventCardDto.from(event);
+
+        List<EventOccurrence> occurrences = eventOccurrenceRepository.findAllByEventId(eventId);
+
+        List<EventOccurrenceCardDto> occurrenceCards = occurrences.stream()
+                .map(EventOccurrenceCardDto::from).toList();
+
+        model.addAttribute("eventCard", eventCard);
+        model.addAttribute("occurrenceCards", occurrenceCards);
 
         return "displayEvent";
     }
