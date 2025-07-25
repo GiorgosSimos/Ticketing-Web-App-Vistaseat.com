@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.service.impl;
 
+import com.unipi.gsimos.vistaseat.dto.EventOccurrenceCardDto;
 import com.unipi.gsimos.vistaseat.dto.EventOccurrenceDto;
 import com.unipi.gsimos.vistaseat.mapper.EventOccurrenceMapper;
 import com.unipi.gsimos.vistaseat.model.EventOccurrence;
@@ -117,6 +118,26 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
         List<EventOccurrenceDto> occurrencesWithBookingCount = calculateBookingCountOfOccurrences(
                 eventOccurrences.getContent());
         return new PageImpl<>(occurrencesWithBookingCount, pageable, eventOccurrences.getTotalElements());
+    }
+
+    @Override
+    public List<EventOccurrenceCardDto> getUpcomingOccurrencesByEventIdAndDateRange(Long eventId,
+                                                                                    LocalDate from,
+                                                                                    LocalDate to) {
+        boolean isDateFilter = from != null && to != null;
+
+        LocalDateTime fromDate = isDateFilter ? from.atStartOfDay() : null;
+        LocalDateTime toDate = isDateFilter ? to.plusDays(1).atStartOfDay().minusNanos(1) : null;
+
+        List<EventOccurrence> eventOccurrences;
+
+        if (isDateFilter) {
+            eventOccurrences = eventOccurrenceRepository.findUpcomingOccurrencesInWindow(eventId, fromDate, toDate);
+        } else {
+            eventOccurrences = eventOccurrenceRepository.findUpcomingOccurrences(eventId);
+        }
+
+        return  eventOccurrences.stream().map(EventOccurrenceCardDto::from).toList();
     }
 
     /**

@@ -18,7 +18,7 @@
     <div th:insert="~{fragments/header :: header}"></div>
 
     <!-- Section Events Info -->
-    <section class="hero-styling">
+    <section class="hero-styling" id="aboutSection">
         <div class="container py-5">
             <div class="d-flex align-items-center gap-5">
                 <div class="flex-shrink-auto flex-grow-auto">
@@ -168,50 +168,6 @@
 
     <div th:insert="~{fragments/footer :: footer}"></div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const clearFilterBtn = document.getElementById("clearFilterBtn");
-
-            const form       = document.getElementById('dateForm');
-            const input      = document.getElementById('rangePicker');
-            const fromHidden = document.getElementById('fromHidden');
-            const toHidden   = document.getElementById('toHidden');
-            let alreadySubmitting = false;
-
-            flatpickr(input, {
-                mode: "range",
-                dateFormat: "Y-m-d",
-                defaultDate: [input.dataset.from, input.dataset.to].filter(Boolean),
-                onChange(selectedDates, _dateStr, fp) {   // <-- grab the flatpickr instance
-                    if (selectedDates.length === 2) {
-                        const [from, to] = selectedDates;
-
-                        // format without converting to UTC
-                        fromHidden.value = fp.formatDate(from, "Y-m-d");
-                        toHidden.value   = fp.formatDate(to,   "Y-m-d");
-
-                        if (!alreadySubmitting) {
-                            alreadySubmitting = true;
-                            form.requestSubmit?.() ?? form.submit();
-                        }
-                    } else {
-                        fromHidden.value = "";
-                        toHidden.value   = "";
-                    }
-                }
-            });
-
-            if (clearFilterBtn) {
-                clearFilterBtn.addEventListener("click", function() {
-                    // Get the current base URL (without query parameters)
-                    // Example: from /api/events/sports?searchQuery=football
-                    // It will extract /api/events/sports
-                    const baseUrl = window.location.origin + window.location.pathname;
-                    // Navigate to the base URL, effectively clearing all query parameters
-                    window.location.href = baseUrl;
-                });
-            }
-        });
-    </script>
+    <script th:src="@{/js/main-app.js}"></script>
 </body>
 </html>

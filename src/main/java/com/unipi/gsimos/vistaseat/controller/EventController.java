@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.model.*;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
+import com.unipi.gsimos.vistaseat.service.EventOccurrenceService;
 import com.unipi.gsimos.vistaseat.service.EventService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class EventController {
     private final EventService eventService;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
-    private final EventOccurrenceRepository eventOccurrenceRepository;
+    private final EventOccurrenceService eventOccurrenceService;
 
     @GetMapping("/adminDashboard/manageEvents")
     public String manageEvents(@RequestParam(defaultValue = "0") int page,
@@ -225,7 +226,12 @@ public class EventController {
     }
 
     @GetMapping("/api/events/{eventId:\\d+}")
-    public String displayEvent(@PathVariable Long eventId, Model model) {
+    public String displayEvent(@PathVariable Long eventId,
+                               @RequestParam(required = false)
+                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                               @RequestParam(required = false)
+                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+                               Model model) {
 
 
         Event event = eventRepository.findById(eventId)
@@ -233,13 +239,13 @@ public class EventController {
 
         CategoriesEventCardDto eventCard = CategoriesEventCardDto.from(event);
 
-        List<EventOccurrence> occurrences = eventOccurrenceRepository.findAllByEventIdOrderByEventDateAsc(eventId);
-
-        List<EventOccurrenceCardDto> occurrenceCards = occurrences.stream()
-                .map(EventOccurrenceCardDto::from).toList();
+        List<EventOccurrenceCardDto> occurrenceCards = eventOccurrenceService.getUpcomingOccurrencesByEventIdAndDateRange(eventId, from, to);
 
         model.addAttribute("eventCard", eventCard);
         model.addAttribute("occurrenceCards", occurrenceCards);
+        model.addAttribute("occurrenceCount", occurrenceCards.size());
+        model.addAttribute("from", from);
+        model.addAttribute("to", to);
 
         return "displayEvent";
     }

@@ -98,13 +98,13 @@ public class EventServiceImpl implements EventService {
         List<Event> events;
 
         if (!isNameFilterFilled && !isDateFilterFilled) {
-            events = eventRepository.findAllWithAtLeastOneOccurrenceByType(eventType);
+            events = eventRepository.findUpcomingWithAtLeastOneOccurrenceByType(eventType);
         } else if (isNameFilterFilled && !isDateFilterFilled) {
-            events = eventRepository.findAllWithAtLeastOneOccurrenceByTypeAndNameLike(eventType, eventName);
+            events = eventRepository.findUpcomingWithAtLeastOneOccurrenceByTypeAndNameLike(eventType, eventName);
         } else if (!isNameFilterFilled && isDateFilterFilled) {
-            events = eventRepository.findAllWithAtLeastOneOccurrenceByTypeAndDateRange(eventType, fromDate, toDate);
+            events = eventRepository.findUpcomingWithAtLeastOneOccurrenceByTypeAndDateRange(eventType, fromDate, toDate);
         } else {
-            events = eventRepository.findAllWithAtLeastOneOccurrenceByTypeAndNameLikeAndDateRange(eventType, eventName, fromDate, toDate);
+            events = eventRepository.findUpcomingWithAtLeastOneOccurrenceByTypeAndNameLikeAndDateRange(eventType, eventName, fromDate, toDate);
         }
 
         return events.stream().map(CategoriesEventCardDto::from).toList();

@@ -28,6 +28,15 @@ public interface EventOccurrenceRepository extends JpaRepository<EventOccurrence
             LocalDateTime windowEnd,
             Pageable pageable);
 
+    @Query("""
+       SELECT  o
+       FROM    EventOccurrence o
+       WHERE   o.event.id   = :eventId
+         AND   o.eventDate  > CURRENT_TIMESTAMP
+       ORDER BY o.eventDate
+       """)
+    List<EventOccurrence> findUpcomingOccurrences(@Param("eventId") Long eventId);
+
     /**
      * Retrieves every {@link EventOccurrence} that *starts* within the three-day
      * window centred on a candidate date for the given venue.
@@ -60,4 +69,26 @@ public interface EventOccurrenceRepository extends JpaRepository<EventOccurrence
                                                   @Param("windowStart") LocalDateTime windowStart,
                                                   @Param("windowEnd") LocalDateTime windowEnd,
                                                   @Param("skipId") Long skipId);
+
+    /**
+     * Returns all future occurrences of a given event that fall inside
+     * a provided time window (windowStart, windowEnd).
+     * <p>
+     * – Filters by the event’s id (`o.event.id = :eventId`)
+     * – Keeps only occurrences whose `eventDate` is **after now** (`CURRENT_TIMESTAMP`)
+     * – Restricts the results to the requested window
+     * – Sorts by `eventDate` so the soonest show up first
+     */
+    @Query("""
+       SELECT  o
+       FROM    EventOccurrence o
+       WHERE   o.event.id   = :eventId
+         AND   o.eventDate  BETWEEN :windowStart AND :windowEnd
+         AND   o.eventDate  > CURRENT_TIMESTAMP
+       ORDER BY o.eventDate
+       """)
+    List<EventOccurrence> findUpcomingOccurrencesInWindow(@Param("eventId")     Long eventId,
+                                                          @Param("windowStart") LocalDateTime windowStart,
+                                                          @Param("windowEnd")   LocalDateTime windowEnd);
+
 }

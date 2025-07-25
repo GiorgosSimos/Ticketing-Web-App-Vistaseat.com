@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.service;
 
+import com.unipi.gsimos.vistaseat.dto.EventOccurrenceCardDto;
 import com.unipi.gsimos.vistaseat.dto.EventOccurrenceDto;
 import com.unipi.gsimos.vistaseat.model.Venue;
 import org.springframework.data.domain.Page;
@@ -26,4 +27,9 @@ public interface EventOccurrenceService {
             Pageable pageable);
 
     long sumBookingCounts(List<EventOccurrenceDto> occurrencesList);
+
+    // Returns all the occurrences of a specific event within a certain date range
+    List<EventOccurrenceCardDto> getUpcomingOccurrencesByEventIdAndDateRange(Long eventId,
+                                                                     @Nullable LocalDate from,
+                                                                     @Nullable LocalDate to);
 }

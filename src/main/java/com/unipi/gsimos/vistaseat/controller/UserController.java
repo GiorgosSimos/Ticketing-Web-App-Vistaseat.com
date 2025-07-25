@@ -62,7 +62,7 @@ public class UserController {
         model.addAttribute("categories", categories);
 
         // Fill event slider in featured events section
-        List<EventCardDto> eventCards = eventRepository.findAllWithAtLeastOneOccurrence()
+        List<EventCardDto> eventCards = eventRepository.findUpcomingWithAtLeastOneOccurrence()
                 .stream().map(EventCardDto::from)
                 .toList();
         model.addAttribute("eventCards", eventCards);

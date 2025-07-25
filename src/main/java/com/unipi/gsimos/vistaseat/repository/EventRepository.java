@@ -34,10 +34,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         from Event e
         where exists (select 1
                       from EventOccurrence o
-                      where o.event = e
+                      where o.event = e AND o.eventDate > CURRENT TIMESTAMP
                      )
     """)
-    List<Event> findAllWithAtLeastOneOccurrence();
+    List<Event> findUpcomingWithAtLeastOneOccurrence();
 
     @Query("""
         select distinct e
@@ -45,10 +45,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         where e.eventType = :type
             and exists (select 1
                         from EventOccurrence o
-                        where o.event = e
+                        where o.event = e AND o.eventDate > CURRENT TIMESTAMP
                         )
     """)
-    List<Event> findAllWithAtLeastOneOccurrenceByType(@Param("type") EventType type);
+    List<Event> findUpcomingWithAtLeastOneOccurrenceByType(@Param("type") EventType type);
 
     @Query("""
         select distinct e
@@ -57,11 +57,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             and lower(e.name) like lower(concat('%', :name, '%'))
             and exists (select 1
                         from EventOccurrence o
-                        where o.event = e
+                        where o.event = e AND o.eventDate > CURRENT TIMESTAMP
                         )
     """)
-    List<Event> findAllWithAtLeastOneOccurrenceByTypeAndNameLike(@Param("type") EventType type,
-                                                                 @Param("name") String name);
+    List<Event> findUpcomingWithAtLeastOneOccurrenceByTypeAndNameLike(@Param("type") EventType type,
+                                                                      @Param("name") String name);
 
     @Query("""
         select distinct e
@@ -69,13 +69,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         where e.eventType = :type
           and exists (
              select 1 from EventOccurrence o
-             where o.event = e
+             where o.event = e AND o.eventDate > CURRENT TIMESTAMP
                and o.eventDate between :from and :to
           )
         """)
-    List<Event> findAllWithAtLeastOneOccurrenceByTypeAndDateRange(@Param("type") EventType type,
-                                                                  @Param("from") LocalDateTime from,
-                                                                  @Param("to")   LocalDateTime to);
+    List<Event> findUpcomingWithAtLeastOneOccurrenceByTypeAndDateRange(@Param("type") EventType type,
+                                                                       @Param("from") LocalDateTime from,
+                                                                       @Param("to")   LocalDateTime to);
 
     @Query("""
         select distinct e
@@ -84,11 +84,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
           and lower(e.name) like lower(concat('%', :name, '%'))
           and exists (
              select 1 from EventOccurrence o
-             where o.event = e
+             where o.event = e AND o.eventDate > CURRENT TIMESTAMP
                and o.eventDate between :from and :to
           )
         """)
-    List<Event> findAllWithAtLeastOneOccurrenceByTypeAndNameLikeAndDateRange(
+    List<Event> findUpcomingWithAtLeastOneOccurrenceByTypeAndNameLikeAndDateRange(
             @Param("type") EventType type,
             @Param("name") String name,
             @Param("from") LocalDateTime from,

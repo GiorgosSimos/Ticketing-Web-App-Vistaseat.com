@@ -7,6 +7,9 @@
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
@@ -57,23 +60,63 @@
         </div>
     </section>
     <!-- About Section -->
-    <section class="container my-5">
+    <section class="container my-5" id="aboutSection">
         <h3 class="fw-bold my-3">About this Event</h3>
         <p class="about-event-text" th:text="${eventCard.eventDescription}">
-            Quisque eu nisl id risus laoreet scelerisque ut at purus. Vivamus sed tristique dui. Curabitur semper sem risus, ut ultricies quam ornare sed. Integer lacinia lorem in nisi porttitor interdum. Aliquam blandit sit amet turpis ac dapibus. Maecenas euismod, ex et tempor congue, nisi ex ornare augue, et pretium est nisl ut nisi. In sed nulla sed sem feugiat gravida egestas a nunc. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla posuere urna vitae diam elementum, tincidunt semper enim maximus. Mauris ligula urna, aliquam sed consectetur vel, lobortis eu dolor. Nulla sed eros ornare, blandit massa non, dictum risus. Vivamus ut felis at ligula porttitor consequat. In hac habitasse platea dictumst. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Praesent nec ullamcorper lacus. Aliquam consequat ipsum sed metus euismod blandit.
+            Event Description
         </p>
     </section>
 
     <!-- Available Showtimes section -->
     <section class="container my-5">
-        <h2 class="fw-bold my-3">Available Showtimes</h2>
+        <div class="d-flex my-4 gap-3">
+            <h2 class="fw-bold m-0">Available Showtimes</h2>
+            <div class="d-flex gap-3 ms-auto align-items-stretch">
+                <button class="btn btn-outline-dark h-100" type="button" id="clearFilterBtn"
+                        th:classappend="${from == null or to == null} ? 'd-none' : ''">
+                    Clear Filter
+                </button>
+                <form class="mb-0" id="dateForm">
+                    <div class="col-auto form-floating position-relative">
+                        <input id="rangePicker"
+                               type="text"
+                               class="form-control"
+                               size="21"
+                               placeholder="From ... to..."
+                               th:attr="data-from=${from}, data-to=${to}">
+                        <label for="rangePicker">
+                            <i class="bi bi-calendar-week me-1"></i>
+                            Filter By Date
+                        </label>
+                    </div>
+                    <!-- Hidden fields actually sent to the server -->
+                    <input type="hidden" name="from" id="fromHidden" th:value="${from}">
+                    <input type="hidden" name="to"   id="toHidden"   th:value="${to}">
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${occurrenceCount == 0}"
+             class="empty-state d-flex flex-column align-items-center text-center">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="bi bi-calendar3 empty-icon mb-3" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384
+                 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
+                <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
+                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+            </svg>
+            <h3 class="fw-semibold mb-1">Sorry, no occurrences found!</h3>
+        </div>
         <!-- Event Occurrences -->
         <div th:each="occurrenceCard :${occurrenceCards}"
              class="text-decoration-none mb-4">
             <div class="book-occurrence-card">
                 <div class="availability-ribbon"
                      th:classappend="${occurrenceCard.availabilityLevel.color}"></div>
-                <div class="occurrence-details-grid mx-2">
+                <div class="occurrence-details-grid col-lg-6 col-md-4 col-ms-2 mx-2">
                     <div class="d-flex align-items-center mb-2">
                         <i class="bi bi-calendar-event me-2"></i>
                         <span th:text="${#temporals.format(occurrenceCard.dateTime, 'EEEE, MMM d, yyyy')}"
@@ -94,7 +137,6 @@
                               class="mb-0">Aiolou 69, Athens 64100</span>
                     </div>
                 </div>
-                <div class="col-3"></div>
                 <div class="availability-badge">
                     <span class="badge rounded-pill"
                           th:text="${occurrenceCard.availabilityLevel.label}"
@@ -120,5 +162,7 @@
     </section>
 
     <div th:insert="~{fragments/footer :: footer}"></div>
+
+    <script th:src="@{/js/main-app.js}"></script>
 </body>
 </html>
