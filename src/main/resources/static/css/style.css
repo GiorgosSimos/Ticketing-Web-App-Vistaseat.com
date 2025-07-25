@@ -291,9 +291,14 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
+/* Colors for availability ribbon  */
+.bg-high      { background:#28a745; }   /* green  */
+.bg-medium    { background:#6c757d; }   /* grey   */
+.bg-low       { background:#ffc107; }   /* yellow */
+.bg-sold-out   { background:#dc3545; }   /* red    */
+
 .availability-ribbon {
     flex: 0 0 .4rem;
-    background-color: green;
     border: 1px solid #e5e7eb;
     border-radius: 0.25rem;
     overflow: hidden;

@@ -17,7 +17,7 @@
     <section class="container my-5 border rounded shadow-lg">
         <div class="event-page-hero">
             <figure class="event-page-image my-2">
-                <img src="/images/feature_film.jpg" alt="Event Image">
+                <img th:src="@{${eventCard.eventImageURL}}" th:alt="${eventCard.eventType}">
             </figure>
             <div class="event-page-hero-details gap-3">
                 <span class="badge rounded-pill text-bg-light border border-dark my-2">
@@ -68,9 +68,11 @@
     <section class="container my-5">
         <h2 class="fw-bold my-3">Available Showtimes</h2>
         <!-- Event Occurrences -->
-        <div th:each="occurrenceCard :${occurrenceCards}" class="text-decoration-none mb-2">
+        <div th:each="occurrenceCard :${occurrenceCards}"
+             class="text-decoration-none mb-4">
             <div class="book-occurrence-card">
-                <div class="availability-ribbon"></div>
+                <div class="availability-ribbon"
+                     th:classappend="${occurrenceCard.availabilityLevel.color}"></div>
                 <div class="occurrence-details-grid mx-2">
                     <div class="d-flex align-items-center mb-2">
                         <i class="bi bi-calendar-event me-2"></i>
@@ -94,14 +96,20 @@
                 </div>
                 <div class="col-3"></div>
                 <div class="availability-badge">
-                    <span class="badge rounded-pill bg-success">Available</span>
+                    <span class="badge rounded-pill"
+                          th:text="${occurrenceCard.availabilityLevel.label}"
+                          th:classappend="${occurrenceCard.availabilityLevel.badge}">
+                        Available
+                    </span>
                 </div>
                 <div class="booking-price">
                     <p th:text="${occurrenceCard.price} + '€'" class="mb-0 fw-bold">From 89$</p>
                     <p class="text-muted">per ticket</p>
                 </div>
                 <div class="cta-tickets">
-                    <button class="btn btn-lg btn-dark">
+                    <button class="btn btn-lg btn-dark"
+                            th:disabled="${occurrenceCard.availabilityLevel ==
+                            T(com.unipi.gsimos.vistaseat.dto.EventOccurrenceCardDto.AvailabilityLevel).SOLD_OUT}">
                         <i class="bi bi-ticket-perforated"></i>
                         Tickets
                     </button>

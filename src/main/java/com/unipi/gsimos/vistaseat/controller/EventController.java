@@ -233,7 +233,7 @@ public class EventController {
 
         CategoriesEventCardDto eventCard = CategoriesEventCardDto.from(event);
 
-        List<EventOccurrence> occurrences = eventOccurrenceRepository.findAllByEventId(eventId);
+        List<EventOccurrence> occurrences = eventOccurrenceRepository.findAllByEventIdOrderByEventDateAsc(eventId);
 
         List<EventOccurrenceCardDto> occurrenceCards = occurrences.stream()
                 .map(EventOccurrenceCardDto::from).toList();

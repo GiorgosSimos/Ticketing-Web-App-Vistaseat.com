@@ -18,6 +18,8 @@ public interface EventOccurrenceRepository extends JpaRepository<EventOccurrence
 
     List<EventOccurrence> findAllByEventId(Long eventId);
 
+    List<EventOccurrence> findAllByEventIdOrderByEventDateAsc(Long eventId);
+
     Page<EventOccurrence> findByEvent_Venue_IdOrderByEventDateAsc(Long venueId, Pageable pageable);
 
     Page<EventOccurrence> findByEvent_Venue_IdAndEventDateBetweenOrderByEventDateAsc(

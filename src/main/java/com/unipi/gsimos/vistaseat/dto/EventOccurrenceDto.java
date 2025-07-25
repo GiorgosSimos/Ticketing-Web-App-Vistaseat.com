@@ -41,7 +41,7 @@ public class EventOccurrenceDto {
 
     /**
      * Availability expressed as a decimal in the range {@code 0.0 – 1.0}
-     * (returns 0 when remaining seats is 0 to avoid divisions-by-zero).
+     * (returns 0 when remaining seats is 0).
      */
     private float getAvailability() {
         if  (seatsSold >= availableSeats) {
