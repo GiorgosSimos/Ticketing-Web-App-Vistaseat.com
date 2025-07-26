@@ -120,16 +120,16 @@
                     <div class="d-flex align-items-center mb-2">
                         <i class="bi bi-calendar-event me-2"></i>
                         <span th:text="${#temporals.format(occurrenceCard.dateTime, 'EEEE, MMM d, yyyy')}"
-                              class="mb-0">Wednesday, Dec 23, 2024</span>
+                              class="fw-semibold mb-0">Wednesday, Dec 23, 2024</span>
                     </div>
                     <div class="d-flex align-items-center mb-2">
                         <i class="bi bi-clock me-2"></i>
                         <span th:text="${#temporals.format(occurrenceCard.dateTime, 'h:mm a')}"
-                              class="mb-0">7:30 PM</span>
+                              class="fw-semibold mb-0">7:30 PM</span>
                     </div>
                     <div class="d-flex align-items-center mb-0 two-column-span">
                         <i class="bi bi-geo-alt me-2"></i>
-                        <span th:text="${occurrenceCard.venueName}" class="mb-0">Athens Open Theatre</span>
+                        <span th:text="${occurrenceCard.venueName}" class="fw-semibold mb-0">Athens Open Theatre</span>
                     </div>
                     <div class="d-flex align-items-center text-muted ms-4 mb-2 two-column-span">
                         <span th:text="${occurrenceCard.venueStreet} + ' ' + ${occurrenceCard.venueNumber} +
@@ -145,14 +145,21 @@
                     </span>
                 </div>
                 <div class="booking-price">
-                    <p th:text="${occurrenceCard.price} + '€'" class="mb-0 fw-bold">From 89$</p>
+                    <p th:text="${occurrenceCard.price} + '€'" class="mb-0 fw-bold">From 89€</p>
                     <p class="text-muted">per ticket</p>
                 </div>
                 <div class="cta-tickets">
                     <button class="btn btn-lg btn-dark"
+                            th:data-event="${eventCard.eventTitle}"
+                            th:data-datetime="${#temporals.format(occurrenceCard.dateTime,
+                                              'EEEE, MMM d, yyyy • h:mm a')}"
+                            th:data-venue="${occurrenceCard.venueName}"
+                            th:data-price="${occurrenceCard.price}"
+                            th:data-occ-id="${occurrenceCard.occurrenceId}"
+                            data-open="tickets"
                             th:disabled="${occurrenceCard.availabilityLevel ==
                             T(com.unipi.gsimos.vistaseat.dto.EventOccurrenceCardDto.AvailabilityLevel).SOLD_OUT}">
-                        <i class="bi bi-ticket-perforated"></i>
+                        <i class="bi bi-ticket-perforated me-2"></i>
                         Tickets
                     </button>
                 </div>
@@ -163,6 +170,75 @@
 
     <div th:insert="~{fragments/footer :: footer}"></div>
 
+    <div th:replace="~{fragments/tickets-modal :: ticketsModal}"></div>
+
     <script th:src="@{/js/main-app.js}"></script>
+
+    <!-- JS: Bootstrap bundle (Popper included) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // tickets-modal.js
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal      = new bootstrap.Modal('#ticketsModal');
+
+            const nameEl     = document.getElementById('modalEventName');
+            const dateEl     = document.getElementById('modalDateTime');
+            const venueEl    = document.getElementById('modalVenue');
+
+            const minusBtn   = document.getElementById('minusBtn');
+            const plusBtn    = document.getElementById('plusBtn');
+            const countEl    = document.getElementById('ticketCount');
+
+            const reserveBtn = document.getElementById('reserveBtn');
+
+            const MAX_TICKETS = 10; // max number of tickets per reservation
+            let count = 1;
+
+            const setCount = n => {
+                count = n;
+                countEl.textContent = n;
+                minusBtn.disabled = n <= 1;
+                plusBtn.disabled  = n >= MAX_TICKETS;
+            };
+            setCount(1);
+
+            minusBtn.addEventListener('click', () => setCount(count - 1));
+            plusBtn .addEventListener('click', () => setCount(count + 1));
+
+            // Attach click listener to every Tickets button (delegation also possible)
+            document.querySelectorAll('[data-open="tickets"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // populate modal content
+                    nameEl.textContent  = btn.dataset.event;
+                    dateEl.textContent  = btn.dataset.datetime;
+                    venueEl.textContent = btn.dataset.venue;
+                    reserveBtn.dataset.occId = btn.dataset.occId;  // stash the ID
+                    setCount(1);
+                    modal.show();
+                });
+            });
+
+            reserveBtn.addEventListener('click', () => {
+                // Example: POST via fetch
+                fetch('/api/events/'+'makeBooking', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        occurrenceId: reserveBtn.dataset.occId,
+                        tickets: count
+                    })
+                }).then(r => {
+                    if (r.ok) {
+                        modal.hide();
+                        // maybe show toast / redirect
+                    } else {
+                        alert('Reservation failed');
+                    }
+                });
+            });
+        });
+
+    </script>
 </body>
 </html>
