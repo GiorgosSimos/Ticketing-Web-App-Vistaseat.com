@@ -180,40 +180,70 @@
     <script>
         // tickets-modal.js
         document.addEventListener('DOMContentLoaded', () => {
-            const modal      = new bootstrap.Modal('#ticketsModal');
+            const modal      = new bootstrap.Modal(document.getElementById('ticketsModal'));
 
+            // Events details
             const nameEl     = document.getElementById('modalEventName');
             const dateEl     = document.getElementById('modalDateTime');
             const venueEl    = document.getElementById('modalVenue');
 
+            // Ticket selector controls
             const minusBtn   = document.getElementById('minusBtn');
             const plusBtn    = document.getElementById('plusBtn');
             const countEl    = document.getElementById('ticketCount');
 
+            // Cost displays
+            const maxInfoEl     = document.getElementById('maxTicketsPerOrder');
+            const countTicketsEl= document.getElementById('countTickets');
+            const ticketsTotalEl= document.getElementById('ticketsTotal');
+            const serviceFeeEl  = document.getElementById('serviceFeeAmount');
+            const totalAmountEl = document.getElementById('totalAmount');
+
             const reserveBtn = document.getElementById('reserveBtn');
 
             const MAX_TICKETS = 10; // max number of tickets per reservation
-            let count = 1;
+            const SERVICE_FEE = 0.15; // service fee per ticket
 
-            const setCount = n => {
-                count = n;
-                countEl.textContent = n;
-                minusBtn.disabled = n <= 1;
-                plusBtn.disabled  = n >= MAX_TICKETS;
-            };
-            setCount(1);
+            let count = 1;
+            let unitPrice = 0;
+
+            // Calculate and display costs on the modal
+            function renderCosts() {
+                const ticketsCost = unitPrice * count;
+                const serviceFeeAmount = SERVICE_FEE * count;
+                const totalAmount = ticketsCost + serviceFeeAmount;
+
+                countTicketsEl.textContent = `Tickets (${count}×)`;
+                ticketsTotalEl.textContent = ticketsCost + ' €';
+                serviceFeeEl.textContent = serviceFeeAmount.toFixed(2) + ' €';
+                totalAmountEl.textContent = totalAmount + ' €';
+            }
+
+            function setCount(n) {
+                count = Math.min(Math.max(n, 1), MAX_TICKETS); // forces the requested number n to stay inside the legal range
+                countEl.textContent = count;
+                minusBtn.disabled = count <= 1;
+                plusBtn.disabled  = count >= MAX_TICKETS;
+                renderCosts();
+            }
 
             minusBtn.addEventListener('click', () => setCount(count - 1));
             plusBtn .addEventListener('click', () => setCount(count + 1));
 
-            // Attach click listener to every Tickets button (delegation also possible)
+            // Open modal every time the tickets button is clicked
             document.querySelectorAll('[data-open="tickets"]').forEach(btn => {
                 btn.addEventListener('click', () => {
+
+                    // Set unitPrice to data-price, if that can’t be parsed, default to 0.
+                    unitPrice = parseFloat(btn.dataset.price) || 0;
+
                     // populate modal content
                     nameEl.textContent  = btn.dataset.event;
                     dateEl.textContent  = btn.dataset.datetime;
                     venueEl.textContent = btn.dataset.venue;
+                    maxInfoEl.textContent = `Maximum ${MAX_TICKETS} tickets per order`;
                     reserveBtn.dataset.occId = btn.dataset.occId;  // stash the ID
+
                     setCount(1);
                     modal.show();
                 });
@@ -238,7 +268,6 @@
                 });
             });
         });
-
     </script>
 </body>
 </html>
