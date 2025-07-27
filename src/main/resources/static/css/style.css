@@ -332,3 +332,33 @@
     align-items: center;
     min-width: 8rem;
 }
+
+/* Make Reservation Page */
+.event-general-info {
+    display: flex;
+    background: rgb(233, 227, 223);
+    gap: 3rem;
+    padding: 1rem 1.5rem;
+    font-family: system-ui, sans-serif;
+}
+
+.reservation-page-image {
+    flex: 0 0 25%;
+    min-width: 200px;
+}
+
+.reservation-page-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: rgb(233, 227, 223);
+    padding: 1rem 1.5rem;
+    column-gap: 3rem;
+}

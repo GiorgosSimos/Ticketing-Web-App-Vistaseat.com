@@ -250,22 +250,27 @@
             });
 
             reserveBtn.addEventListener('click', () => {
-                // Example: POST via fetch
-                fetch('/api/events/'+'makeBooking', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        occurrenceId: reserveBtn.dataset.occId,
-                        tickets: count
-                    })
-                }).then(r => {
-                    if (r.ok) {
-                        modal.hide();
-                        // maybe show toast / redirect
-                    } else {
-                        alert('Reservation failed');
-                    }
+
+                const totalAmount = (unitPrice * count + SERVICE_FEE * count).toFixed(2);
+
+                const form = document.createElement('form');
+                form.method = 'GET';
+                form.action = "/api/makeBooking";
+
+                [
+                    ['occurrenceId', reserveBtn.dataset.occId],
+                    ['numberOfTickets',       count],
+                    ['totalAmount',        totalAmount]
+                ].forEach(([name, value]) => {
+                    const inp = document.createElement('input');
+                    inp.type  = 'hidden';
+                    inp.name  = name;
+                    inp.value = value;
+                    form.appendChild(inp);
                 });
+
+                document.body.appendChild(form);
+                form.submit();
             });
         });
     </script>

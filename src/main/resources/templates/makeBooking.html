@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Make Reservation | Vistaseat.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:insert="~{fragments/header :: header}"></div>
+
+    <!-- Event Info -->
+    <section class="container my-5">
+        <h3 class="mb-2">Event Information</h3>
+        <div class="event-general-info border mt-2 mb-5 rounded shadow-lg">
+            <figure class="reservation-page-image my-2">
+                <img th:src="@{/images/feature_film.jpg}" alt="Event Image">
+            </figure>
+            <div class="d-flex flex-column my-2 gap-3">
+                <h4 class="mb-2">Blade Runner — The Final Cut</h4>
+                <span class="mb-2">Sunday 09 March 2025 - Time 18:10</span>
+                <a class="mb-2" href="">
+                    <span>Cinema Open Air - Starlit Sky</span>
+                </a>
+                <a class="mb-2" href="">
+                    <span>More information</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ticket Info -->
+    <section class="container my-5">
+        <h3 class="mb-2">Reservation Information</h3>
+        <div class="border mt-2 mb-5 rounded shadow-lg">
+            <table class="table table-striped table-borderless">
+                <thead class="table-secondary">
+                   <tr>
+                       <th>Ticket</th>
+                       <th>Price</th>
+                   </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Event Name and Ticket Info</td>
+                        <td>8$</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-end">Total Price:</th>
+                        <th>8$</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </section>
+
+    <!-- Communication Details-->
+    <section class="container my-5">
+        <h3 class="mb-2">Communication Details</h3>
+        <form class="border mt-2 mb-5 rounded shadow-lg">
+                <div class="details-grid">
+                    <label for="firstName" class="mb-1">Name</label>
+                    <label for="lastName" class="mb-1">Last Name</label>
+
+                    <input type="text" class="form-control mb-3"
+                           name="firstName" id="firstName" placeholder="First Name" required>
+
+                    <input type="text" class="form-control mb-3"
+                           name="lastName" id="lastName" placeholder="Last Name" required>
+
+                    <label for="phoneNumber" class="mb-1">Phone Number</label>
+                    <label for="email" class="mb-1">E-mail</label>
+
+                    <input type="text" class="form-control"
+                           name="phoneNumber" id="phoneNumber" placeholder="Phone Number" required>
+
+                    <input type="text" class="form-control"
+                           name="email" id="email" placeholder="E-mail" required>
+
+                    <!-- Accept terms of use checkbox -->
+                    <div class="form-check my-4">
+                        <input class="form-check-input" type="checkbox" id="terms" required>
+                        <label class="form-check-label" for="terms">
+                            I have read and accept the
+                            <a href="#" target="_blank">terms of use</a>.
+                        </label>
+                    </div>
+                    <!-- submit button -->
+                    <div class="my-4 text-end">
+                        <button class="btn btn-success rounded-pill px-3" type="submit">Continue</button>
+                    </div>
+                </div>
+        </form>
+    </section>
+
+    <div th:insert="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
