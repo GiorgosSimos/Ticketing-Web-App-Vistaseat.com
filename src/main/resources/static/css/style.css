@@ -362,3 +362,8 @@
     padding: 1rem 1.5rem;
     column-gap: 3rem;
 }
+
+.table-reservation tfoot th,
+.table-reservation tfoot td {
+    background: rgb(233, 227, 223);
+}

@@ -27,6 +27,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Page<Event> findAllByVenueId(Long venueId, Pageable pageable);
 
+    @Query("""
+       select o.event
+       from EventOccurrence o
+       where o.id = :occurrenceId
+       """)
+    Event findEventByOccurrenceId(@Param("occurrenceId") Long occurrenceId);
+
     Long countByVenueId(Long venueId);
 
     @Query("""

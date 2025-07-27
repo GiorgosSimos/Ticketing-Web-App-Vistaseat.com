@@ -202,7 +202,7 @@
             const reserveBtn = document.getElementById('reserveBtn');
 
             const MAX_TICKETS = 10; // max number of tickets per reservation
-            const SERVICE_FEE = 0.15; // service fee per ticket
+            const SERVICE_FEE = 0.10; // service fee per ticket
 
             let count = 1;
             let unitPrice = 0;
@@ -251,16 +251,13 @@
 
             reserveBtn.addEventListener('click', () => {
 
-                const totalAmount = (unitPrice * count + SERVICE_FEE * count).toFixed(2);
-
                 const form = document.createElement('form');
                 form.method = 'GET';
                 form.action = "/api/makeBooking";
 
                 [
                     ['occurrenceId', reserveBtn.dataset.occId],
-                    ['numberOfTickets',       count],
-                    ['totalAmount',        totalAmount]
+                    ['requestedTickets',       count]
                 ].forEach(([name, value]) => {
                     const inp = document.createElement('input');
                     inp.type  = 'hidden';

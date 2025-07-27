@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Make Reservation | Vistaseat.com</title>
@@ -18,16 +18,25 @@
         <h3 class="mb-2">Event Information</h3>
         <div class="event-general-info border mt-2 mb-5 rounded shadow-lg">
             <figure class="reservation-page-image my-2">
-                <img th:src="@{/images/feature_film.jpg}" alt="Event Image">
+                <img th:src="@{${eventCard.thumbnailUrl}}" alt="Event Image">
             </figure>
             <div class="d-flex flex-column my-2 gap-3">
-                <h4 class="mb-2">Blade Runner — The Final Cut</h4>
-                <span class="mb-2">Sunday 09 March 2025 - Time 18:10</span>
-                <a class="mb-2" href="">
-                    <span>Cinema Open Air - Starlit Sky</span>
+                <h4 class="mb-2" th:text="${eventCard.title}">Blade Runner — The Final Cut</h4>
+                <span class="mb-2" th:text="${#temporals.format(occurrenceCard.dateTime,
+                                            'EEEE dd MMMM yyyy - ''Time'' HH:mm')}">
+                    Sunday 09 March 2025 - Time 18:10
+                </span>
+                <a class="mb-2" th:href="@{'/api/venues/' + ${venueID}}"
+                   target="_blank" rel="noopener noreferrer">
+                    <span th:text="${eventCard.venueName}">
+                        Cinema Open Air - Starlit Sky
+                    </span>
                 </a>
-                <a class="mb-2" href="">
-                    <span>More information</span>
+                <a class="mb-2" th:href="@{${eventCard.hrefLink}}"
+                   target="_blank" rel="noopener noreferrer">
+                    <span>
+                        More information
+                    </span>
                 </a>
             </div>
         </div>
@@ -37,7 +46,7 @@
     <section class="container my-5">
         <h3 class="mb-2">Reservation Information</h3>
         <div class="border mt-2 mb-5 rounded shadow-lg">
-            <table class="table table-striped table-borderless">
+            <table class="table table-striped table-borderless mb-0 table-reservation">
                 <thead class="table-secondary">
                    <tr>
                        <th>Ticket</th>
@@ -45,15 +54,19 @@
                    </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Event Name and Ticket Info</td>
-                        <td>8$</td>
+                    <tr th:each="n : ${#numbers.sequence(1, numberOfTickets)}">
+                        <td th:text="'Ticket #' + ${n} + ' - ' + ${eventCard.title}">Event Name and Ticket Info</td>
+                        <td th:text="${occurrenceCard.price} + ' €'">8€</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
+                        <th class="text-end">Service Fee:</th>
+                        <th th:text="${serviceFee + ' €'}">0.1€</th>
+                    </tr>
+                    <tr>
                         <th class="text-end">Total Price:</th>
-                        <th>8$</th>
+                        <th th:text="${totalAmount + ' €'}" th:value="${totalAmount}">8.1€</th>
                     </tr>
                 </tfoot>
             </table>
