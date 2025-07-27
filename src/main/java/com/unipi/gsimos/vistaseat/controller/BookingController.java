@@ -2,8 +2,6 @@ package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.BookingInfo;
 import com.unipi.gsimos.vistaseat.model.User;
-import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
-import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -13,17 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.math.BigDecimal;
 
 @Controller
 @RequiredArgsConstructor
 public class BookingController {
 
-    private static final BigDecimal SERVICE_FEE_PER_TICKET = BigDecimal.valueOf(0.10);
-    private static final int MIN_TICKETS = 1;
-    private static final int MAX_TICKETS = 10;
-    private final EventRepository eventRepository;
-    private final EventOccurrenceRepository eventOccurrenceRepository;
     private final BookingService bookingService;
 
     @GetMapping("/adminDashboard/manageBookings")
