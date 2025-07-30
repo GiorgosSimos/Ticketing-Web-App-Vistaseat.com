@@ -76,39 +76,44 @@
     <!-- Communication Details-->
     <section class="container my-5">
         <h3 class="mb-2">Communication Details</h3>
-        <form class="border mt-2 mb-5 rounded shadow-lg">
-                <div class="details-grid">
-                    <label for="firstName" class="mb-1">Name</label>
-                    <label for="lastName" class="mb-1">Last Name</label>
+        <form th:action="@{/api/bookings}"
+              method="POST"
+              class="border mt-2 mb-5 rounded shadow-lg">
+            <div class="details-grid">
+                <label for="firstName" class="mb-1">Name</label>
+                <label for="lastName" class="mb-1">Last Name</label>
 
-                    <input type="text" class="form-control mb-3"
-                           name="firstName" id="firstName" placeholder="First Name" required>
+                <input type="text" class="form-control mb-3"
+                       name="firstName" id="firstName" placeholder="First Name" required>
 
-                    <input type="text" class="form-control mb-3"
-                           name="lastName" id="lastName" placeholder="Last Name" required>
+                <input type="text" class="form-control mb-3"
+                       name="lastName" id="lastName" placeholder="Last Name" required>
 
-                    <label for="phoneNumber" class="mb-1">Phone Number</label>
-                    <label for="email" class="mb-1">E-mail</label>
+                <label for="phoneNumber" class="mb-1">Phone Number</label>
+                <label for="email" class="mb-1">E-mail</label>
 
-                    <input type="text" class="form-control"
-                           name="phoneNumber" id="phoneNumber" placeholder="Phone Number" required>
+                <input type="text" maxlength="10" class="form-control"
+                       name="phoneNumber" id="phoneNumber" placeholder="Phone Number" required>
 
-                    <input type="text" class="form-control"
-                           name="email" id="email" placeholder="E-mail" required>
+                <input type="text" class="form-control"
+                       name="email" id="email" placeholder="E-mail" required>
 
-                    <!-- Accept terms of use checkbox -->
-                    <div class="form-check my-4">
-                        <input class="form-check-input" type="checkbox" id="terms" required>
-                        <label class="form-check-label" for="terms">
-                            I have read and accept the
-                            <a href="#" target="_blank">terms of use</a>.
-                        </label>
-                    </div>
-                    <!-- submit button -->
-                    <div class="my-4 text-end">
-                        <button class="btn btn-success rounded-pill px-3" type="submit">Continue</button>
-                    </div>
+                <!-- Accept terms of use checkbox -->
+                <div class="form-check my-4">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                        I have read and accept the
+                        <a href="#" target="_blank">terms of use</a>.
+                    </label>
                 </div>
+                <!-- submit button -->
+                <div class="my-4 text-end">
+                    <button class="btn btn-success rounded-pill px-3" type="submit">Continue to Payment</button>
+                </div>
+            </div>
+            <!-- Hidden fields occurrenceId and numberOfTickets -->
+            <input type="hidden" name="occurrenceId" id="occurrenceId" th:value="${occurrenceCard.occurrenceId}">
+            <input type="hidden" name="numberOfTickets"   id="numberOfTickets"   th:value="${numberOfTickets}">
         </form>
     </section>
 

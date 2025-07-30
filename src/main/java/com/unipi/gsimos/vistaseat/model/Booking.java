@@ -45,7 +45,7 @@ public class Booking {
     private String email;
 
     @Column(name = "booking_date", nullable = false)
-    private LocalDateTime bookingDate;
+    private LocalDateTime bookingDate = LocalDateTime.now();
 
     // One seat per ticket
     @Column(name = "number_of_tickets", nullable = false) @Min(1)
@@ -57,7 +57,10 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private BookingStatus status;
+    private BookingStatus status = BookingStatus.PENDING; // All booking status are PENDING until payment is complete
+
+    @Column(name = "expires_at", nullable = true)
+    private LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(15); // set to now + 15 min on creation, if it is set to null -> status = COMPLETED
 
     // A booking can have multiple tickets
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

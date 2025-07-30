@@ -100,7 +100,7 @@
                         <td th:text="${user.firstName}">Jane</td>
                         <td th:text="${user.lastName}">Doe</td>
                         <td th:text="${user.email}">jane@example.com</td>
-                        <td th:text="${#temporals.format(user.registrationDate, 'EEE dd-mm-yyyy HH:mm:ss z')}"></td>
+                        <td th:text="${#temporals.format(user.registrationDate, 'EEEE, MMM d, yyyy • h:mm a')}"></td>
                     </tr>
                     </tbody>
                 </table>

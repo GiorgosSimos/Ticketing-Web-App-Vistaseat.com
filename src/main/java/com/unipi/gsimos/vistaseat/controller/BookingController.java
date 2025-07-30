@@ -1,6 +1,7 @@
 package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.BookingInfo;
+import com.unipi.gsimos.vistaseat.dto.PendingBookingDto;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.service.BookingService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -45,5 +49,14 @@ public class BookingController {
         model.addAttribute("occurrenceCard", info.occurrenceCard());
 
         return "makeBooking";
+    }
+
+    @PostMapping("/api/bookings")
+    public String createBooking(@ModelAttribute PendingBookingDto pendingBookingDto,
+                                RedirectAttributes redirectAttributes) {
+
+        Long bookingId = bookingService.createBooking(pendingBookingDto);
+        redirectAttributes.addFlashAttribute("bookingId", bookingId);
+        return "redirect:/api/payments/"  + bookingId;
     }
 }

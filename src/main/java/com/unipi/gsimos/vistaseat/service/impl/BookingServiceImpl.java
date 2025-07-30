@@ -3,11 +3,15 @@ package com.unipi.gsimos.vistaseat.service.impl;
 import com.unipi.gsimos.vistaseat.dto.BookingInfo;
 import com.unipi.gsimos.vistaseat.dto.EventCardDto;
 import com.unipi.gsimos.vistaseat.dto.EventOccurrenceCardDto;
+import com.unipi.gsimos.vistaseat.dto.PendingBookingDto;
+import com.unipi.gsimos.vistaseat.model.Booking;
 import com.unipi.gsimos.vistaseat.model.EventOccurrence;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.service.BookingService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -74,5 +78,35 @@ public class BookingServiceImpl implements BookingService {
                 EventCardDto.from(occurrence.getEvent()),
                 occurrence.getEvent().getVenue().getId()
         );
+    }
+
+    @Override
+    @Transactional
+    public Long createBooking(@NotNull PendingBookingDto pendingBookingDto) {
+
+        Booking pendingBooking = new Booking();
+
+        EventOccurrence occurrence = eventOccurrenceRepository.findById(pendingBookingDto.occurrenceId())
+                .orElseThrow(() -> new EntityNotFoundException("EventOccurrence not found with id: " + pendingBookingDto.occurrenceId()));
+
+        // TODO: Check availability
+
+        // Calculate service fee and total amount
+        BigDecimal serviceFee = FEE_PER_TICKET.multiply(BigDecimal.valueOf(pendingBookingDto.numberOfTickets()));
+        BigDecimal totalAmount = occurrence.getPrice()
+                .multiply(BigDecimal.valueOf(pendingBookingDto.numberOfTickets()))
+                .add(serviceFee)
+                .setScale(2, RoundingMode.HALF_UP);
+
+        pendingBooking.setEventOccurrence(occurrence);
+        //pendingBooking.setUser(); TODO: For logged in users
+        pendingBooking.setFirstName(pendingBookingDto.firstName());
+        pendingBooking.setLastName(pendingBookingDto.lastName());
+        pendingBooking.setEmail(pendingBookingDto.email());
+        pendingBooking.setNumberOfTickets(pendingBookingDto.numberOfTickets());
+        pendingBooking.setTotalPrice(totalAmount);
+
+        bookingRepository.save(pendingBooking);
+        return pendingBooking.getId();
     }
 }
