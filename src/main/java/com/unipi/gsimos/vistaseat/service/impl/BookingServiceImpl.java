@@ -25,7 +25,7 @@ public class BookingServiceImpl implements BookingService {
 
     private static final int MIN_TICKETS = 1;
     private static final int MAX_TICKETS = 10;
-    private static final BigDecimal FEE_PER_TICKET = new BigDecimal("0.10");
+    private static final BigDecimal FEE_PER_TICKET = new BigDecimal("0.10");// used to calculate the service fee
     private final BookingRepository bookingRepository;
     private final EventOccurrenceRepository eventOccurrenceRepository;
 
@@ -92,11 +92,13 @@ public class BookingServiceImpl implements BookingService {
         // TODO: Check availability
 
         // Calculate service fee and total amount
-        BigDecimal serviceFee = FEE_PER_TICKET.multiply(BigDecimal.valueOf(pendingBookingDto.numberOfTickets()));
-        BigDecimal totalAmount = occurrence.getPrice()
+        BigDecimal serviceFee = FEE_PER_TICKET
                 .multiply(BigDecimal.valueOf(pendingBookingDto.numberOfTickets()))
-                .add(serviceFee)
                 .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal ticketsCost = occurrence.getPrice()
+                .multiply(BigDecimal.valueOf(pendingBookingDto.numberOfTickets()))
+                .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal totalAmount = ticketsCost.add(serviceFee);
 
         pendingBooking.setEventOccurrence(occurrence);
         //pendingBooking.setUser(); TODO: For logged in users
@@ -104,7 +106,9 @@ public class BookingServiceImpl implements BookingService {
         pendingBooking.setLastName(pendingBookingDto.lastName());
         pendingBooking.setEmail(pendingBookingDto.email());
         pendingBooking.setNumberOfTickets(pendingBookingDto.numberOfTickets());
-        pendingBooking.setTotalPrice(totalAmount);
+        pendingBooking.setTicketsPrice(ticketsCost);
+        pendingBooking.setServiceFee(serviceFee);
+        pendingBooking.setTotalAmount(totalAmount);
 
         bookingRepository.save(pendingBooking);
         return pendingBooking.getId();

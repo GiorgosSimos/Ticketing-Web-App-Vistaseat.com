@@ -12,4 +12,6 @@ public interface BookingService {
     BookingInfo prepareBookingInfo(Long occurrenceId, int requestedTickets);
 
     Long countBookingsByVenueAndDateBetween(Long venueId, LocalDate windowStart, LocalDate windowEnd);
+
+
 }

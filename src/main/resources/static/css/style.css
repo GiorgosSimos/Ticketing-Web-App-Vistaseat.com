@@ -367,3 +367,34 @@
 .table-reservation tfoot td {
     background: rgb(233, 227, 223);
 }
+
+/*Payment Page*/
+.payment-layout {
+    background: rgb(48, 152, 152);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 1rem 1.5rem;
+    column-gap: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.label-section {
+    background: rgb(241, 231, 231);
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-page-image {
+    min-width: 150px;
+}
+
+.payment-page-image img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+}

@@ -52,8 +52,16 @@ public class Booking {
     private int numberOfTickets;
 
     @Min(value = 0, message = "Booking price cannot be negative")
-    @Column(name = "total_price", nullable = false)
-    private BigDecimal totalPrice;
+    @Column(name = "tickets_price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal ticketsPrice; // tickets cost, before fees
+
+    @Min(value = 0, message = "Service fee price cannot be negative")
+    @Column(name = "service_fee", nullable = false, precision = 10, scale = 2)
+    private BigDecimal serviceFee; // total fee for this booking
+
+    @Min(value = 0, message = "Total amount cannot be negative")
+    @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalAmount; // tickets cost + service fee, charged in the user
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
