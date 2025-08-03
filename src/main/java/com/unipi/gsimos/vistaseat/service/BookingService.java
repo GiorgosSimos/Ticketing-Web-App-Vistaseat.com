@@ -13,6 +13,8 @@ public interface BookingService {
 
     void confirmBooking(Long bookingId);
 
+    void cancelExpiredBookings();
+
     Long countBookingsByVenueAndDateBetween(Long venueId, LocalDate windowStart, LocalDate windowEnd);
 
 

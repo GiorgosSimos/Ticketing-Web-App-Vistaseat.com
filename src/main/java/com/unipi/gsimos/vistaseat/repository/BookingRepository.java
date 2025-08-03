@@ -2,6 +2,8 @@ package com.unipi.gsimos.vistaseat.repository;
 
 import com.unipi.gsimos.vistaseat.model.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 
@@ -24,5 +26,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Total number of bookings across all occurrences scheduled in a given venue between a range of dates
     Long countByEventOccurrence_Event_Venue_IdAndEventOccurrence_EventDateBetween(
             Long venueId, LocalDateTime windowStart, LocalDateTime windowEnd);
+
+    // BookingRepository
+    @Modifying
+    @Query("""
+       UPDATE Booking b
+          SET b.status = 'EXPIRED'
+        WHERE b.status = 'PENDING'
+          AND b.expiresAt < :now
+""")
+    int expireOlderThan(LocalDateTime now);
 
 }

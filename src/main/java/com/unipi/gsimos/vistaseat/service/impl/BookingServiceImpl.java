@@ -13,13 +13,17 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
@@ -143,5 +147,34 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(BookingStatus.CONFIRMED);
         booking.setExpiresAt(null);
         bookingRepository.save(booking);
+    }
+
+    /**
+     * Runs once every minute (scheduler thread) and flips all
+     * <code>PENDING</code> bookings whose <em>expiresAt</em> timestamp is
+     * earlier than <code>LocalDateTime.now()</code> to <code>EXPIRED</code>.
+     * <p>
+     * The method executes inside a single database transaction and logs
+     * how many rows were updated and how long the batch took.
+     *
+     * <ul>
+     *   <li><b>Schedule :</b> {@literal @Scheduled(fixedRate = 60 000)}
+     *       ⇒ invoked ~60 000 ms after the <em>start</em> of the previous run.</li>
+     *   <li><b>Performance :</b> relies on
+     *       {@code BookingRepository#expireOlderThan(LocalDateTime)} which
+     *       should be backed by an index on {@code (status, expires_at)}.</li>
+     *   <li><b>Threading :</b> executed by Spring’s scheduler pool, never by
+     *       a request-handling thread.</li>
+     * </ul>
+     */
+    @Override
+    @Scheduled(fixedRate = 60000)          // 60 000 ms = 1 min
+    @Transactional
+    public void cancelExpiredBookings() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        int rows = bookingRepository.expireOlderThan(LocalDateTime.now());
+        stopWatch.stop();
+        log.info("Expired {} bookings (took {} ms)", rows, stopWatch.getTotalTimeMillis());
     }
 }
