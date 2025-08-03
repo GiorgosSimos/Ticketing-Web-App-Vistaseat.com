@@ -4,10 +4,10 @@ import com.unipi.gsimos.vistaseat.dto.BookingInfo;
 import com.unipi.gsimos.vistaseat.dto.EventCardDto;
 import com.unipi.gsimos.vistaseat.dto.EventOccurrenceCardDto;
 import com.unipi.gsimos.vistaseat.dto.PendingBookingDto;
-import com.unipi.gsimos.vistaseat.model.Booking;
-import com.unipi.gsimos.vistaseat.model.EventOccurrence;
+import com.unipi.gsimos.vistaseat.model.*;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
+import com.unipi.gsimos.vistaseat.repository.PaymentRepository;
 import com.unipi.gsimos.vistaseat.service.BookingService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class BookingServiceImpl implements BookingService {
     private static final BigDecimal FEE_PER_TICKET = new BigDecimal("0.10");// used to calculate the service fee
     private final BookingRepository bookingRepository;
     private final EventOccurrenceRepository eventOccurrenceRepository;
+    private final PaymentRepository paymentRepository;
 
     @Override
     public Long countBookingsByVenueAndDateBetween(Long venueId, LocalDate windowStart, LocalDate windowEnd) {
@@ -112,5 +114,34 @@ public class BookingServiceImpl implements BookingService {
 
         bookingRepository.save(pendingBooking);
         return pendingBooking.getId();
+    }
+
+    @Override
+    @Transactional
+    public void confirmBooking(Long bookingId) {
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + bookingId));
+
+        // Idempotency check
+        if (booking.getStatus() == BookingStatus.CONFIRMED) return;
+
+        // Domain validation
+        if (booking.getStatus() != BookingStatus.PENDING)
+            throw new IllegalStateException("Booking not pending: " + booking.getStatus());
+
+        // Persist payment
+        Payment payment = new Payment();
+        payment.setBooking(booking);
+        payment.setPaymentDate(LocalDateTime.now());
+        payment.setAmount(booking.getTotalAmount());
+        payment.setPaymentMethod(PaymentMethods.DEBIT_CREDIT_CARD);
+        payment.setStatus(PaymentStatus.COMPLETED);
+        paymentRepository.save(payment);
+
+        // Update Booking
+        booking.setStatus(BookingStatus.CONFIRMED);
+        booking.setExpiresAt(null);
+        bookingRepository.save(booking);
     }
 }

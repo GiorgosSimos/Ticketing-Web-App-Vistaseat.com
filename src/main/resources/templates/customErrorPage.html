@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title} ?: 'Something went wrong'">Oops!</title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column vh-100">
+<main class="container text-center my-auto">
+    <h1 class="display-4">😕 Oops!</h1>
+    <p class="lead" th:text="${message} ?: 'We hit an unexpected problem.'"></p>
+
+    <div class="text-muted mb-3">
+        <small th:text="'Error code: ' + (${statusCode} ?: '—')"></small>
+    </div>
+
+    <a href="/home" class="btn btn-primary mb-2">Back to home</a>
+</main>
+<footer class="text-center text-muted pb-3">
+    &copy; 2025 VistaSeat
+</footer>
+</body>
+</html>

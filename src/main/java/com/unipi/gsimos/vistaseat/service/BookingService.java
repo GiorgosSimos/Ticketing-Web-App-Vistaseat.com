@@ -11,6 +11,8 @@ public interface BookingService {
 
     BookingInfo prepareBookingInfo(Long occurrenceId, int requestedTickets);
 
+    void confirmBooking(Long bookingId);
+
     Long countBookingsByVenueAndDateBetween(Long venueId, LocalDate windowStart, LocalDate windowEnd);
 
 

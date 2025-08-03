@@ -57,6 +57,13 @@ public class SecurityConfig {
             throws Exception {
 
         http
+                .exceptionHandling(ex ->
+                        ex.authenticationEntryPoint(
+                                (request, response, authException) ->
+                                        response.sendRedirect("/error?status=403")
+                        )
+                )
+
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(httpForm -> {
                             httpForm.loginPage("/adminLogin")
@@ -84,7 +91,7 @@ public class SecurityConfig {
 
                             // Public pages
                             .requestMatchers("/home","/api/**","/adminLogin","/adminLogin/**","/userSignUp",
-                                    "/css/**", "/js/**", "/images/**")
+                                    "/css/**", "/js/**", "/images/**", "/error", "/error/**")
                             .permitAll()
 
                             // Endpoints that require admin authentication

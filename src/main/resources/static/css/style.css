@@ -370,7 +370,7 @@
 
 /*Payment Page*/
 .payment-layout {
-    background: rgb(48, 152, 152);
+    background: rgb(175, 71, 210);
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 1rem 1.5rem;
@@ -382,6 +382,7 @@
 .label-section {
     background: rgb(241, 231, 231);
     border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -397,4 +398,44 @@
     height: 150px;
     object-fit: cover;
     border-radius: 50%;
+}
+
+.table-reservation th,
+.table-reservation td {
+    font-size: 1rem;
+    padding: 1.25rem 1.75rem;
+}
+
+.table-wrapper {
+    border-radius: 2rem;
+    border: 2px solid #dee2e6;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.payments-logo {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;           /* centers the block itself if it's narrower than the parent */
+    padding: 10px;
+}
+
+.payments-logo img {
+    max-width: 100%;          /* keeps it responsive */
+    height: auto;
+}
+
+
+.payment-details-section {
+    background: rgb(241, 231, 231);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.app-logo img {
+    width: 380px;
+    height: 340px;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
