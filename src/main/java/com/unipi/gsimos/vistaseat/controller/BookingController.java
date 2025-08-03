@@ -2,8 +2,11 @@ package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.BookingInfo;
 import com.unipi.gsimos.vistaseat.dto.PendingBookingDto;
+import com.unipi.gsimos.vistaseat.model.EventOccurrence;
 import com.unipi.gsimos.vistaseat.model.User;
+import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.service.BookingService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class BookingController {
 
     private final BookingService bookingService;
+    private final EventOccurrenceRepository eventOccurrenceRepository;
 
     @GetMapping("/adminDashboard/manageBookings")
     public String displayBookings(Model model) {
@@ -55,8 +59,17 @@ public class BookingController {
     public String createBooking(@ModelAttribute PendingBookingDto pendingBookingDto,
                                 RedirectAttributes redirectAttributes) {
 
-        Long bookingId = bookingService.createBooking(pendingBookingDto);
-        redirectAttributes.addFlashAttribute("bookingId", bookingId);
-        return "redirect:/api/payments/"  + bookingId;
+        EventOccurrence occurrence = eventOccurrenceRepository.findById(pendingBookingDto.occurrenceId())
+                    .orElseThrow(() -> new EntityNotFoundException("Occurrence not found"));
+
+        try {
+            Long bookingId = bookingService.createBooking(pendingBookingDto);
+            redirectAttributes.addFlashAttribute("bookingId", bookingId);
+            return "redirect:/api/payments/"  + bookingId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/api/events/" + occurrence.getEvent().getId();
+        }
+
     }
 }

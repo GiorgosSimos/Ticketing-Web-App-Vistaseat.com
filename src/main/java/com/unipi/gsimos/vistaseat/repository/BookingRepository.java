@@ -31,7 +31,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Modifying
     @Query("""
        UPDATE Booking b
-          SET b.status = 'EXPIRED'
+          SET b.status = 'CANCELLED'
         WHERE b.status = 'PENDING'
           AND b.expiresAt < :now
 """)

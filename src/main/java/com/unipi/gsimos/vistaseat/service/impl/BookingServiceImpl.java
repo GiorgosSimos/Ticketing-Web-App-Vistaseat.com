@@ -95,7 +95,12 @@ public class BookingServiceImpl implements BookingService {
         EventOccurrence occurrence = eventOccurrenceRepository.findById(pendingBookingDto.occurrenceId())
                 .orElseThrow(() -> new EntityNotFoundException("EventOccurrence not found with id: " + pendingBookingDto.occurrenceId()));
 
-        // TODO: Check availability
+        // Check if event is sold out or there are not enough remaining seats
+        if (occurrence.isSoldOut()){
+            throw new RuntimeException("We're sorry, the event is sold out");
+        } else if (occurrence.getRemainingSeats() < pendingBookingDto.numberOfTickets()){
+            throw new RuntimeException("What an inconvenience!!! The remaining seats for this event are " + occurrence.getRemainingSeats());
+        }
 
         // Calculate service fee and total amount
         BigDecimal serviceFee = FEE_PER_TICKET
@@ -127,7 +132,10 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + bookingId));
 
-        // Idempotency check
+        // Booking has expired - should not happen because of cancelExpiredBookings() check
+        if (booking.getExpiresAt().isBefore(LocalDateTime.now())) return;
+
+        // Idempotency check - booking is already confirmed
         if (booking.getStatus() == BookingStatus.CONFIRMED) return;
 
         // Domain validation
@@ -167,7 +175,6 @@ public class BookingServiceImpl implements BookingService {
      *       a request-handling thread.</li>
      * </ul>
      */
-    @Override
     @Scheduled(fixedRate = 60000)          // 60 000 ms = 1 min
     @Transactional
     public void cancelExpiredBookings() {

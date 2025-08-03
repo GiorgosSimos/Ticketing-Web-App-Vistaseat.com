@@ -16,6 +16,9 @@
 
     <div th:insert="~{fragments/header :: header}"></div>
 
+    <!-- Alert message for seat unavailability -->
+    <div th:if="${error}" class="alert alert-danger" id="access-denied-alert" th:text="${error} "></div>
+
     <!--Event Details Section-->
     <section class="container my-5 border rounded shadow-lg">
         <div class="event-page-hero">
@@ -270,6 +273,29 @@
                 form.submit();
             });
         });
+    </script>
+
+    <script>
+        // Function to fade out and remove alerts for seat unavailability.
+        // If the success alert is on the page, wait 5 seconds,
+        // then fade it out over 1 second, and finally remove it completely
+        function autoDismissAlert(element, delay = 5000, fadeDuration = 1000) {
+            if (element) {
+                setTimeout(() => {
+                    element.style.transition = `opacity ${fadeDuration}ms`;
+                    element.style.opacity = 0;
+                    setTimeout(() => element.remove(), fadeDuration);
+                }, delay);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const successAlert = document.getElementById('success-alert');
+            const accessDeniedAlert = document.getElementById('access-denied-alert');
+            autoDismissAlert(successAlert);
+            autoDismissAlert(accessDeniedAlert);
+        });
+
     </script>
 </body>
 </html>

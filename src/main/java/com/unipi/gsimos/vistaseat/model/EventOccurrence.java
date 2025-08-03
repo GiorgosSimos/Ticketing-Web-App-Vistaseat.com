@@ -51,14 +51,15 @@ public class EventOccurrence {
     private List<Booking> bookings;
 
     /**
-     * Tickets already sold for this occurrence.
+     * Number of tickets for this occurrence, already or pending to be sold.
      * <p>
      * Computed by the database via {@code @Formula}; never persisted here.
      */
     @Formula("""
    (SELECT COALESCE(SUM(b.number_of_tickets), 0)
       FROM bookings b
-     WHERE b.event_occurrence_id = event_occurrence_id)
+     WHERE b.event_occurrence_id = event_occurrence_id
+     AND   b.status <> 'CANCELLED')
 """)
     private int seatsSold;
 
