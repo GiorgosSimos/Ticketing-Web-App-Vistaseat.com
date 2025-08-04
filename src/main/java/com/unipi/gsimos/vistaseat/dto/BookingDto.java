@@ -23,6 +23,7 @@ public class BookingDto {
     private Long userId;
     private String firstName;
     private String lastName;
+    private String phoneNumber;
     private String email;
     private LocalDateTime bookingDate;
     private int numberOfTickets;

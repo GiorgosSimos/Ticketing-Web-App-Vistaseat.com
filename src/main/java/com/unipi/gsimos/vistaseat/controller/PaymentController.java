@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.LocalDateTime;
+
 @Controller
 @RequiredArgsConstructor
 public class PaymentController {
@@ -35,6 +37,8 @@ public class PaymentController {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
 
+        LocalDateTime occurrenceDateTime = booking.getEventOccurrence().getEventDate();
+
         BookingDto bookingDto = bookingMapper.toDto(booking);
 
         Event event = eventRepository.findEventByOccurrenceId(booking.getEventOccurrence().getId());
@@ -42,6 +46,7 @@ public class PaymentController {
         EventDto eventDto = eventMapper.toDto(event);
 
         model.addAttribute("booking", bookingDto);
+        model.addAttribute("occurrenceDateTime", occurrenceDateTime);
         model.addAttribute("CONFIRMED", BookingStatus.CONFIRMED);
         model.addAttribute("PENDING", BookingStatus.PENDING);
         model.addAttribute("CANCELLED", BookingStatus.CANCELLED);

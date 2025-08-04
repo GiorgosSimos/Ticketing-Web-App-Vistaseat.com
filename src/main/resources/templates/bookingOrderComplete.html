@@ -10,6 +10,176 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <h2 th:text="${booking.eventName}">Event Name</h2>
+
+    <section th:if="${booking.status != CONFIRMED}"
+             class="d-flex flex-column justify-content-center align-items-center p-5 noticeStyle">
+        <figure>
+            <img th:src="@{/images/warning_symbol.png}" alt="warning_symbol">
+        </figure>
+        <h4 class="mb-4">This booking is canceled or has expired</h4>
+        <div class="d-flex justify-content-center">
+            <a th:href="@{'/api/events/' + ${booking.eventId}}" class="btn btn-dark me-2">
+                <i class="bi bi-calendar2-event me-2"></i>
+                Back to Event
+            </a>
+            <a href="/home" class="btn btn-outline-light text-black">
+                <i class="bi bi-house-door-fill me-2"></i>
+                Back to Vistaseat.com
+            </a>
+        </div>
+    </section>
+    <!-- Hero Section -->
+    <section th:if="${booking.status == CONFIRMED}"
+             class="d-flex flex-column justify-content-center align-items-center p-5 noticeStyle">
+        <figure>
+            <img th:src="@{/images/tick_symbol.png}" alt="Booking Image">
+        </figure>
+        <h2 class="fw-bold">Booking Confirmed</h2>
+        <p class="fw-semibold">Great! Your tickets have been successfully booked.</p>
+        <div class="d-flex justify-content-center">
+            <a
+               class="btn btn-dark me-2">
+                <i class="bi bi-download me-2"></i>
+                Download Tickets
+            </a>
+            <a
+               class="btn btn-outline-light text-black">
+                <i class="bi bi-envelope-at-fill me-2"></i>
+                Email tickets
+            </a>
+        </div>
+    </section>
+
+
+    <section th:if="${booking.status == CONFIRMED}"
+             class="container py-5">
+        <div class="order-complete-layout">
+            <!-- Left side: 35% -->
+            <div class="d-flex flex-column">
+                <!-- Order details Grid -->
+                <div class="order-details-card mb-4">
+                    <div class="d-flex py-2 two-column-span">
+                        <i class="bi bi-ticket-detailed-fill fs-3 me-3"></i>
+                        <h3 class="fw-semibold">Order Details</h3>
+                    </div>
+                    <label class="text-muted">Booking Number</label>
+                    <label class="text-muted">Booking Date</label>
+                    <span class="fw-semibold" th:text="'No. ' + ${booking.id}">No. 34</span>
+                    <span class="fw-semibold"
+                          th:text="${#temporals.format(booking.bookingDate,
+                           'MMM d, yyyy ''at'' h:mm a')}">No. 34</span>
+
+                    <hr class="two-column-span">
+
+                    <label class="text-muted">Status</label>
+                    <label class="text-muted">Total Amount</label>
+                    <span class="badge badge-rounded-pill bg-success booking-status-badge"
+                          th:text="${booking.status}">CONFIRMED</span>
+                    <span class="fw-semibold" th:text="${booking.totalAmount} + '€'">27€</span>
+                </div>
+                <!-- Event Information Card -->
+                <div class="event-info-flex-style-card">
+                    <div class="d-flex">
+                        <i class="bi bi-calendar2-event-fill fs-3 me-3"></i>
+                        <h3 class="fw-semibold mt-1">Event Information Details</h3>
+                    </div>
+
+                    <article class="event-information-card">
+                        <!-- 30% – Event image -->
+                        <div class="event-information-card-image">
+                            <img th:src="@{${eventCard.eventImageURL}}" alt="event_image">
+                        </div>
+                        <!-- 70% – Event info -->
+                        <div class="event-information-card-body">
+                            <div class="event-type two-column-span"
+                                 th:text="${eventCard.eventType}">CINEMA</div>
+                            <h2 class="event-title two-column-span"
+                                th:text="${booking.eventName}">Nuovo Cinema Paradiso</h2>
+                            <p class="event-description two-column-span"
+                               th:text="${eventCard.eventDescription}">Event Description</p>
+
+                            <div class="event-meta">
+                                <span class="meta-label">
+                                    <i class="bi bi-geo-fill"></i>
+                                    Venue:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="${eventCard.eventVenueName}">Cinema Open Air - Starlit Sky
+                                </span>
+
+                                <span class="meta-label">
+                                    <i class="bi bi-calendar-week"></i>
+                                    Date:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="${#temporals.format(occurrenceDateTime,
+                                      'MMM d, yyyy ''at'' h:mm a')}">Aug 3, 2025 at 1:15PM</span>
+
+                                <span class="meta-label">
+                                    <i class="bi bi-hourglass"></i>
+                                    Duration:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="|${occurrenceDuration / 60}h ${occurrenceDuration % 60}m|">2h 53m</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <!-- Right side: 35% -->
+            <div class="d-flex flex-column align-items-center">
+                <!-- Payment Details -->
+                <div class="order-details-card mb-4">
+                    <div class="d-flex py-2 two-column-span">
+                        <i class="bi bi-credit-card-fill fs-3 me-3"></i>
+                        <h3 class="fw-semibold">Payment Details</h3>
+                    </div>
+                    <label th:text="'Subtotal (' + ${booking.numberOfTickets} + ' tickect(s))'">
+                        Number of tickets
+                    </label>
+                    <span class="d-flex justify-content-end fw-semibold"
+                          th:text="${booking.ticketsPrice} + '€'">200€</span>
+
+                    <label>Service Fee</label>
+                    <span class="d-flex justify-content-end fw-semibold"
+                          th:text="${booking.serviceFee} + '€'">200€</span>
+
+                    <hr class="two-column-span">
+
+                    <label class="text-muted">Total Amount</label>
+                    <span class="d-flex justify-content-end fw-semibold"
+                          th:text="${booking.totalAmount} + '€'">27€</span>
+
+                    <hr class="two-column-span">
+
+                    <p class="text-muted my-2 two-column-span"
+                       th:text="'Order paid with ' + ${paymentMethod}">Payment Method</p>
+                    <p class="text-muted two-column-span"
+                       th:text="'Transaction ID: ' + ${transactionID}">Transaction ID</p>
+                </div>
+                <!-- Contact Info Card-->
+                <div class="contact-info-card">
+                    <div class="d-flex">
+                        <i class="bi bi-person-rolodex fs-3 me-3"></i>
+                        <h3 class="fw-semibold mt-1">Contact Information</h3>
+                    </div>
+                    <div class="d-flex">
+                        <i class="bi bi-person-fill fs-6 me-2"></i>
+                        <span class="fw-semibold" th:text="${booking.firstName} + ' ' +${booking.lastName}">
+                            Full Name</span>
+                    </div>
+                    <div class="d-flex">
+                        <i class="bi bi-envelope-at-fill fs-6 me-2"></i>
+                        <span class="fw-semibold" th:text="${booking.email}">Email</span>
+                    </div>
+                    <div class="d-flex">
+                        <i class="bi bi-telephone-fill fs-6 me-2"></i>
+                        <span class="fw-semibold" th:text="${booking.phoneNumber}">Phone</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </body>
 </html>

@@ -30,6 +30,7 @@ public class BookingMapper {
         booking.setUser(user);
         booking.setFirstName(bookingDto.getFirstName());
         booking.setLastName(bookingDto.getLastName());
+        booking.setPhoneNumber(bookingDto.getPhoneNumber());
         booking.setEmail(bookingDto.getEmail());
         booking.setBookingDate(bookingDto.getBookingDate());
         booking.setNumberOfTickets(bookingDto.getNumberOfTickets());
@@ -52,6 +53,7 @@ public class BookingMapper {
         bookingDto.setEventName(booking.getEventOccurrence().getEvent().getName());
         bookingDto.setFirstName(booking.getFirstName());
         bookingDto.setLastName(booking.getLastName());
+        bookingDto.setPhoneNumber(booking.getPhoneNumber());
         bookingDto.setEmail(booking.getEmail());
 
         Long userId = booking.getUser() != null ? booking.getUser().getId() : null;

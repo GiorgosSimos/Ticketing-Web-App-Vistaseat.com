@@ -1,9 +1,9 @@
 package com.unipi.gsimos.vistaseat.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.unipi.gsimos.vistaseat.customAnnotations.ValidEmail;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
@@ -29,19 +29,26 @@ public class User implements UserDetails {
     @Column(name = "user_id")
     private Long id;
 
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]{2,30}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,30})?$",
+            message = "Invalid first name")
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]{2,40}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,40})*$",
+            message = "Invalid last name")
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Column(name = "password", nullable = false)
     private String password;
 
+    // Matches a phone number that may optionally start with a plus sign and contain
+    // between 7 and 20 characters made up of digits, dots, spaces, parentheses, or dashes
+    @Pattern(regexp = "^\\+?[0-9. ()-]{7,20}$", message = "Invalid phone number format")
     @Column(nullable = false)
     private String phone;
 
-    @Email
+    @Email(message = "Invalid e-mail address")
     @Column(unique = true, nullable = false)
     private String email;
 

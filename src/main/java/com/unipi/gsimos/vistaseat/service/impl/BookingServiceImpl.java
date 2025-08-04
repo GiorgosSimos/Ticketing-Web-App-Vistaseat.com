@@ -115,6 +115,7 @@ public class BookingServiceImpl implements BookingService {
         //pendingBooking.setUser(); TODO: For logged in users
         pendingBooking.setFirstName(pendingBookingDto.firstName());
         pendingBooking.setLastName(pendingBookingDto.lastName());
+        pendingBooking.setPhoneNumber(pendingBookingDto.phoneNumber());
         pendingBooking.setEmail(pendingBookingDto.email());
         pendingBooking.setNumberOfTickets(pendingBookingDto.numberOfTickets());
         pendingBooking.setTicketsPrice(ticketsCost);

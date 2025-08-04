@@ -84,19 +84,37 @@
                 <label for="lastName" class="mb-1">Last Name</label>
 
                 <input type="text" class="form-control mb-3"
-                       name="firstName" id="firstName" placeholder="First Name" required>
+                       name="firstName" id="firstName"
+                       placeholder="First Name"
+                       pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]{2,30}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,30})?$"
+                       title="Only letters, optional apostrophe or hyphen (e.g. Jean-Luc)"
+                       required>
 
                 <input type="text" class="form-control mb-3"
-                       name="lastName" id="lastName" placeholder="Last Name" required>
+                       name="lastName" id="lastName"
+                       placeholder="Last Name"
+                       pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]{2,40}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,40})*$"
+                       title="Only letters; spaces/apostrophes/hyphens allowed (e.g. van der Mer)"
+                       required>
 
                 <label for="phoneNumber" class="mb-1">Phone Number</label>
                 <label for="email" class="mb-1">E-mail</label>
 
-                <input type="text" maxlength="10" class="form-control"
-                       name="phoneNumber" id="phoneNumber" placeholder="Phone Number" required>
+                <input type="tel"
+                       class="form-control"
+                       name="phoneNumber"
+                       id="phoneNumber"
+                       pattern="^\+?[0-9. ()-]{7,20}$"
+                       maxlength="20"
+                       placeholder="+30 690 123 4567"
+                       title="Use digits, space, -, (), or +"
+                       required>
 
-                <input type="text" class="form-control"
-                       name="email" id="email" placeholder="E-mail" required>
+                <input type="email" class="form-control"
+                       name="email" id="email"
+                       placeholder="E-mail"
+                       title="example@domain.com"
+                       required>
 
                 <!-- Accept terms of use checkbox -->
                 <div class="form-check my-4">

@@ -1,7 +1,9 @@
 package com.unipi.gsimos.vistaseat.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,13 +36,21 @@ public class Booking {
     @JoinColumn(name = "user_id", nullable = true) // Nullable for guests
     private User user;
 
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]{2,30}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,30})?$",
+            message = "Invalid first name")
     @Column(name = "first_name", nullable = false) // For registered users autocompleted with user.getFirstName()
     private String firstName;
 
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]{2,40}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,40})*$",
+            message = "Invalid last name")
     @Column(name = "last_name", nullable = false) //For registered users autocompleted with user.getLastName()
     private String lastName;
 
-    //@ValidEmail
+    @Pattern(regexp = "^\\+?[0-9. ()-]{7,20}$", message = "Invalid phone number format")
+    @Column(name="phone_number", nullable = false)
+    private String phoneNumber;
+
+    @Email(message = "Invalid e-mail address")
     @Column(nullable = false) // For registered users autocompleted with user.getEmail()
     private String email;
 
@@ -48,7 +58,8 @@ public class Booking {
     private LocalDateTime bookingDate = LocalDateTime.now();
 
     // One seat per ticket
-    @Column(name = "number_of_tickets", nullable = false) @Min(1)
+    @Min(1)
+    @Column(name = "number_of_tickets", nullable = false)
     private int numberOfTickets;
 
     @Min(value = 0, message = "Booking price cannot be negative")

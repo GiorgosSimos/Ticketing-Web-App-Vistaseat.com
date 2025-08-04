@@ -1,13 +1,14 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.dto.BookingDto;
 import com.unipi.gsimos.vistaseat.dto.BookingInfo;
+import com.unipi.gsimos.vistaseat.dto.CategoriesEventCardDto;
 import com.unipi.gsimos.vistaseat.dto.PendingBookingDto;
 import com.unipi.gsimos.vistaseat.mapper.BookingMapper;
-import com.unipi.gsimos.vistaseat.model.Booking;
-import com.unipi.gsimos.vistaseat.model.EventOccurrence;
-import com.unipi.gsimos.vistaseat.model.User;
+import com.unipi.gsimos.vistaseat.model.*;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
+import com.unipi.gsimos.vistaseat.repository.PaymentRepository;
 import com.unipi.gsimos.vistaseat.service.BookingService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class BookingController {
     private final EventOccurrenceRepository eventOccurrenceRepository;
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
+    private final PaymentRepository paymentRepository;
 
     @GetMapping("/adminDashboard/manageBookings")
     public String displayBookings(Model model) {
@@ -79,10 +81,29 @@ public class BookingController {
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + bookingId));
+        BookingDto bookingDto = bookingMapper.toDto(booking);
 
-        model.addAttribute("booking", bookingMapper.toDto(booking));
+        EventOccurrence occurrence = eventOccurrenceRepository.findById(booking.getEventOccurrence().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Occurrence not found with id: "
+                        + booking.getEventOccurrence().getId()));
+
+        Event event = occurrence.getEvent();
+        CategoriesEventCardDto eventCardDto = CategoriesEventCardDto.from(event);
+
+        Payment payment = paymentRepository.findByBookingIdAndStatus(bookingId, PaymentStatus.COMPLETED);
+        Long paymentId = (payment != null) ? payment.getId() : null;
+        PaymentMethods paymentMethod = payment != null ? payment.getPaymentMethod() : null;
+
+        model.addAttribute("booking", bookingDto);
+        model.addAttribute("CONFIRMED", BookingStatus.CONFIRMED);
+        model.addAttribute("PENDING", BookingStatus.PENDING);
+        model.addAttribute("CANCELLED", BookingStatus.CANCELLED);
+        model.addAttribute("eventCard", eventCardDto);
+        model.addAttribute("transactionID", paymentId);
+        model.addAttribute("paymentMethod", paymentMethod);
+        model.addAttribute("occurrenceDateTime", occurrence.getEventDate());
+        model.addAttribute("occurrenceDuration", occurrence.getDuration());
 
         return "bookingOrderComplete";
-
     }
 }

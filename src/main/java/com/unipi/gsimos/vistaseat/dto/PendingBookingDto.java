@@ -11,6 +11,6 @@ public record PendingBookingDto(
         @NotBlank String lastName,
         @Email String email,
         @NotBlank
-        @Pattern(regexp = "^\\d{10}$")
+        @Pattern(regexp = "^\\+?[0-9. ()-]{7,20}$")
         String phoneNumber) {
 }
