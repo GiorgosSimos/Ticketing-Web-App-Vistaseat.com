@@ -21,7 +21,7 @@
     </div>
 
     <div th:if="${booking.status == CONFIRMED}"
-         class="d-flex flex-column align-items-center justify-content-center my-5">
+         class="d-flex flex-column align-items-center justify-content-center p-5 noticeStyle">
         <figure class="app-logo">
             <img th:src="@{/images/logo.png}">
         </figure>
@@ -29,11 +29,19 @@
             <img th:src="@{/images/tick_symbol.png}">
         </figure>
         <h4 class="mb-4">This booking is confirmed</h4>
-        <a href="/home" class="btn btn-primary">Back to home</a>
+        <div class="d-flex justify-content-center">
+            <a th:href="@{'/api/bookingComplete/' + ${booking.id}}" class="btn btn-dark me-2">
+                <i class="bi bi-ticket-detailed me-2"></i>
+                View Booking Details
+            </a>
+            <a href="/home" class="btn btn-outline-light text-black">
+                <i class="bi bi-house-door-fill me-2"></i>
+                Back to home</a>
+        </div>
     </div>
 
     <div th:if="${booking.status == CANCELLED}"
-         class="d-flex flex-column align-items-center justify-content-center my-5">
+         class="d-flex flex-column align-items-center justify-content-center p-5 noticeStyle">
         <figure class="app-logo">
             <img th:src="@{/images/logo.png}">
         </figure>
@@ -41,7 +49,16 @@
             <img th:src="@{/images/warning_symbol.png}">
         </figure>
         <h4 class="mb-4">This booking is canceled or has expired</h4>
-        <a href="/home" class="btn btn-primary">Back to home</a>
+        <div class="d-flex justify-content-center">
+            <a th:href="@{'/api/events/' + ${booking.eventId}}" class="btn btn-dark me-2">
+                <i class="bi bi-calendar2-event me-2"></i>
+                Back to Event
+            </a>
+            <a href="/home" class="btn btn-outline-light text-black">
+                <i class="bi bi-house-door-fill me-2"></i>
+                Back to home
+            </a>
+        </div>
     </div>
 
 
@@ -238,7 +255,7 @@
 
                 /* Simulate 5-sec processing latency */
                 setTimeout(() => {
-                    window.location = `/api/payments/${formData.get('bookingId')}`;
+                    window.location = `/api/bookingComplete/${formData.get('bookingId')}`;
                 }, 5000);
             } catch (error) {
                 hideSpinner();

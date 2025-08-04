@@ -132,7 +132,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + bookingId));
 
-        // Booking has expired - should not happen because of cancelExpiredBookings() check
+        // Booking has expired - should not happen because of scheduled cancelExpiredBookings() check
         if (booking.getExpiresAt().isBefore(LocalDateTime.now())) return;
 
         // Idempotency check - booking is already confirmed

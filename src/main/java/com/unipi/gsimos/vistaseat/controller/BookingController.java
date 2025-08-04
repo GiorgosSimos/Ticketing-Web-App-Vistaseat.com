@@ -2,8 +2,11 @@ package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.BookingInfo;
 import com.unipi.gsimos.vistaseat.dto.PendingBookingDto;
+import com.unipi.gsimos.vistaseat.mapper.BookingMapper;
+import com.unipi.gsimos.vistaseat.model.Booking;
 import com.unipi.gsimos.vistaseat.model.EventOccurrence;
 import com.unipi.gsimos.vistaseat.model.User;
+import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.service.BookingService;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,10 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -25,6 +25,8 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final EventOccurrenceRepository eventOccurrenceRepository;
+    private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
 
     @GetMapping("/adminDashboard/manageBookings")
     public String displayBookings(Model model) {
@@ -67,9 +69,20 @@ public class BookingController {
             redirectAttributes.addFlashAttribute("bookingId", bookingId);
             return "redirect:/api/payments/"  + bookingId;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error: " + e.getMessage());
             return "redirect:/api/events/" + occurrence.getEvent().getId();
         }
+
+    }
+    @GetMapping("/api/bookingComplete/{bookingId}")
+    public String orderCompleteOverview(@PathVariable Long bookingId, Model model) {
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + bookingId));
+
+        model.addAttribute("booking", bookingMapper.toDto(booking));
+
+        return "bookingOrderComplete";
 
     }
 }

@@ -1,6 +1,8 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.dto.BookingDto;
 import com.unipi.gsimos.vistaseat.dto.EventDto;
+import com.unipi.gsimos.vistaseat.mapper.BookingMapper;
 import com.unipi.gsimos.vistaseat.mapper.EventMapper;
 import com.unipi.gsimos.vistaseat.model.Booking;
 import com.unipi.gsimos.vistaseat.model.BookingStatus;
@@ -24,6 +26,7 @@ public class PaymentController {
     private final BookingRepository bookingRepository;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final BookingMapper bookingMapper;
     private final BookingService bookingService;
 
     @GetMapping("/api/payments/{bookingId}")
@@ -32,11 +35,13 @@ public class PaymentController {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found"));
 
+        BookingDto bookingDto = bookingMapper.toDto(booking);
+
         Event event = eventRepository.findEventByOccurrenceId(booking.getEventOccurrence().getId());
 
         EventDto eventDto = eventMapper.toDto(event);
 
-        model.addAttribute("booking", booking);
+        model.addAttribute("booking", bookingDto);
         model.addAttribute("CONFIRMED", BookingStatus.CONFIRMED);
         model.addAttribute("PENDING", BookingStatus.PENDING);
         model.addAttribute("CANCELLED", BookingStatus.CANCELLED);
