@@ -36,8 +36,7 @@ public class Booking {
     @JoinColumn(name = "user_id", nullable = true) // Nullable for guests
     private User user;
 
-    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]{2,30}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,30})?$",
-            message = "Invalid first name")
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ]{2,30}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,30})?$", message = "Invalid first name")
     @Column(name = "first_name", nullable = false) // For registered users autocompleted with user.getFirstName()
     private String firstName;
 

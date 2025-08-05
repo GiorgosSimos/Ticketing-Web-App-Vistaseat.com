@@ -1,10 +1,8 @@
 package com.unipi.gsimos.vistaseat.controller;
 
-import com.unipi.gsimos.vistaseat.dto.BookingDto;
-import com.unipi.gsimos.vistaseat.dto.BookingInfo;
-import com.unipi.gsimos.vistaseat.dto.CategoriesEventCardDto;
-import com.unipi.gsimos.vistaseat.dto.PendingBookingDto;
+import com.unipi.gsimos.vistaseat.dto.*;
 import com.unipi.gsimos.vistaseat.mapper.BookingMapper;
+import com.unipi.gsimos.vistaseat.mapper.PaymentMapper;
 import com.unipi.gsimos.vistaseat.model.*;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
@@ -19,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -29,6 +29,7 @@ public class BookingController {
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
     private final PaymentRepository paymentRepository;
+    private final PaymentMapper paymentMapper;
 
     @GetMapping("/adminDashboard/manageBookings")
     public String displayBookings(Model model) {
@@ -91,8 +92,10 @@ public class BookingController {
         CategoriesEventCardDto eventCardDto = CategoriesEventCardDto.from(event);
 
         Payment payment = paymentRepository.findByBookingIdAndStatus(bookingId, PaymentStatus.COMPLETED);
-        Long paymentId = (payment != null) ? payment.getId() : null;
-        PaymentMethods paymentMethod = payment != null ? payment.getPaymentMethod() : null;
+        PaymentDto paymentDto = payment !=null ? paymentMapper.toDto(payment) : null;
+        Long paymentId = paymentDto != null ? paymentDto.getId() : null;
+        PaymentMethods paymentMethod = paymentDto != null ? paymentDto.getPaymentMethod() : null;
+        LocalDateTime paymentDate = paymentDto != null ? paymentDto.getPaymentDateTime() : null;
 
         model.addAttribute("booking", bookingDto);
         model.addAttribute("CONFIRMED", BookingStatus.CONFIRMED);
@@ -101,6 +104,7 @@ public class BookingController {
         model.addAttribute("eventCard", eventCardDto);
         model.addAttribute("transactionID", paymentId);
         model.addAttribute("paymentMethod", paymentMethod);
+        model.addAttribute("paymentDate", paymentDate);
         model.addAttribute("occurrenceDateTime", occurrence.getEventDate());
         model.addAttribute("occurrenceDuration", occurrence.getDuration());
 

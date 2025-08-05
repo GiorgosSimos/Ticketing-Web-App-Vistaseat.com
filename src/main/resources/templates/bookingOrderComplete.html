@@ -56,11 +56,11 @@
         <div class="order-complete-layout">
             <!-- Left side: 35% -->
             <div class="d-flex flex-column">
-                <!-- Order details Grid -->
+                <!-- Order details Card -->
                 <div class="order-details-card mb-4">
                     <div class="d-flex py-2 two-column-span">
-                        <i class="bi bi-ticket-detailed-fill fs-3 me-3"></i>
-                        <h3 class="fw-semibold">Order Details</h3>
+                        <i class="bi bi-receipt-cutoff fs-3 me-3"></i>
+                        <h3 class="fw-semibold mt-1">Order Details</h3>
                     </div>
                     <label class="text-muted">Booking Number</label>
                     <label class="text-muted">Booking Date</label>
@@ -78,7 +78,7 @@
                     <span class="fw-semibold" th:text="${booking.totalAmount} + '€'">27€</span>
                 </div>
                 <!-- Event Information Card -->
-                <div class="event-info-flex-style-card">
+                <div class="event-info-flex-style-card mb-4">
                     <div class="d-flex">
                         <i class="bi bi-calendar2-event-fill fs-3 me-3"></i>
                         <h3 class="fw-semibold mt-1">Event Information Details</h3>
@@ -125,9 +125,16 @@
                         </div>
                     </article>
                 </div>
+                <!-- Event Tickets Card -->
+                <div class="event-tickets-card-container">
+                    <div class="d-flex py-2">
+                        <i class="bi bi-ticket-perforated-fill fs-3 me-3"></i>
+                        <h3 class="fw-semibold">Your tickets</h3>
+                    </div>
+                </div>
             </div>
             <!-- Right side: 35% -->
-            <div class="d-flex flex-column align-items-center">
+            <div class="d-flex flex-column">
                 <!-- Payment Details -->
                 <div class="order-details-card mb-4">
                     <div class="d-flex py-2 two-column-span">
@@ -153,7 +160,10 @@
                     <hr class="two-column-span">
 
                     <p class="text-muted my-2 two-column-span"
-                       th:text="'Order paid with ' + ${paymentMethod}">Payment Method</p>
+                       th:text="'Order paid on ' + ${#temporals.format(paymentDate,
+                        'MMM d, yyyy ''at'' h:mm:ss a')} + ' with ' + ${paymentMethod}">
+                        Payment Method
+                    </p>
                     <p class="text-muted two-column-span"
                        th:text="'Transaction ID: ' + ${transactionID}">Transaction ID</p>
                 </div>
