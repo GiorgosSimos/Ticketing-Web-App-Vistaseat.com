@@ -9,8 +9,7 @@ import com.unipi.gsimos.vistaseat.model.BookingStatus;
 import com.unipi.gsimos.vistaseat.model.Event;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
-import com.unipi.gsimos.vistaseat.service.BookingService;
-import com.unipi.gsimos.vistaseat.service.TicketService;
+import com.unipi.gsimos.vistaseat.service.PaymentService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +29,7 @@ public class PaymentController {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final BookingMapper bookingMapper;
-    private final BookingService bookingService;
-    private final TicketService ticketService;
+    private final PaymentService paymentService;
 
     @GetMapping("/api/payments/{bookingId}")
     public String makePayment(@PathVariable Long bookingId, Model model){
@@ -60,8 +58,7 @@ public class PaymentController {
     @PostMapping("/api/payments/{bookingId}/card-sim")
     public ResponseEntity<Void> simulatePayment(@PathVariable Long bookingId){
 
-        bookingService.confirmBooking(bookingId);
-        ticketService.createTickets(bookingId);
+        paymentService.paymentCompleted(bookingId);
         return ResponseEntity.ok().build();
     }
 }

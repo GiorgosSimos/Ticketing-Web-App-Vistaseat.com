@@ -11,6 +11,8 @@
 </head>
 <body>
 
+    <div th:insert="~{fragments/header :: header}"></div>
+
     <section th:if="${booking.status != CONFIRMED}"
              class="d-flex flex-column justify-content-center align-items-center p-5 noticeStyle">
         <figure>
@@ -131,6 +133,46 @@
                         <i class="bi bi-ticket-perforated-fill fs-3 me-3"></i>
                         <h3 class="fw-semibold">Your tickets</h3>
                     </div>
+                    <div th:each="ticket,iterSrart :${tickets}"
+                         class="ticket-sample-card">
+                        <div class="ticket-details">
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold"
+                                      th:text="'Ticket #' + ${iterSrart.count}">Ticket #1</span>
+                                <span th:text="${ticket.ticketNumber}"
+                                        class="text-muted">Ticket No: THT1234567897</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted">Section</span>
+                                    <span class="fw-semibold">N/A</span>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted">Row</span>
+                                    <span class="fw-semibold">N/A</span>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted">Seat</span>
+                                    <span class="fw-semibold">N/A</span>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted">Price</span>
+                                    <span class="fw-semibold"
+                                          th:text="${eventCard.price} + ' €'"  >10€</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticket-cta-buttons">
+                            <a class="btn btn-dark me-2">
+                               <i class="bi bi-download me-2"></i>
+                               Download PDF
+                            </a>
+                            <a class="btn btn-dark me-2">
+                               <i class="bi bi-phone me-2"></i>
+                               Add to Wallet
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Right side: 35% -->
@@ -168,7 +210,7 @@
                        th:text="'Transaction ID: ' + ${transactionID}">Transaction ID</p>
                 </div>
                 <!-- Contact Info Card-->
-                <div class="contact-info-card">
+                <div class="contact-info-card mb-4">
                     <div class="d-flex">
                         <i class="bi bi-person-rolodex fs-3 me-3"></i>
                         <h3 class="fw-semibold mt-1">Contact Information</h3>
@@ -187,9 +229,25 @@
                         <span class="fw-semibold" th:text="${booking.phoneNumber}">Phone</span>
                     </div>
                 </div>
+                <div class="important-info">
+                    <div class="d-flex">
+                        <i class="bi bi-info-circle-fill fs-3 me-3"></i>
+                        <h3 class="fw-semibold">Terms</h3>
+                    </div>
+                    <p>
+                        <strong>Important:</strong> Please arrive at the venue at least 30 minutes before showtime.
+                        Bring a valid ID and either your printed tickets or mobile tickets on your phone.
+                        Late arrivals may not be seated until intermission.
+                        Food and drink consumption is not allowed inside the hall.
+                        Photography, audio recording, and video recording are prohibited.
+                        Mobile phones must be turned off.
+                    </p>
+                </div>
             </div>
         </div>
     </section>
+
+    <div th:insert="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

@@ -538,3 +538,37 @@
     font-family: system-ui, sans-serif;
 }
 
+.ticket-sample-card {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgb(222, 226, 230);
+    border-radius: .75rem;
+    font-family: system-ui, sans-serif;
+}
+
+.ticket-details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.ticket-cta-buttons {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.important-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgb(255, 250, 220);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+

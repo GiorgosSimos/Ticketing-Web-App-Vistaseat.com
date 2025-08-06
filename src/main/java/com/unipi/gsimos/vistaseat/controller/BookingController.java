@@ -3,10 +3,12 @@ package com.unipi.gsimos.vistaseat.controller;
 import com.unipi.gsimos.vistaseat.dto.*;
 import com.unipi.gsimos.vistaseat.mapper.BookingMapper;
 import com.unipi.gsimos.vistaseat.mapper.PaymentMapper;
+import com.unipi.gsimos.vistaseat.mapper.TicketMapper;
 import com.unipi.gsimos.vistaseat.model.*;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.repository.PaymentRepository;
+import com.unipi.gsimos.vistaseat.repository.TicketRepository;
 import com.unipi.gsimos.vistaseat.service.BookingService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Controller
@@ -30,6 +33,8 @@ public class BookingController {
     private final BookingMapper bookingMapper;
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final TicketRepository ticketRepository;
+    private final TicketMapper ticketMapper;
 
     @GetMapping("/adminDashboard/manageBookings")
     public String displayBookings(Model model) {
@@ -97,7 +102,11 @@ public class BookingController {
         PaymentMethods paymentMethod = paymentDto != null ? paymentDto.getPaymentMethod() : null;
         LocalDateTime paymentDate = paymentDto != null ? paymentDto.getPaymentDateTime() : null;
 
+        List<TicketDto> tickets = ticketRepository.
+                findAllByBookingId(bookingId).stream().map(ticketMapper::toDto).toList();
+
         model.addAttribute("booking", bookingDto);
+        model.addAttribute("tickets", tickets);
         model.addAttribute("CONFIRMED", BookingStatus.CONFIRMED);
         model.addAttribute("PENDING", BookingStatus.PENDING);
         model.addAttribute("CANCELLED", BookingStatus.CANCELLED);

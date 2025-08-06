@@ -7,6 +7,31 @@ import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+        * Utility for minting unique, human-readable ticket numbers.
+ *
+         * <p>A generated code has the shape
+ * <pre>{@code <PREFIX><BODY><CHECK>}</pre>
+        * where
+ * <ul>
+ *   <li>{@code <PREFIX>} – 3-letter event-type mnemonic
+ *        (<i>THT</i>, <i>CIN</i>, <i>MCN</i>, <i>SPT</i>, <i>MSM</i>, <i>ARC</i>)</li>
+        *   <li>{@code <BODY>}   – 9-digit random decimal, zero-padded</li>
+        *   <li>{@code <CHECK>}  – 1-digit Luhn (mod-10) checksum for the body</li>
+        * </ul>
+        *
+        * <p>Example: {@code THT1234567897}
+        *
+        * <h2>Thread safety</h2>
+        * The class is stateless and uses a single {@link java.security.SecureRandom}
+ * instance, which is thread-safe; therefore {@link #generate(EventType)} may
+ * be called concurrently without additional synchronisation.
+        *
+        * <h2>Collisions</h2>
+        * Each prefix has 1 billion possible bodies; the birthday-paradox collision
+ * probability is < 10<sup>-9</sup> per insert at typical ticketing volumes.
+        * Follows a UNIQUE constraint on the persisted column.
+ */
 @Component
 public class TicketNumberGenerator {
 
