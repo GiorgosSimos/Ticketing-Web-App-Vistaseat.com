@@ -158,12 +158,12 @@
                                 <div class="d-flex flex-column">
                                     <span class="text-muted">Price</span>
                                     <span class="fw-semibold"
-                                          th:text="${eventCard.price} + ' €'"  >10€</span>
+                                          th:text="${eventCard.price} + ' €'">10€</span>
                                 </div>
                             </div>
                         </div>
                         <div class="ticket-cta-buttons">
-                            <a th:href="@{/api/tickets/{id}/pdf(id=${ticket.id}, mode='view')}"
+                            <a th:href="@{/api/tickets/{id}/pdf(id=${ticket.id}, mode='VIEW')}"
                                target="_blank"
                                class="btn btn-dark me-2">
                                <i class="bi bi-download me-2"></i>

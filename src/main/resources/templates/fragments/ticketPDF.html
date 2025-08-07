@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title th:text="'Ticket ' + ${ticket.ticketNumber}">Ticket</title>
@@ -9,13 +9,8 @@
             margin: 12px;
         }
 
-        .section-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
         .logo {
-            width: 120px;
+            width: 80px;
             height: auto;
         }
 
@@ -36,6 +31,7 @@
         }
 
         .footer-barcode {
+            width: 35%;
             text-align: center;
         }
 
@@ -46,7 +42,7 @@
         }
 
         .notice-text {
-            margin-left: 8px;
+            margin-left: 4px;
             font-size: 0.9em;
             text-align: justify;
         }
@@ -62,8 +58,23 @@
         }
 
         .ticket-number {
+            width: 50%;
             text-align: right;
         }
+
+        dl {
+            margin: 0;
+        }
+
+        dt {
+            margin-top: 8px;
+            margin-bottom: 2px;
+        }
+
+        dd {
+            margin: 0 0 6px 0;
+        }
+
     </style>
 </head>
 <body>
@@ -73,11 +84,11 @@
     <tr>
         <!-- Left side: logo and app name -->
         <td style="width: 50%;">
-            <img th:src="'data:image/png;base64,' + ${logoBase64}" alt="Logo" style="height: 60px;" />
+            <img th:src="'data:image/png;base64,' + ${logoBase64}" alt="Logo" class="logo" />
         </td>
 
         <!-- Right side: ticket number and company info -->
-        <td style="width: 50%; text-align: right;">
+        <td class="ticket-number">
             <div><strong>Ticket Number:</strong> <span th:text="${ticket.ticketNumber}"></span></div>
             <div><strong>Issued by:</strong> VistaSeat Systems</div>
             <div><strong>www.vistaseat.com</strong></div>
@@ -90,37 +101,56 @@
     <tr>
         <!-- Column 1 -->
         <td style="width: 33%;">
-            <div class="section-title">Personal Info</div>
-            <p><strong>Full Name:</strong> <span th:text="${ticket.holderFullName}"></span></p>
-            <p><strong>Event:</strong> <span th:text="${ticket.eventName}"></span></p>
-            <p><strong>Date:</strong> <span th:text="${ticket.eventDateTime}"></span></p>
+            <dl>
+                <dt>Full Name:</dt>
+                <dd><strong th:text="${ticket.holderFullName}">John Doe</strong></dd>
+
+                <dt>Event:</dt>
+                <dd><strong th:text="${ticket.eventName}">Concert Night</strong></dd>
+
+                <dt>Date:</dt>
+                <dd><strong th:text="${#temporals.format(ticket.eventDateTime, 'dd - MM - yyyy / HH:mm')}">07 - 12 - 2024 / 21:00</strong></dd>
+            </dl>
         </td>
 
         <!-- Column 2 -->
         <td style="width: 33%;">
-            <div class="section-title">Venue Info</div>
-            <p><strong>Email:</strong> <span th:text="${ticket.holderEmail}"></span></p>
-            <p><strong>Price:</strong> €<span th:text="${ticket.ticketPrice()}"></span></p>
-            <p><strong>Venue:</strong> <span th:text="${ticket.venueName}"></span></p>
+            <dl>
+                <dt>Email:</dt>
+                <dd><strong th:text="${ticket.holderEmail}">john@example.com</strong></dd>
+
+                <dt>Price:</dt>
+                <dd><strong th:text="${'€' + ticket.ticketPrice}">€25.00</strong></dd>
+
+                <dt>Venue:</dt>
+                <dd><strong th:text="${ticket.venueName}">Grand Hall</strong></dd>
+            </dl>
         </td>
 
         <!-- Column 3 -->
         <td style="width: 33%;">
-            <div class="section-title">Booking Info</div>
-            <p><strong>Booking ID:</strong> <span th:text="${ticket.bookingId}"></span></p>
-            <p><strong>Seat #:</strong> <span>N/A</span></p>
-            <p><strong>Channel:</strong> <span>Vistaseat.com</span></p>
+            <dl>
+                <dt>Booking Number:</dt>
+                <dd><strong th:text="${ticket.bookingId}">12345</strong></dd>
+
+                <dt>Seat Number:</dt>
+                <dd><strong>N/A</strong></dd>
+
+                <dt>Vendor:</dt>
+                <dd><strong>Vistaseat.com</strong></dd>
+            </dl>
         </td>
     </tr>
 </table>
+
 
 <!-- BOTTOM SECTION: Barcode + Notice -->
 <table class="footer-table">
     <tr>
         <!-- Left: barcode image + label -->
-        <td style="width: 35%; text-align: center;">
-            <div class="barcode-label">Scan to Validate</div>
-            <img th:src="'data:image/png;base64,' + ${barcodeBase64}" alt="QR Code" style="width: 100px; height: auto;" />
+        <td class="footer-barcode">
+            <div class="barcode-label">SCAN HERE E-TICKET BARCODE</div>
+            <img th:src="'data:image/png;base64,' + ${barcodeBase64}" alt="barcode" style="width: 100px; height: auto;" />
             <div class="barcode-number"><span th:text="${ticket.barcode}"></span></div>
         </td>
 
@@ -133,7 +163,6 @@
                     Please arrive at the venue at least 30 minutes before showtime.
                         Bring a valid ID and either your printed tickets or mobile tickets on your phone.
                         Late arrivals may not be seated until intermission.
-                        Food and drink consumption is not allowed inside the hall.
                         Photography, audio recording, and video recording are prohibited.
                         Mobile phones must be turned off.
                 </p>

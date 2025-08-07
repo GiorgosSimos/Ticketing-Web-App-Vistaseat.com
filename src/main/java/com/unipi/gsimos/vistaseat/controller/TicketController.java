@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.model.TicketRenderMode;
 import com.unipi.gsimos.vistaseat.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -21,16 +22,15 @@ public class TicketController {
 
     @GetMapping("/api/tickets/{ticketId}/pdf")
     public ResponseEntity<byte[]> getPdfTicket(@PathVariable Long ticketId,
-                                               @RequestParam(defaultValue = "view") String mode){
+                                               @RequestParam(defaultValue = "VIEW") TicketRenderMode mode){
 
         byte[] pdfTicket = ticketService.generatePdfTicket(ticketId);
 
-        String dispositionType = mode.equals("view") ? "inline" : "attachment";
         String rawFilename = "ticket-" + ticketId + ".pdf";
         String encodedFilename = URLEncoder.encode(rawFilename, StandardCharsets.UTF_8);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, dispositionType + "; filename=" + encodedFilename)
+                .header(HttpHeaders.CONTENT_DISPOSITION, mode.getContentDispositionValue() + "; filename=\"" + encodedFilename + "\"")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfTicket);
     }
