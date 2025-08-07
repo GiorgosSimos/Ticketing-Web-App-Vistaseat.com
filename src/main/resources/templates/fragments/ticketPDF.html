@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="'Ticket ' + ${ticket.ticketNumber}">Ticket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 12px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+        }
+
+        .info-table,
+        .grid-table,
+        .footer-table {
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .info-table td,
+        .grid-table td,
+        .footer-table td {
+            vertical-align: top;
+            padding: 8px;
+        }
+
+        .footer-barcode {
+            text-align: center;
+        }
+
+        .notice-icon {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+        }
+
+        .notice-text {
+            margin-left: 8px;
+            font-size: 0.9em;
+            text-align: justify;
+        }
+
+        .barcode-label {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .barcode-number {
+            font-size: 0.8em;
+            margin-top: 4px;
+        }
+
+        .ticket-number {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP SECTION -->
+<table class="info-table">
+    <tr>
+        <!-- Left side: logo and app name -->
+        <td style="width: 50%;">
+            <img th:src="'data:image/png;base64,' + ${logoBase64}" alt="Logo" style="height: 60px;" />
+        </td>
+
+        <!-- Right side: ticket number and company info -->
+        <td style="width: 50%; text-align: right;">
+            <div><strong>Ticket Number:</strong> <span th:text="${ticket.ticketNumber}"></span></div>
+            <div><strong>Issued by:</strong> VistaSeat Systems</div>
+            <div><strong>www.vistaseat.com</strong></div>
+        </td>
+    </tr>
+</table>
+
+<!-- MIDDLE SECTION: 3 COLUMNS -->
+<table class="grid-table">
+    <tr>
+        <!-- Column 1 -->
+        <td style="width: 33%;">
+            <div class="section-title">Personal Info</div>
+            <p><strong>Full Name:</strong> <span th:text="${ticket.holderFullName}"></span></p>
+            <p><strong>Event:</strong> <span th:text="${ticket.eventName}"></span></p>
+            <p><strong>Date:</strong> <span th:text="${ticket.eventDateTime}"></span></p>
+        </td>
+
+        <!-- Column 2 -->
+        <td style="width: 33%;">
+            <div class="section-title">Venue Info</div>
+            <p><strong>Email:</strong> <span th:text="${ticket.holderEmail}"></span></p>
+            <p><strong>Price:</strong> €<span th:text="${ticket.ticketPrice()}"></span></p>
+            <p><strong>Venue:</strong> <span th:text="${ticket.venueName}"></span></p>
+        </td>
+
+        <!-- Column 3 -->
+        <td style="width: 33%;">
+            <div class="section-title">Booking Info</div>
+            <p><strong>Booking ID:</strong> <span th:text="${ticket.bookingId}"></span></p>
+            <p><strong>Seat #:</strong> <span>N/A</span></p>
+            <p><strong>Channel:</strong> <span>Vistaseat.com</span></p>
+        </td>
+    </tr>
+</table>
+
+<!-- BOTTOM SECTION: Barcode + Notice -->
+<table class="footer-table">
+    <tr>
+        <!-- Left: barcode image + label -->
+        <td style="width: 35%; text-align: center;">
+            <div class="barcode-label">Scan to Validate</div>
+            <img th:src="'data:image/png;base64,' + ${barcodeBase64}" alt="QR Code" style="width: 100px; height: auto;" />
+            <div class="barcode-number"><span th:text="${ticket.barcode}"></span></div>
+        </td>
+
+        <!-- Right: notice section -->
+        <td style="width: 65%;">
+            <div>
+                <img class="notice-icon" th:src="'data:image/png;base64,' + ${noticeIconBase64}" alt="Notice" />
+                <span><strong>Important Notice:</strong></span>
+                <p class="notice-text" style="text-align: justify">
+                    Please arrive at the venue at least 30 minutes before showtime.
+                        Bring a valid ID and either your printed tickets or mobile tickets on your phone.
+                        Late arrivals may not be seated until intermission.
+                        Food and drink consumption is not allowed inside the hall.
+                        Photography, audio recording, and video recording are prohibited.
+                        Mobile phones must be turned off.
+                </p>
+            </div>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
