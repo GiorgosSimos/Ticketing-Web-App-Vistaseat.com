@@ -69,6 +69,19 @@ public class TicketServiceImpl implements TicketService {
         return String.format("%010d", number);
     }
 
+    /**
+     * Generates a PDF ticket for the specified ticket ID.
+     * <p>
+     * Retrieves the ticket, its associated booking, event occurrence, event, and venue details
+     * from the database. Constructs a {@link TicketPDFDto} containing ticket and event information,
+     * embeds static images (logo, barcode, notice) as Base64-encoded strings, and processes an HTML
+     * template to produce the final PDF using iTextRenderer.
+     *
+     * @param ticketId the ID of the ticket to generate the PDF for
+     * @return a byte array representing the generated PDF file
+     * @throws EntityNotFoundException if the ticket with the given ID is not found
+     * @throws RuntimeException        if PDF generation fails
+     */
     @Override
     public byte[] generatePdfTicket(Long ticketId) {
 
@@ -94,6 +107,7 @@ public class TicketServiceImpl implements TicketService {
                 "N/A"
         );
 
+        // Hardcoded image paths - can be substituted with paths stored on a database
         String logoBase64 = encodeImageToBase64("/static/images/logo.png");
         String barcodeBase64 = encodeImageToBase64("/static/images/barcode.png");
         String noticeIconBase64 = encodeImageToBase64("/static/images/notice.png");
@@ -102,7 +116,7 @@ public class TicketServiceImpl implements TicketService {
         context.setVariable("logoBase64", logoBase64);
         context.setVariable("barcodeBase64", barcodeBase64);
         context.setVariable("noticeIconBase64", noticeIconBase64);
-        context.setVariable("ticket", ticketPDFDto); // must match fields in your template
+        context.setVariable("ticket", ticketPDFDto);
 
         String renderedHtml = templateEngine.process("fragments/ticketPDF", context);
 
@@ -117,6 +131,63 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
+    @Override
+    public byte[] generatePdfTicketsForBooking(Long bookingId) {
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking with id: " + bookingId + " not found"));
+
+        List<Ticket> tickets = booking.getTickets();
+
+        EventOccurrence occurrence = booking.getEventOccurrence();
+        Event event = occurrence.getEvent();
+        Venue venue = event.getVenue();
+
+        List<TicketPDFDto> ticketPDFDtos = tickets.stream().map(ticket -> new TicketPDFDto(
+            ticket.getId(),
+            bookingId,
+            ticket.getTicketNumber(),
+            ticket.getBarcode(),
+            booking.getFirstName() + " " + booking.getLastName(),
+            booking.getEmail(),
+            event.getName(),
+            venue.getName(),
+            occurrence.getEventDate(),
+            occurrence.getPrice(),
+            "N/A"
+        )).toList();
+
+        String logoBase64 = encodeImageToBase64("/static/images/logo.png");
+        String barcodeBase64 = encodeImageToBase64("/static/images/barcode.png");
+        String noticeIconBase64 = encodeImageToBase64("/static/images/notice.png");
+
+        Context context = new Context();
+        context.setVariable("logoBase64", logoBase64);
+        context.setVariable("barcodeBase64", barcodeBase64);
+        context.setVariable("noticeIconBase64", noticeIconBase64);
+        context.setVariable("tickets", ticketPDFDtos);
+
+        String renderedHtml = templateEngine.process("fragments/multiTicketPDF", context);
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            ITextRenderer renderer = new ITextRenderer();
+            renderer.setDocumentFromString(renderedHtml);
+            renderer.layout();
+            renderer.createPDF(outputStream);
+            return outputStream.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException("Multi-ticket PDF generation failed", e);
+        }
+    }
+
+    /**
+     * Helper method that reads an image from the given resource path and encodes it as a Base64 string.
+     *
+     * @param pathInResources the classpath-relative path to the image resource
+     * @return the Base64-encoded string representation of the image
+     * @throws FileNotFoundException  if the resource cannot be found
+     * @throws UncheckedIOException   if an I/O error occurs while reading the resource
+     */
     private String encodeImageToBase64(String pathInResources) {
         try (InputStream stream = getClass().getResourceAsStream(pathInResources)){
             if (stream == null) throw new FileNotFoundException("Resource not found: " + pathInResources);

@@ -1,84 +1,6 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title th:text="'Ticket ' + ${ticket.ticketNumber}">Ticket</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 12px;
-        }
 
-        .logo {
-            width: 80px;
-            height: auto;
-        }
-
-        .info-table,
-        .grid-table,
-        .footer-table {
-            width: 100%;
-            border: 1px solid black;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .info-table td,
-        .grid-table td,
-        .footer-table td {
-            vertical-align: top;
-            padding: 8px;
-        }
-
-        .footer-barcode {
-            width: 35%;
-            text-align: center;
-        }
-
-        .notice-icon {
-            width: 24px;
-            height: 24px;
-            vertical-align: middle;
-        }
-
-        .notice-text {
-            margin-left: 4px;
-            font-size: 0.9em;
-            text-align: justify;
-        }
-
-        .barcode-label {
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .barcode-number {
-            font-size: 0.8em;
-            margin-top: 4px;
-        }
-
-        .ticket-number {
-            width: 50%;
-            text-align: right;
-        }
-
-        dl {
-            margin: 0;
-        }
-
-        dt {
-            margin-top: 8px;
-            margin-bottom: 2px;
-        }
-
-        dd {
-            margin: 0 0 6px 0;
-        }
-
-    </style>
-</head>
-<body>
-
+<div th:fragment="ticketPDFItem(ticket)"
+     xmlns:th="http://www.thymeleaf.org">
     <!-- TOP SECTION -->
     <table class="info-table">
         <tr>
@@ -162,15 +84,14 @@
                     <span><strong>Important Notice:</strong></span>
                     <p class="notice-text" style="text-align: justify">
                         Please arrive at the venue at least 30 minutes before showtime.
-                            Bring a valid ID and either your printed tickets or mobile tickets on your phone.
-                            Late arrivals may not be seated until intermission.
-                            Photography, audio recording, and video recording are prohibited.
-                            Mobile phones must be turned off.
+                        Bring a valid ID and either your printed tickets or mobile tickets on your phone.
+                        Late arrivals may not be seated until intermission.
+                        Photography, audio recording, and video recording are prohibited.
+                        Mobile phones must be turned off.
                     </p>
                 </div>
             </td>
         </tr>
     </table>
 
-</body>
-</html>
+</div>

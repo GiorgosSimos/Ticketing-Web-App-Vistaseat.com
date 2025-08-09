@@ -39,7 +39,7 @@
         <h2 class="fw-bold">Booking Confirmed</h2>
         <p class="fw-semibold">Great! Your tickets have been successfully booked.</p>
         <div class="d-flex justify-content-center">
-            <a
+            <a th:href="@{'/api/booking/' + ${booking.id} + '/ticketsPdf'}"
                class="btn btn-dark me-2">
                 <i class="bi bi-download me-2"></i>
                 Download Tickets
