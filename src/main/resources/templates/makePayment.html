@@ -208,21 +208,7 @@
 
                     <!-- PayPal Pane -->
                     <div class="tab-pane fade" id="paypal-pane" role="tabpanel" aria-labelledby="paypal-tab">
-                        <form
-
-                                class="border p-3 rounded shadow-sm">
-                            <!-- Hidden Inputs -->
-                            <input type="hidden" name="bookingId" th:value="${booking.id}">
-                            <input type="hidden" name="totalAmount" th:value="${booking.totalAmount}">
-
-                            <p class="mb-3">You’ll be redirected to PayPal to complete your purchase.</p>
-                            <div class="text-end">
-                                <button class="btn btn-dark px-3" type="submit">
-                                    <i class="bi bi-paypal me-1"></i>
-                                    Continue with PayPal
-                                </button>
-                            </div>
-                        </form>
+                        <div id="paypal-button-container"></div>
                     </div>
                 </div>
             </section>
@@ -332,6 +318,84 @@
         });
     </script>
 
+    <!-- PayPal SDK with Thymeleaf -->
+    <script th:src="@{https://www.paypal.com/sdk/js(client-id=${@environment.getProperty('paypal.client-id')},currency='EUR',intent='capture')}"></script>
+
+    <script th:inline="javascript">
+        // Get the booking id
+        const bookingId = /*[[${booking.id}]]*/ 0;
+        let paypalRendered = false;
+
+        async function extractError(res) {
+            const text = await res.text();                // read ONCE
+            if (!text) return `${res.status} ${res.statusText}`;
+            try {
+                const j = JSON.parse(text);
+                return j.error || j.message || text;
+            } catch {
+                return text;
+            }
+        }
+
+        function renderPayPalButtons() {
+            if (paypalRendered || !window.paypal) return;
+
+            const container = document.getElementById('paypal-button-container');
+            if (!container) {
+                // No container on this page/state; skip rendering silently.
+                return;
+            }
+
+            paypalRendered = true;
+            // Initialize and render PayPal’s smart button. This loads PayPal’s UI and wires up your callbacks.
+            // The SDK will handle opening the PayPal popup/overlay, login, approval UI, etc.
+            paypal.Buttons({
+                // When the user clicks the button → create the order (server-side)
+                createOrder: async () => {
+                    const response = await fetch(`/api/payments/${bookingId}/paypal/order`, { method: "POST" });
+                    if (!response.ok) {
+                        const message = await extractError(response);
+                        throw new Error(message);
+                    }
+                    const data = await response.json();
+                    return data.id; // PayPal order ID
+                },
+                // After the buyer approves in PayPal → capture on the server. PayPal calls onApprove with orderID.
+                // You do not capture on the client; you POST the orderID to your backend,
+                // which performs the secure capture with PayPal and, on success, triggers
+                // your existing paymentService.paymentCompleted(bookingId).
+                // Then you redirect to the order-complete page (tickets shown).
+                onApprove: async (data) => {
+                    const response = await fetch(`/api/payments/paypal/capture`, {
+                        method: 'POST',
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({orderId: data.orderID, bookingId})
+                    });
+
+                    if (!response.ok) {
+                        const message = extractError(response);
+                        alert(message);
+                        return;
+                    }
+                    window.location.href = `/api/bookingComplete/${bookingId}`;
+                },
+
+                onError: (err) => {
+                    console.error(err);
+                    alert(err?.message || "PayPal error. Please try again.");
+                }
+            }).render(container);
+        }
+
+        // Render when the PayPal tab is shown (Bootstrap 5)
+        const payPalTab = document.querySelector('[data-bs-target="#paypal-pane"]');
+        if (payPalTab) {
+            payPalTab.addEventListener('shown.bs.tab', renderPayPalButtons);
+        }
+
+        // If the PayPal pane could be initially active, render on DOM ready too
+        document.addEventListener('DOMContentLoaded', renderPayPalButtons);
+    </script>
 
 </body>
 </html>

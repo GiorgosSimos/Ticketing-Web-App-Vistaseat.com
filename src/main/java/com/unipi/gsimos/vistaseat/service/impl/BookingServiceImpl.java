@@ -128,13 +128,17 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public void confirmBooking(Long bookingId) {
+    public void confirmBooking(Long bookingId, PaymentMethods paymentMethod) {
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + bookingId));
 
         // Booking has expired - should not happen because of scheduled cancelExpiredBookings() check
-        if (booking.getExpiresAt().isBefore(LocalDateTime.now())) return;
+        if (booking.getExpiresAt().isBefore(LocalDateTime.now())) {
+            booking.setStatus(BookingStatus.CANCELLED);
+            bookingRepository.save(booking);
+            return;
+        }
 
         // Idempotency check - booking is already confirmed
         if (booking.getStatus() == BookingStatus.CONFIRMED) return;
@@ -148,7 +152,7 @@ public class BookingServiceImpl implements BookingService {
         payment.setBooking(booking);
         payment.setPaymentDate(LocalDateTime.now());
         payment.setAmount(booking.getTotalAmount());
-        payment.setPaymentMethod(PaymentMethods.DEBIT_CREDIT_CARD);
+        payment.setPaymentMethod(paymentMethod);
         payment.setStatus(PaymentStatus.COMPLETED);
         paymentRepository.save(payment);
 

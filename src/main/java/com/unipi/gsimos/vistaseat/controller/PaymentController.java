@@ -7,6 +7,7 @@ import com.unipi.gsimos.vistaseat.mapper.EventMapper;
 import com.unipi.gsimos.vistaseat.model.Booking;
 import com.unipi.gsimos.vistaseat.model.BookingStatus;
 import com.unipi.gsimos.vistaseat.model.Event;
+import com.unipi.gsimos.vistaseat.model.PaymentMethods;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.service.PaymentService;
@@ -58,7 +59,7 @@ public class PaymentController {
     @PostMapping("/api/payments/{bookingId}/card-sim")
     public ResponseEntity<Void> simulatePayment(@PathVariable Long bookingId){
 
-        paymentService.paymentCompleted(bookingId);
+        paymentService.paymentCompleted(bookingId, PaymentMethods.DEBIT_CREDIT_CARD);
         return ResponseEntity.ok().build();
     }
 }
