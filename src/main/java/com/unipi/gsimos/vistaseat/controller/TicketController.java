@@ -46,7 +46,7 @@ public class TicketController {
 
     @GetMapping("/api/booking/{bookingId}/ticketsPdf")
     public ResponseEntity<byte[]> getAllPDFTickets(@PathVariable Long bookingId,
-                                                   @RequestParam(defaultValue = "VIEW") TicketRenderMode mode){
+                                                   @RequestParam(defaultValue = "DOWNLOAD") TicketRenderMode mode){
 
         try {
             byte[] pdfTicket = ticketService.generatePdfTicketsForBooking(bookingId);
