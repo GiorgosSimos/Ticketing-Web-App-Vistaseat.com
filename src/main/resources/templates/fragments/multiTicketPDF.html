@@ -86,7 +86,8 @@
 
     <div th:each="ticket, stat : ${tickets}"
          th:class="${!stat.last} ? 'page-break' : null">
-        <div th:replace="fragments/ticketPDFItem :: ticketPDFItem (${ticket})"></div>
+        <div th:insert="~{fragments/ticketPDFItem :: ticketPDFItem(${ticket})}"></div>
+
     </div>
 
 </body>

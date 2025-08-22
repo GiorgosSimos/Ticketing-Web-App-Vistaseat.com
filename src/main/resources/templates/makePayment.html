@@ -157,6 +157,9 @@
                                        class="form-control"
                                        title="Enter the 16-digit number on the front of your card"
                                        required>
+                                <div class="invalid-feedback">
+                                    That card number looks invalid. Check the digits and try again.
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="cardHolderName" class="form-label">Card Holder's Name</label>
@@ -215,6 +218,7 @@
         </div>
     </div>
 
+    <!-- Simulate payment process -->
     <script>
         function showSpinner() {
             document.getElementById("spinnerOverlay").classList.remove('invisible');
@@ -252,23 +256,81 @@
         });
     </script>
 
-    <script>
-        // Card Number
+    <!-- Format Card Number with spaces & Validate using Luhn's algorithm-->
+    <script type="module">
+        const form = document.getElementById('cardForm');
         const cardInput = document.getElementById('cardNumber');
 
         // Keep only digits, insert a space every 4
         cardInput.addEventListener('input', () => {
             let digits = cardInput.value.replace(/\D/g, '').slice(0, 16);
             cardInput.value = digits.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
+
+            // Validate as soon as 16 digits are present
+            if (digits.length === 16) {
+                setCardValidity(luhnCheck(digits));
+            } else {
+                clearCardValidity(); // neither valid nor invalid while typing
+            }
         });
 
-        // Before form submits, strip spaces so server receives pure digits
-        document.getElementById('paymentForm').addEventListener('submit', () => {
-            cardInput.value = cardInput.value.replace(/\s/g, '');
+        // Optional: validate on blur too
+        cardInput.addEventListener('blur', () => {
+            const digits = cardInput.value.replace(/\D/g, '');
+            if (digits.length === 16) setCardValidity(luhnCheck(digits));
         });
+
+        // On submit: strip spaces and block submission if invalid
+        form.addEventListener('submit', (e) => {
+            const digits = cardInput.value.replace(/\D/g, '');
+            const ok = digits.length === 16 && luhnCheck(digits);
+            if (!ok) {
+                e.preventDefault();
+                setCardValidity(false);
+                cardInput.reportValidity();
+                return;
+            }
+            // send pure digits to the server
+            cardInput.value = digits;
+        });
+
+        // Luhn's algorithm
+        function luhnCheck(cardNumberStr) {
+            let sum = 0;
+            let doubleDigits = false;
+            for (let i = cardNumberStr.length - 1; i >= 0; i--) {
+                let digit = cardNumberStr.charCodeAt(i) - 48;
+                if (doubleDigits) {
+                    digit *= 2;
+                    if (digit > 9) digit -= 9;
+                }
+                sum += digit;
+                doubleDigits = !doubleDigits;
+            }
+            return sum % 10 === 0;
+        }
+
+        // Validate and Apply the corresponding Bootstrap styles
+        function setCardValidity(isValid) {
+            if (isValid) {
+                cardInput.setCustomValidity('');
+                cardInput.classList.remove('is-invalid');
+                cardInput.classList.add('is-valid');
+            } else {
+                cardInput.setCustomValidity('Invalid Card Number');
+                cardInput.classList.remove('is-valid');
+                cardInput.classList.add('is-invalid');
+            }
+        }
+
+        function clearCardValidity() {
+            cardInput.setCustomValidity('');
+            cardInput.classList.remove('is-valid','is-invalid');
+        }
+
     </script>
 
-    <script>
+    <script type="module">
         const expInput = document.getElementById('exp');
         const form = document.getElementById('cardForm');
 
