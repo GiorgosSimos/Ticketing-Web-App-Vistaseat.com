@@ -322,7 +322,10 @@ public class VenueController {
         Venue venue = venueRepository.findById(venueId)
                 .orElseThrow(() -> new EntityNotFoundException("Venue not found"));
 
-        model.addAttribute("venue", venue);
+        VenueDto venueDto = venueMapper.toDto(venue);
+
+        model.addAttribute("venue", venueDto);
+        model.addAttribute("eventsCount", 0);
 
         return "displayVenue";
     }

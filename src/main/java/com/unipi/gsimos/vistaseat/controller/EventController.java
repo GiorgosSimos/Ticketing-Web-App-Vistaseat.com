@@ -5,7 +5,6 @@ import com.unipi.gsimos.vistaseat.dto.EventDto;
 import com.unipi.gsimos.vistaseat.dto.EventOccurrenceCardDto;
 import com.unipi.gsimos.vistaseat.mapper.EventMapper;
 import com.unipi.gsimos.vistaseat.model.*;
-import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.EventOccurrenceService;
@@ -282,7 +281,6 @@ public class EventController {
      * @return the logical view name {@code "categoryEvents"}
      * @throws IllegalArgumentException if the slug cannot be mapped to an {@code EventType}
      */
-
     @GetMapping("/api/events/{category:theater|cinema|concert|sports|museum|archaeological}")
     private String displayEventsByCategory(@PathVariable("category") String category,
                                            @RequestParam(name = "searchQuery", required = false) String searchQuery,
@@ -348,7 +346,7 @@ public class EventController {
                     "Museum Visits","/images/museum_icon.png",
                     "Visit wonderful museums, art galleries and exhibitions."),
             EventType.ARCHAEOLOGICAL, new CategoryMeta(
-                    "Visit Archaeological Sites", "/images/archaeological_site_icon.png",
+                    "Archaeological Sites", "/images/archaeological_site_icon.png",
                     "Historical, cultural sites and archaeological tours."
             )
     );
