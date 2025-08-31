@@ -30,4 +30,9 @@ public interface EventService {
                                            @Nullable String eventName,
                                            @Nullable LocalDate from,
                                            @Nullable LocalDate to);
+
+    List<CategoriesEventCardDto> getVenueEvents(Long venueId,
+                                                @Nullable String eventName,
+                                                @Nullable LocalDate from,
+                                                @Nullable LocalDate to);
 }

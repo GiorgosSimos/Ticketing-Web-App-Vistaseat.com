@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.dto.CategoriesEventCardDto;
 import com.unipi.gsimos.vistaseat.dto.EventDto;
 import com.unipi.gsimos.vistaseat.dto.EventOccurrenceDto;
 import com.unipi.gsimos.vistaseat.dto.VenueDto;
@@ -31,6 +32,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 //A Web controller (@Controller) works with HTML forms (using @ModelAttribute, returns view names for Thymeleaf).
 @Controller
@@ -316,16 +318,32 @@ public class VenueController {
     }
 
     @GetMapping("/api/venues/{venueId}")
-    public String displayEvent(@PathVariable Long venueId, Model model) {
+    public String displayEvent(@PathVariable Long venueId,
+                               @RequestParam(name = "searchQuery", required = false) String searchQuery,
+                               @RequestParam(required = false)
+                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                               @RequestParam(required = false)
+                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+                               Model model) {
 
 
         Venue venue = venueRepository.findById(venueId)
                 .orElseThrow(() -> new EntityNotFoundException("Venue not found"));
 
         VenueDto venueDto = venueMapper.toDto(venue);
+        String query = (searchQuery == null || searchQuery.trim().isEmpty())
+                ? null
+                : searchQuery.trim().toLowerCase(Locale.ROOT);
+
+        List<CategoriesEventCardDto> events = eventService.getVenueEvents(venueId, query, from, to);
 
         model.addAttribute("venue", venueDto);
-        model.addAttribute("eventsCount", 0);
+        model.addAttribute("events", events);
+        model.addAttribute("eventsCount", events.size());
+
+        model.addAttribute("searchQuery", query);
+        model.addAttribute("from", from);
+        model.addAttribute("to", to);
 
         return "displayVenue";
     }

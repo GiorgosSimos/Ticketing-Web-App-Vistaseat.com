@@ -100,4 +100,22 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             @Param("name") String name,
             @Param("from") LocalDateTime from,
             @Param("to")   LocalDateTime to);
+
+    @Query("""
+        select distinct e
+        from Event e
+        where e.venue.id = :venueId
+          and (:name is null or lower(e.name) like :name)
+          and exists(
+            select 1 from EventOccurrence o
+            where o.event = e AND o.eventDate > CURRENT TIMESTAMP
+                and o.eventDate >= coalesce(:from, o.eventDate)
+                and o.eventDate <= coalesce(:to,   o.eventDate)
+          )
+""")
+    List<Event> findUpcomingEventsAtVenue(@Param("venueId") Long venueId,
+                                          @Param("name") String name,
+                                          @Param("from") LocalDateTime from,
+                                          @Param("to") LocalDateTime to
+    );
 }

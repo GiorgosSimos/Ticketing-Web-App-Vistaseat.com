@@ -111,6 +111,20 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<CategoriesEventCardDto> getVenueEvents(Long venueId, String eventName, LocalDate from, LocalDate to) {
+
+        LocalDateTime fromDate = (from == null) ? null : from.atStartOfDay();
+        LocalDateTime toDate   = (to == null)   ? null : to.plusDays(1).atStartOfDay().minusNanos(1);
+
+        String pattern = (eventName == null || eventName.isBlank())
+                ? null
+                : "%" + eventName + "%";
+
+        List<Event> events = eventRepository.findUpcomingEventsAtVenue(venueId, pattern, fromDate, toDate);
+        return events.stream().map(CategoriesEventCardDto::from).toList();
+    }
+
+    @Override
     @Transactional
     public void deleteEvent(Long eventId) {
         Event event = eventRepository.findById(eventId)
