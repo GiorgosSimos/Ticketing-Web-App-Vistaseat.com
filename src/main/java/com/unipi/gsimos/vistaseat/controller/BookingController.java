@@ -70,7 +70,7 @@ public class BookingController {
 
         // If the user is not logged and hasn't opted to continue as guest
         if (!isLoggedIn && !continueAsGuest) {
-            // Build the URL of the current URL to use it for redirect after successful log in
+            // Build the URL of the current page to use it for redirect after successful log in
             String currentUrl = request.getRequestURL()
                     + (request.getQueryString() == null ? "" : "?" + request.getQueryString());
 
