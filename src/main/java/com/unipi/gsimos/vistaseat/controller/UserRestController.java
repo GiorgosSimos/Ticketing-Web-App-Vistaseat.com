@@ -48,12 +48,13 @@ public class UserRestController {
     public record SuggestionDto(Long id, String name, String url) {}
 
     // Create new user REST API
-    @PostMapping("/register")
+    @PostMapping("/users/register")
     //@RequestBody annotation is used to extract a JSON object and convert it to a DTO
     public ResponseEntity<UserDto> addNewUser(@RequestBody NewUserDto newUserDto) {
 
         // Save User
         UserDto savedUser = userService.createUser(newUserDto);
+        //return ResponseEntity.ok().build();
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 

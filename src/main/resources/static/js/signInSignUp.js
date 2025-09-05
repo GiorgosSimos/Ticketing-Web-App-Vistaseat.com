@@ -13,9 +13,9 @@ function togglePassword(fieldId, icon) {
     const field = document.getElementById(fieldId);
     if (field.type === "password") {
         field.type = "text";
-        icon.name = "eye-off-outline";
+        icon.name = "eye-outline";
     } else {
         field.type = "password";
-        icon.name = "eye-outline";
+        icon.name = "eye-off-outline";
     }
 }

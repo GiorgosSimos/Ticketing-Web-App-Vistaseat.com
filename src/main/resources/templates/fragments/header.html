@@ -1,6 +1,7 @@
 
 <div th:fragment="header"
-     xmlns:th="http://www.thymeleaf.org">
+     xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
     <div class="header-style">
         <header class="d-flex flex-wrap border-bottom">
             <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
@@ -44,9 +45,39 @@
                     </a>
                 </li>
             </ul>
-            <button class="btn btn-primary rounded-pill px-3" type="button">
-                Connect
-            </button>
+            <!-- If NOT logged in -->
+            <div sec:authorize="isAnonymous()">
+                <a class="btn btn-primary rounded-pill px-3" type="button"
+                   href="#" id="connect-link">
+                    <span class="text-white">Connect</span>
+                </a>
+            </div>
+            <!-- If logged in -->
+            <div class="dropdown" sec:authorize="isAuthenticated()">
+                <button class="btn btn-outline-dark rounded-pill px-3 dropdown-toggle"
+                        data-bs-toggle="dropdown" type="button">
+                    <img src="/images/user_logo.png" alt="User Avatar">
+                    <span th:text="${#authentication.name}">Account</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#">My Account</a></li>
+                    <li><a class="dropdown-item" href="#">My Orders</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form th:action="@{/userLogout}" method="post" class="px-3">
+                            <button type="submit" class="btn btn-link p-0">Log out</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
         </header>
     </div>
+    <script>
+        (function () {
+            var p = location.pathname + location.search;
+            document.getElementById('connect-link').href = '/userLogin?redirectTo=' + encodeURIComponent(p);
+        })();
+    </script>
+    <script defer
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </div>

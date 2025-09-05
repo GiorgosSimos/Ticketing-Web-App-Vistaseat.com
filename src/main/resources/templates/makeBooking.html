@@ -73,7 +73,6 @@
         </div>
     </section>
 
-    <!-- Communication Details TODO: Validate Entries-->
     <section class="container my-5">
         <h3 class="mb-2">Communication Details</h3>
         <form th:action="@{/api/bookings}"
@@ -85,17 +84,23 @@
 
                 <input type="text" class="form-control mb-3"
                        name="firstName" id="firstName"
+                       th:value="${user?.firstName}"
+                       th:disabled="${isLoggedIn}"
                        placeholder="First Name"
                        pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]{2,30}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,30})?$"
                        title="Only letters, optional apostrophe or hyphen (e.g. Jean-Luc)"
                        required>
+                <input type="hidden" th:if="${isLoggedIn}" name="firstName" th:value="${user?.firstName}">
 
                 <input type="text" class="form-control mb-3"
                        name="lastName" id="lastName"
+                       th:value="${user?.lastName}"
+                       th:disabled="${isLoggedIn}"
                        placeholder="Last Name"
                        pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]{2,40}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,40})*$"
                        title="Only letters, spaces, apostrophes, hyphens allowed (e.g. van der Mer)"
                        required>
+                <input type="hidden" th:if="${isLoggedIn}" name="lastName" th:value="${user?.lastName}">
 
                 <label for="phoneNumber" class="mb-1">Phone Number</label>
                 <label for="email" class="mb-1">E-mail</label>
@@ -103,18 +108,24 @@
                 <input type="tel"
                        class="form-control"
                        name="phoneNumber"
+                       th:value="${user?.phone}"
+                       th:disabled="${isLoggedIn}"
                        id="phoneNumber"
                        pattern="^\+?[0-9. ()-]{7,20}$"
                        maxlength="20"
                        placeholder="+30 690 123 4567"
                        title="Use digits, space, -, (), or +"
                        required>
+                <input type="hidden" th:if="${isLoggedIn}" name="phoneNumber" th:value="${user?.phone}">
 
                 <input type="email" class="form-control"
                        name="email" id="email"
+                       th:value="${user?.email}"
+                       th:disabled="${isLoggedIn}"
                        placeholder="E-mail"
                        title="example@domain.com"
                        required>
+                <input type="hidden" th:if="${isLoggedIn}" name="email" th:value="${user?.email}" />
 
                 <!-- Accept terms of use checkbox -->
                 <div class="form-check my-4">

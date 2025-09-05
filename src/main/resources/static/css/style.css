@@ -572,3 +572,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+.errorStyle {
+    background: linear-gradient(to bottom, rgb(116, 200, 181), rgb(122, 166, 227), rgb(184, 154, 232));
+}
+

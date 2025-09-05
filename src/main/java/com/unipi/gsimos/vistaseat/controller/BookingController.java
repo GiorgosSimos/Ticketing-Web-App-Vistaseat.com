@@ -4,21 +4,24 @@ import com.unipi.gsimos.vistaseat.dto.*;
 import com.unipi.gsimos.vistaseat.mapper.BookingMapper;
 import com.unipi.gsimos.vistaseat.mapper.PaymentMapper;
 import com.unipi.gsimos.vistaseat.mapper.TicketMapper;
+import com.unipi.gsimos.vistaseat.mapper.UserMapper;
 import com.unipi.gsimos.vistaseat.model.*;
-import com.unipi.gsimos.vistaseat.repository.BookingRepository;
-import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
-import com.unipi.gsimos.vistaseat.repository.PaymentRepository;
-import com.unipi.gsimos.vistaseat.repository.TicketRepository;
+import com.unipi.gsimos.vistaseat.repository.*;
 import com.unipi.gsimos.vistaseat.service.BookingService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,6 +38,7 @@ public class BookingController {
     private final PaymentMapper paymentMapper;
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
+    private final UserRepository userRepository;
 
     @GetMapping("/adminDashboard/manageBookings")
     public String displayBookings(Model model) {
@@ -50,11 +54,43 @@ public class BookingController {
     @GetMapping("/api/makeBooking")
     public String makeBooking(@RequestParam Long occurrenceId,
                               @RequestParam int requestedTickets,
-                              Model model) {
+                              @RequestParam(required = false, defaultValue = "false") boolean continueAsGuest,
+                              Model model,
+                              HttpServletRequest request) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        // A user is logged-in if we have an auth object, it’s marked authenticated,
+        // and it’s NOT the anonymous token/principal.
+        boolean isLoggedIn =
+                           auth != null
+                        && auth.isAuthenticated()
+                        && !(auth instanceof AnonymousAuthenticationToken)
+                        && (auth.getPrincipal() instanceof UserDetails);
+
+        // If the user is not logged and hasn't opted to continue as guest
+        if (!isLoggedIn && !continueAsGuest) {
+            // Build the URL of the current URL to use it for redirect after successful log in
+            String currentUrl = request.getRequestURL()
+                    + (request.getQueryString() == null ? "" : "?" + request.getQueryString());
+
+            return "redirect:/loginRequest?redirectTo=" + UriUtils.encode(currentUrl, StandardCharsets.UTF_8);
+        }
+
+        UserDto userDto = null;
+
+        if (isLoggedIn) {
+            String email = auth.getName();
+            User user = userRepository.findByEmail(email).orElseThrow(() ->
+                    new EntityNotFoundException("User with " + email + " not found"));
+            userDto = UserMapper.toUserDto(user);
+        }
 
         // Create helper record to store all the necessary booking info
         BookingInfo info = bookingService.prepareBookingInfo(occurrenceId, requestedTickets);
 
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("user", userDto);
         model.addAttribute("eventCard", info.eventCard());
         model.addAttribute("venueID", info.venueId());
         model.addAttribute("numberOfTickets", info.numberOfTickets());

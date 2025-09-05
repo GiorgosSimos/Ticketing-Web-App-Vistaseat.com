@@ -12,10 +12,7 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-image: url('/images/background.jpg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+    background: linear-gradient(to bottom, rgb(116, 200, 181), rgb(122, 166, 227), rgb(184, 154, 232));
 }
 
 section {
@@ -116,7 +113,7 @@ button {
 }
 
 button:hover {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: #FAD691;
 }
 
 .register {
@@ -136,7 +133,7 @@ button:hover {
 
 .register p a:hover {
     text-decoration: underline;
-    color: #a8a8a8;
+    color: #704242;
 }
 
 .toast {

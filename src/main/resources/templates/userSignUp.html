@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>vistaseat.com | Sign Up</title>
-    <link rel="stylesheet" th:href="@{/css/signInSignUp.css}">
+    <link rel="stylesheet" th:href="@{/css/userSignInSignUpStyle.css}">
     <script th:src="@{/js/signInSignUp.js}" async></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@6.0.4/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@6.0.4/dist/ionicons/ionicons.js"></script>
-
 </head>
 <body>
 <h1>Welcome to vistaseat.com</h1>
@@ -18,17 +17,17 @@
 
         <div class="inputbox">
             <ion-icon name="body-outline"></ion-icon>
-            <input type="text" id="firstName" name="firstName">
+            <input type="text" id="firstName" name="firstName" required>
             <label for="firstName">First Name</label>
         </div>
         <div class="inputbox">
             <ion-icon name="body-outline"></ion-icon>
-            <input type="text" id="lastName" name="lastName">
+            <input type="text" id="lastName" name="lastName" required>
             <label for="lastName">Last Name</label>
         </div>
         <div class="inputbox">
             <ion-icon name="call-outline"></ion-icon>
-            <input type="tel" id="phone" name="phone">
+            <input type="tel" id="phone" name="phone" required>
             <label for="phone">Phone</label>
         </div>
         <div class="inputbox">
@@ -39,16 +38,16 @@
         <div class="inputbox password-box">
             <input type="password" id="password" name="password" minlength="8" required>
             <label for="password">Your password</label>
-            <ion-icon name="eye-outline" class="toggle-password" onclick="togglePassword('password', this)"></ion-icon>
+            <ion-icon name="eye-off-outline" class="toggle-password" onclick="togglePassword('password', this)"></ion-icon>
         </div>
         <div class="inputbox password-box">
             <input type="password" id="confirmPassword" name="confirmPassword" minlength="8" required>
             <label for="confirmPassword">Confirm password</label>
-            <ion-icon name="eye-outline" class="toggle-password" onclick="togglePassword('confirmPassword', this)"></ion-icon>
+            <ion-icon name="eye-off-outline" class="toggle-password" onclick="togglePassword('confirmPassword', this)"></ion-icon>
         </div>
         <button type="submit">Sign Up</button>
         <div class="register">
-            <p>Already have an account? <a href="#">Log In</a></p>
+            <p>Already have an account? <a href="/userLogin">Log In</a></p>
         </div>
     </form>
 </section>

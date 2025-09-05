@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.model.*;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.repository.PaymentRepository;
+import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.BookingService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -15,6 +16,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -34,6 +39,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final EventOccurrenceRepository eventOccurrenceRepository;
     private final PaymentRepository paymentRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Long countBookingsByVenueAndDateBetween(Long venueId, LocalDate windowStart, LocalDate windowEnd) {
@@ -111,8 +117,20 @@ public class BookingServiceImpl implements BookingService {
                 .setScale(2, RoundingMode.HALF_UP);
         BigDecimal totalAmount = ticketsCost.add(serviceFee);
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isLoggedIn =
+                auth != null
+                        && auth.isAuthenticated()
+                        && !(auth instanceof AnonymousAuthenticationToken)
+                        && (auth.getPrincipal() instanceof UserDetails);
+
         pendingBooking.setEventOccurrence(occurrence);
-        //pendingBooking.setUser(); TODO: For logged in users
+        if (isLoggedIn) {
+            String email = auth.getName();
+            User user = userRepository.findByEmail(email).orElseThrow(
+                    () -> new EntityNotFoundException("User with email: " + email + " not found"));
+            pendingBooking.setUser(user);
+        }
         pendingBooking.setFirstName(pendingBookingDto.firstName());
         pendingBooking.setLastName(pendingBookingDto.lastName());
         pendingBooking.setPhoneNumber(pendingBookingDto.phoneNumber());

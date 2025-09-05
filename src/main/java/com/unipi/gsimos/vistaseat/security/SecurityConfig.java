@@ -4,6 +4,7 @@ package com.unipi.gsimos.vistaseat.security;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -52,27 +54,35 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    // Filter chain for Admin actions
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAuthFailureHandler customAuthFailureHandler)
+    @Order(1)
+    public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http, CustomAuthFailureHandler customAuthFailureHandler)
             throws Exception {
 
         http
-                .exceptionHandling(ex ->
-                        ex.authenticationEntryPoint(
-                                (request, response, authException) ->
-                                        response.sendRedirect("/error?status=403")
-                        )
+                // Rules in this filterChain only apply to these admin-related endpoints.
+                .securityMatcher("/adminLogin", "/adminLogout", "/adminDashboard", "/adminDashboard/**")
+
+                // When someone logs in, check their credentials using authenticationProvider
+                .authenticationProvider(authenticationProvider())
+
+                .exceptionHandling(ex -> ex
+                        // If the user isn’t logged in but tries to access an admin page → redirect them to /adminLogin
+                        .authenticationEntryPoint((req,res,e) -> res.sendRedirect("/adminLogin"))
+                        // If they are logged in but don’t have permission → send them to /error?status=403
+                        .accessDeniedHandler((req,res,e) -> res.sendRedirect("/error?status=403"))
                 )
 
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(httpForm -> {
                             httpForm.loginPage("/adminLogin")
-                                    .usernameParameter("email")
+                                    .loginProcessingUrl("/adminLogin")
+                                    .usernameParameter("email") // Instead of username, we’re using email
                                     .passwordParameter("password")
                                     .defaultSuccessUrl("/adminDashboard", true)
                                     .failureHandler(customAuthFailureHandler)
                                     .permitAll();// endpoints that are publicly accessible
-
                         })
 
                 .logout(logout -> logout
@@ -80,35 +90,87 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/home?logout=true") // redirect to home
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .permitAll()
+                        .permitAll() // Logout is publicly accessible.
                     )
 
-                .authorizeHttpRequests(authorizeRequests -> {
-                    authorizeRequests//creating exceptions for URLs we want to allow access
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests//creating exceptions for URLs we want to allow access
 
-                            // Public API for new users registration
-                            .requestMatchers("/api/users/register").permitAll()
+                        .requestMatchers("/adminLogin", "/adminLogout").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
 
-                            // Public pages
-                            .requestMatchers("/home","/api/**","/adminLogin","/adminLogin/**","/userSignUp",
-                                    "/css/**", "/js/**", "/images/**", "/error", "/error/**")
-                            .permitAll()
-
-                            // Endpoints that require admin authentication
-                            .requestMatchers("/adminDashboard", "/adminDashboard/**")
-                            .hasRole("DOMAIN_ADMIN")//endpoints that only DOMAIN_ADMIN role can access
-
-                            .anyRequest().authenticated();// Everything else requires login, endpoints that require authentication
-                });
+                        // Only users with the DOMAIN_ADMIN role can see the admin dashboard and its sub-pages
+                        .requestMatchers("/adminDashboard", "/adminDashboard/**")
+                        .hasRole("DOMAIN_ADMIN")
+                        // For everything else in this security chain, you must be logged in (authenticated)
+                        .anyRequest().authenticated());
 
                 http.requestCache(RequestCacheConfigurer::disable);
 
                 http.sessionManagement(session -> session
+                        // Create a session only if needed
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        // Allow one active session per user
                         .maximumSessions(1)
                         .expiredUrl("/adminLogin?expired=true")
                 );
 
         return http.build();
+    }
+
+    // Filter chain for user actions
+    @Bean
+    @Order(2)
+    public SecurityFilterChain userSecurityFilterChain(HttpSecurity http, CustomAuthFailureHandler customAuthFailureHandler)
+            throws Exception {
+
+        http
+                .authenticationProvider(authenticationProvider())
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((req, resp, e) -> resp.sendRedirect("/userLogin"))
+                )
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(form -> form
+                        .loginPage("/userLogin")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
+                        // Use saved request so users return to the page where they clicked "Connect"
+                        .successHandler(userLoginSuccessHandler())
+                        .failureHandler(customAuthFailureHandler)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/userLogout")
+                        .logoutSuccessUrl("/home?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
+                .authorizeHttpRequests(auth -> auth
+                        // Public pages & static
+                        .requestMatchers("/home","/api/**","/userLogin","/userSignUp","/css/**","/js/**","/images/**",
+                                "/error","/error/**").permitAll()
+                        // User Registration endpoint
+                        .requestMatchers("/api/users/register").permitAll()
+                        // Auth-required user flows (adjust to your routes)
+                        .requestMatchers("/checkout/**","/orders/**","/account/**","/tickets/**").hasRole("REGISTERED")
+                        // Everything else can be public, or tighten as you add features
+                        .anyRequest().permitAll()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .maximumSessions(1)
+                        .expiredUrl("/userLogin?expired=true")
+                );
+        return http.build();
+    }
+
+    @Bean
+    SavedRequestAwareAuthenticationSuccessHandler userLoginSuccessHandler() {
+        var handler = new SavedRequestAwareAuthenticationSuccessHandler();
+        handler.setTargetUrlParameter("redirectTo");
+        handler.setDefaultTargetUrl("/home");
+        handler.setAlwaysUseDefaultTargetUrl(false);
+        handler.setUseReferer(true);
+        return handler;
     }
 }

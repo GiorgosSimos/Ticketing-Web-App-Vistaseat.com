@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>vistaseat.com | Admin Log In</title>
-    <link rel="stylesheet" href="adminLogin.css" th:href="@{/css/signInSignUp.css}">
-    <script th:src="@{/js/signInSignUp.js}" async></script>
+    <link rel="stylesheet" href="adminLogin.css" th:href="@{/css/adminLoginStyle.css}">
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@6.0.4/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@6.0.4/dist/ionicons/ionicons.js"></script>
-
+    <script th:src="@{/js/signInSignUp.js}" defer></script>
 </head>
 <body>
 <h1>Welcome to vistaseat.com</h1>
@@ -23,9 +22,10 @@
         <div class="inputbox password-box">
             <input type="password" id="password" name="password" required>
             <label for="password">Your password</label>
-            <ion-icon name="eye-outline" class="toggle-password" onclick="togglePassword('password', this)"></ion-icon>
+            <ion-icon name="eye-off-outline" class="toggle-password" onclick="togglePassword('password', this)"></ion-icon>
         </div>
         <button type="submit">Log In</button>
+        <br>
         <div id="toast" class="toast hidden">
             <p id="toastMessage"></p>
         </div>

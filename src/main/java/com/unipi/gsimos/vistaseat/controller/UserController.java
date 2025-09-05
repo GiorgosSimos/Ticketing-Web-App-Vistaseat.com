@@ -77,6 +77,19 @@ public class UserController {
         return "index";
     }
 
+    @GetMapping("/userLogin")
+    public String userLogin() {return "userLogin";}
+
+    @GetMapping("/loginRequest")
+    public String loginRequest(@RequestParam String redirectTo, Model model) {
+        // Only allow app-internal redirects
+        /*if (redirectTo.startsWith("http://") || redirectTo.startsWith("https://")) {
+            redirectTo = "/home"; // fallback
+        }*/
+        model.addAttribute("redirectTo", redirectTo);
+        return "loginRequest";
+    }
+
     @GetMapping("/userSignUp")
     public String userSignup(){
         return "userSignUp";
