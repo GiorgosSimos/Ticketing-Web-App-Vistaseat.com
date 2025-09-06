@@ -2,13 +2,14 @@ package com.unipi.gsimos.vistaseat.security;
 
 
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
+import com.unipi.gsimos.vistaseat.security.authenticationProvider.AdminOnlyAuthenticationProvider;
+import com.unipi.gsimos.vistaseat.security.authenticationProvider.UserOnlyAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -49,10 +50,10 @@ public class SecurityConfig {
     // Authentication provider used by for admins
     @Bean
     public AuthenticationProvider adminAuthenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
+        AdminOnlyAuthenticationProvider adminAuthenticationProvider = new AdminOnlyAuthenticationProvider();
+        adminAuthenticationProvider.setUserDetailsService(userDetailsService());
+        adminAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        return adminAuthenticationProvider;
     }
 
     // Authentication provider used by for users
