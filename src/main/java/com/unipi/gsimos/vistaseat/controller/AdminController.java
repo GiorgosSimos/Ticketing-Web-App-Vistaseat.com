@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.service.VenueService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.ui.Model;
 import com.unipi.gsimos.vistaseat.model.User;
 import jakarta.servlet.http.HttpSession;
@@ -43,7 +44,8 @@ public class AdminController {
     public String adminLogin(HttpServletResponse response) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+        if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")
+            && auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             // Redirect to dashboard
             response.sendRedirect("/adminDashboard");
             return null;

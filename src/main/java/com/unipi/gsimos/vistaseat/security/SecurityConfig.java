@@ -7,7 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +21,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+
+import java.util.List;
+
+import static org.springframework.http.HttpMethod.GET;
 
 @Configuration
 @EnableWebSecurity
@@ -40,14 +46,25 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // Authentication provider used by for admins
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider adminAuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
+    // Authentication provider used by for users
+    @Bean
+    public AuthenticationProvider userAuthenticationProvider() {
+        UserOnlyAuthenticationProvider userAuthenticationProvider = new UserOnlyAuthenticationProvider();
+        userAuthenticationProvider.setUserDetailsService(userDetailsService());
+        userAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        return userAuthenticationProvider;
+    }
+
+    // Default Authentication Manager
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
@@ -64,8 +81,8 @@ public class SecurityConfig {
                 // Rules in this filterChain only apply to these admin-related endpoints.
                 .securityMatcher("/adminLogin", "/adminLogout", "/adminDashboard", "/adminDashboard/**")
 
-                // When someone logs in, check their credentials using authenticationProvider
-                .authenticationProvider(authenticationProvider())
+                // When someone logs in, check their credentials using adminAuthenticationProvider
+                .authenticationManager(new ProviderManager(List.of(adminAuthenticationProvider())))
 
                 .exceptionHandling(ex -> ex
                         // If the user isn’t logged in but tries to access an admin page → redirect them to /adminLogin
@@ -124,13 +141,14 @@ public class SecurityConfig {
             throws Exception {
 
         http
-                .authenticationProvider(authenticationProvider())
+                .authenticationManager(new ProviderManager(List.of(userAuthenticationProvider())))
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, resp, e) -> resp.sendRedirect("/userLogin"))
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(form -> form
                         .loginPage("/userLogin")
+                        .loginProcessingUrl("/userLogin")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         // Use saved request so users return to the page where they clicked "Connect"
@@ -146,13 +164,22 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // block admins from even seeing the user login page
+                        .requestMatchers(GET, "/userLogin")
+                        .access((authz, ctx) -> new AuthorizationDecision(
+                                authz.get().getAuthorities().stream()
+                                        .noneMatch(a -> a.getAuthority().equals("ROLE_DOMAIN_ADMIN"))
+                        ))
+
+
                         // Public pages & static
                         .requestMatchers("/home","/api/**","/userLogin","/userSignUp","/css/**","/js/**","/images/**",
                                 "/error","/error/**").permitAll()
                         // User Registration endpoint
                         .requestMatchers("/api/users/register").permitAll()
                         // Auth-required user flows (adjust to your routes)
-                        .requestMatchers("/checkout/**","/orders/**","/account/**","/tickets/**").hasRole("REGISTERED")
+                        .requestMatchers("/userAccount","/userAccount/**")
+                        .hasRole("REGISTERED")
                         // Everything else can be public, or tighten as you add features
                         .anyRequest().permitAll()
                 )
