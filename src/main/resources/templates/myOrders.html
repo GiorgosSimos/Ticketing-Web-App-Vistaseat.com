@@ -1,10 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>My Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-<body>
+<body class="user-account-bg-style">
+
+    <div th:insert="~{fragments/header :: header}"></div>
+
+    <div class="user-account-settings-section">
+
+        <div th:replace="~{fragments/userAccountSidebar :: userAccountSidebar('myOrders')}"></div>
+
+    </div>
+
+    <div th:insert="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

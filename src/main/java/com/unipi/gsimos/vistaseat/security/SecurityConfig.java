@@ -1,6 +1,5 @@
 package com.unipi.gsimos.vistaseat.security;
 
-
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.security.authenticationProvider.AdminOnlyAuthenticationProvider;
 import com.unipi.gsimos.vistaseat.security.authenticationProvider.UserOnlyAuthenticationProvider;

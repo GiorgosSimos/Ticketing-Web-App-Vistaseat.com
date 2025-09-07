@@ -1,0 +1,47 @@
+
+<div class="sidebar" th:fragment="userAccountSidebar(activePage)">
+    <!--User Account Sidebar, used for navigation between the various user account functions-->
+    <ul class="nav nav-pills flex-column mb-2">
+        <li>
+            <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <i class="bi bi-person-rolodex fs-3 me-2"></i>
+                <span class="fs-4">My Account</span>
+            </a>
+        </li>
+    </ul>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="/userAccount/details"
+               th:class="'nav-link ' + (${activePage} == 'userAccountDetails' ? 'active' : 'link-body-emphasis')"
+               th:attr="aria-current=${activePage == 'userAccountDetails' ? 'page' : null}">
+                <i class="bi bi-person-vcard fs-5 me-2"></i>
+                Account Details
+            </a>
+        </li>
+        <li>
+            <a href="/userAccount/myOrders"
+               th:class="'nav-link ' + (${activePage} == 'myOrders' ? 'active' : 'link-body-emphasis')"
+               th:attr="aria-current=${activePage == 'myOrders' ? 'page' : null}">
+                <i class="bi bi-ticket-detailed-fill fs-5 me-2"></i>
+                My Orders
+            </a>
+        </li>
+        <li>
+            <a href="/userAccount/testimonials"
+               th:class="'nav-link ' + (${activePage} == 'writeTestimonial' ? 'active' : 'link-body-emphasis')"
+               th:attr="aria-current=${activePage == 'writeTestimonial' ? 'page' : null}">
+                <i class="bi bi-pen-fill fs-5 me-2"></i>
+                Write a Testimonial
+            </a>
+        </li>
+        <hr>
+    </ul>
+    <!-- Footer note -->
+    <div class="sidebar-footer text-muted small mt-3 ps-3">
+        2025 Vistaseat.com
+        <p>
+            Version 1.0
+        </p>
+    </div>
+</div>

@@ -7,6 +7,7 @@ import com.unipi.gsimos.vistaseat.dto.VenueCardDto;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
+import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,17 +16,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -35,6 +35,7 @@ public class UserController {
     private final UserService userService;
     private final EventRepository eventRepository;
     private final VenueRepository venueRepository;
+    private final UserRepository userRepository;
 
     @GetMapping("/home")
     public String home(Model model) {
@@ -91,8 +92,68 @@ public class UserController {
     @PreAuthorize("hasRole('REGISTERED')")
     @GetMapping("/userAccount/details")
     public String userAccountDetails(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email).
+                orElseThrow(() -> new EntityNotFoundException("User with email: " + email + " not found"));
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("phone", user.getPhone());
 
         return "userAccountDetails";
+    }
+
+    @PreAuthorize("hasRole('REGISTERED')")
+    @PostMapping("/userAccount/update")
+    public String updateUserDetails(@RequestParam String firstName,
+                                    @RequestParam String lastName,
+                                    @RequestParam String phone,
+                                    Principal principal,
+                                    RedirectAttributes redirectAttributes) {
+        String email = principal.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("No user found with email: " + email));
+
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPhone(phone);
+
+        try{
+            userRepository.save(user);
+
+            // Refresh the user in SecurityContextHolder after update
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    user,                      // the updated User object
+                    null,                     // credentials -> not providing a password, the user is already authenticated
+                    user.getAuthorities());  // the roles/authorities of the user
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
+            redirectAttributes.addFlashAttribute("message",
+                    "Your account details were updated successfully!");
+
+        } catch (Exception e){
+            redirectAttributes.addFlashAttribute("error",
+                    "An unexpected error occurred while updating the account details!" + e.getMessage());
+        }
+
+        return "redirect:/userAccount/details";
+    }
+
+    @PreAuthorize("hasRole('REGISTERED')")
+    @GetMapping("/userAccount/myOrders")
+    public String myOrders(Model model) {
+
+        return "myOrders";
+    }
+
+    @PreAuthorize("hasRole('REGISTERED')")
+    @GetMapping("/userAccount/testimonials")
+    public String writeTestimonial(Model model) {
+
+        return "writeTestimonial";
     }
 
     @GetMapping("/userSignUp")
