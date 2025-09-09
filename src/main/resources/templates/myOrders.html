@@ -13,13 +13,207 @@
 
     <div th:insert="~{fragments/header :: header}"></div>
 
-    <div class="user-account-settings-section">
+        <div class="my-orders-layout">
+            <!--Include sidebar-->
+            <div th:replace="~{fragments/userAccountSidebar :: userAccountSidebar('myOrders')}"></div>
+            <div class="my-orders-container">
+                <h3 class="mb-4">My Orders</h3>
+                <div class="tabs">
+                    <button th:text="'Active ('+${activeOrdersCount}+')'"
+                            class="tab-button" th:classappend="${tab} == 'active' ? 'active' : ''"
+                            onclick="openTab(this, 'active-orders', 'active')">Active(3)</button>
+                    <button th:text="'Past ('+${pastOrdersCount}+')'"
+                            class="tab-button" th:classappend="${tab} == 'past' ? 'active' : ''"
+                            onclick="openTab(this, 'past-orders', 'past')">Past(7)</button>
+                </div>
+                <!-- Active Orders Pane -->
+                <div id="active-orders" class="tab-pane" th:style="${tab} == 'active' ? 'display: block' : 'display: none'">
+                    <div th:each="activeOrder : ${activeOrdersList}" class="mb-4">
+                        <a th:href="@{'/api/bookingComplete/' + ${activeOrder.bookingId}}"
+                           class="text-decoration-none" style="color: inherit">
+                            <div class="order-card-layout">
+                                <div class="order-card">
+                                    <div class="order-card-header">
+                                        <span th:text="'Booking ID: ' + ${activeOrder.bookingId}">Booking ID: 67818617687168</span>
+                                        <div class="d-flex">
+                                            <span th:text="${activeOrder.numberOfTickets}">2</span>
+                                            <i class="bi bi-ticket-perforated ms-1"></i>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="order-card-body">
+                                        <figure class="order-event">
+                                            <img th:src="@{${activeOrder.eventImgURL}}" alt="order-image">
+                                        </figure>
+                                        <div class="order-card-details">
+                                            <span class="mb-2"><strong th:text="${activeOrder.eventName}">Event Name</strong></span>
+                                            <div class="d-flex">
+                                                <i class="bi bi-calendar-week mb-1 me-2"></i>
+                                                <span th:text="${#temporals.format(activeOrder.eventDateTime, 'dd MMM yyyy, HH:mm')}">06 Sep 2025</span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <i class="bi bi-geo-alt-fill me-2"></i>
+                                                <span th:text="${activeOrder.venueName}">Venue Name</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
 
-        <div th:replace="~{fragments/userAccountSidebar :: userAccountSidebar('myOrders')}"></div>
+                    <!-- Pagination Controls for active orders-->
+                    <div th:if="${activeTotalPages > 0}"
+                         class="d-flex justify-content-end align-items-center mt-3">
+                        <!-- First Page - Go to first page (index 0)-->
+                        <button class="btn btn-sm btn btn-light me-1"
+                                th:disabled="${activeCurrentPage == 1}"
+                                onclick="goToPage(0)">
+                            First Page
+                        </button>
+                        <!-- Previous Page - Go to page before current-->
+                        <button class="btn btn-sm btn btn-light me-2"
+                                th:disabled="${activeCurrentPage == 1}"
+                                th:onclick="'goToPage(' + (${activeCurrentPage} - 2) + ')'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-caret-left" viewBox="0 0 16 16">
+                                <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11
+                              3.204v9.592a1 1 0 0 1-1.659.753"/>
+                            </svg>
+                        </button>
 
-    </div>
+                        <!-- Page Info -->
+                        <span class="me-2">Page <span th:text="${activeCurrentPage}">1</span> of <span th:text="${activeTotalPages}">2</span></span>
+
+                        <!-- Next Page -->
+                        <button class="btn btn-sm btn btn-light me-1"
+                                th:disabled="${activeCurrentPage == activeTotalPages}"
+                                th:onclick="'goToPage(' + ${activeCurrentPage} + ')'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-caret-right" viewBox="0 0 16 16">
+                                <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5
+                              2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
+                            </svg>
+                        </button>
+
+                        <!-- Last Page -->
+                        <button class="btn btn-sm btn btn-light"
+                                th:disabled="${activeCurrentPage == activeTotalPages}"
+                                th:onclick="'goToPage(' + (${activeTotalPages} - 1) + ')'">
+                            Last Page
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Past Orders Pane -->
+                <div id="past-orders" class="tab-pane" th:style="${tab} == 'past' ? 'display: block' : 'display: none'">
+                    <div th:each="pastOrder : ${pastOrdersList}" class="mb-4">
+                        <a th:href="@{'/api/bookingComplete/' + ${pastOrder.bookingId}}"
+                           class="text-decoration-none" style="color: inherit">
+                            <div class="order-card-layout">
+                                <div class="order-card">
+                                    <div class="order-card-header">
+                                        <span th:text="'Booking ID: ' + ${pastOrder.bookingId}">Booking ID: 67818617687168</span>
+                                        <div class="d-flex">
+                                            <span th:text="${pastOrder.numberOfTickets}">2</span>
+                                            <i class="bi bi-ticket-perforated ms-1"></i>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="order-card-body">
+                                        <figure class="order-event">
+                                            <img th:src="@{${pastOrder.eventImgURL}}" alt="order-image">
+                                        </figure>
+                                        <div class="order-card-details">
+                                            <span class="mb-2"><strong th:text="${pastOrder.eventName}">Event Name</strong></span>
+                                            <div class="d-flex">
+                                                <i class="bi bi-calendar-week mb-1 me-2"></i>
+                                                <span th:text="${#temporals.format(pastOrder.eventDateTime, 'dd MMM yyyy, HH:mm')}">06 Sep 2025</span>
+                                            </div>
+                                            <div class="d-flex">
+                                                <i class="bi bi-geo-alt-fill me-2"></i>
+                                                <span th:text="${pastOrder.venueName}">Venue Name</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Pagination Controls for past orders-->
+                    <div th:if="${pastTotalPages > 0}"
+                         class="d-flex justify-content-end align-items-center mt-3">
+                        <!-- First Page - Go to first page (index 0)-->
+                        <button class="btn btn-sm btn btn-light me-1"
+                                th:disabled="${pastCurrentPage == 1}"
+                                onclick="goToPage(0)">
+                            First Page
+                        </button>
+                        <!-- Previous Page - Go to page before current-->
+                        <button class="btn btn-sm btn btn-light me-2"
+                                th:disabled="${pastCurrentPage == 1}"
+                                th:onclick="'goToPage(' + (${pastCurrentPage} - 2) + ')'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-caret-left" viewBox="0 0 16 16">
+                                <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11
+                              3.204v9.592a1 1 0 0 1-1.659.753"/>
+                            </svg>
+                        </button>
+
+                        <!-- Page Info -->
+                        <span class="me-2">Page <span th:text="${pastCurrentPage}">1</span> of <span th:text="${pastTotalPages}">2</span></span>
+
+                        <!-- Next Page -->
+                        <button class="btn btn-sm btn btn-light me-1"
+                                th:disabled="${pastCurrentPage == pastTotalPages}"
+                                th:onclick="'goToPage(' + ${pastCurrentPage} + ')'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-caret-right" viewBox="0 0 16 16">
+                                <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5
+                              2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
+                            </svg>
+                        </button>
+
+                        <!-- Last Page -->
+                        <button class="btn btn-sm btn btn-light"
+                                th:disabled="${pastCurrentPage == pastTotalPages}"
+                                th:onclick="'goToPage(' + (${pastTotalPages} - 1) + ')'">
+                            Last Page
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
 
     <div th:insert="~{fragments/footer :: footer}"></div>
 
+    <script>
+        // function to switch between Active and Past orders tabs
+        function openTab(button, tabName, section) {
+            const contents = document.querySelectorAll(".tab-pane");
+            const buttons = document.querySelectorAll(".tab-button");
+
+            contents.forEach(content => content.style.display = "none");
+            buttons.forEach(btn => btn.classList.remove("active"));
+
+            // Show the chosen tab
+            document.getElementById(tabName).style.display = "block"
+            button.classList.add("active");
+
+            const url = new URL(window.location.href);
+            url.searchParams.set("tab", section);
+            url.searchParams.set("page", '0');
+            window.location.href = url.toString();
+            window.location.href = url.toString();
+        }
+
+        // function for pagination controls
+        function goToPage(pageNumber) {
+            const url = new URL(window.location.href);
+            url.searchParams.set("page", pageNumber);
+
+            window.location.href = url.toString();
+        }
+    </script>
 </body>
 </html>

@@ -1,9 +1,6 @@
 package com.unipi.gsimos.vistaseat.service.impl;
 
-import com.unipi.gsimos.vistaseat.dto.BookingInfo;
-import com.unipi.gsimos.vistaseat.dto.EventCardDto;
-import com.unipi.gsimos.vistaseat.dto.EventOccurrenceCardDto;
-import com.unipi.gsimos.vistaseat.dto.PendingBookingDto;
+import com.unipi.gsimos.vistaseat.dto.*;
 import com.unipi.gsimos.vistaseat.model.*;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
@@ -15,6 +12,8 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -63,6 +62,18 @@ public class BookingServiceImpl implements BookingService {
                             windowEnd.plusDays(1).atStartOfDay());
         }
         return bookingCount;
+    }
+
+    @Override
+    public Page<OrderCardDto> getActiveOrdersByUserId(Long userId, Pageable pageable) {
+        return bookingRepository.findActiveBookingsByUserId(userId,pageable)
+                .map(OrderCardDto::from);
+    }
+
+    @Override
+    public Page<OrderCardDto> getPastOrdersByUserId(Long userId, Pageable pageable) {
+        return bookingRepository.findPastBookingsByUserId(userId, pageable)
+                .map(OrderCardDto::from);
     }
 
     @Override

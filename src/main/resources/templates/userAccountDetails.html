@@ -70,7 +70,7 @@
             const form = document.getElementById("userAccountForm");
             const inputs = form.querySelectorAll(".user-account-grid input:not(.permanently-disabled)");
 
-            // 1) Guard against any submit while in view mode (defensive)
+            // Prevent any submit while in view mode
             form.addEventListener("submit", function (e) {
                 const mode = editBtn.dataset.mode || "view";
                 console.log("[userAccountForm] submit fired, mode =", mode);
@@ -80,7 +80,7 @@
                 }
             });
 
-            // 2) Toggle behavior driven by state, not label text
+            // Toggle between "Edit" and "Save" buttons
             editBtn.addEventListener("click", function () {
                 const mode = editBtn.dataset.mode || "view";
                 console.log("[editBtn] click, current mode =", mode);

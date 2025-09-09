@@ -1,20 +1,20 @@
 package com.unipi.gsimos.vistaseat.controller;
 
-import com.unipi.gsimos.vistaseat.dto.CategoryCardDto;
-import com.unipi.gsimos.vistaseat.dto.EventCardDto;
-import com.unipi.gsimos.vistaseat.dto.UserDto;
-import com.unipi.gsimos.vistaseat.dto.VenueCardDto;
+import com.unipi.gsimos.vistaseat.dto.*;
 import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.model.UserRole;
+import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
+import com.unipi.gsimos.vistaseat.service.BookingService;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.AccessDeniedException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -36,6 +37,7 @@ public class UserController {
     private final EventRepository eventRepository;
     private final VenueRepository venueRepository;
     private final UserRepository userRepository;
+    private final BookingService bookingService;
 
     @GetMapping("/home")
     public String home(Model model) {
@@ -88,6 +90,9 @@ public class UserController {
         model.addAttribute("redirectTo", redirectTo);
         return "loginRequest";
     }
+
+    @GetMapping("/userSignUp")
+    public String userSignup() {return "userSignUp";}
 
     @PreAuthorize("hasRole('REGISTERED')")
     @GetMapping("/userAccount/details")
@@ -144,7 +149,40 @@ public class UserController {
 
     @PreAuthorize("hasRole('REGISTERED')")
     @GetMapping("/userAccount/myOrders")
-    public String myOrders(Model model) {
+    public String myOrders(@RequestParam(name = "tab", defaultValue = "active") String tab,
+                           @RequestParam(defaultValue = "0") int page,
+                           @RequestParam(defaultValue = "5") int size,
+                           Model model) {
+
+        Authentication  auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User with email: " + email + " not found"));
+
+        Pageable pageableActive = PageRequest.of(page, size, Sort.by("eventOccurrence.eventDate").ascending());
+        Page<OrderCardDto> activeOrders = bookingService.getActiveOrdersByUserId(user.getId(), pageableActive);
+
+        List<OrderCardDto> activeOrdersList = new ArrayList<>(activeOrders.getContent());
+        model.addAttribute("activeOrdersList", activeOrdersList);
+        model.addAttribute("activeOrdersCount", activeOrders.getTotalElements());
+
+        Pageable pageablePast = PageRequest.of(page, size, Sort.by("eventOccurrence.eventDate").descending());
+        Page<OrderCardDto> pastOrders = bookingService.getPastOrdersByUserId(user.getId(), pageablePast);
+
+        List<OrderCardDto> pastOrdersList = new ArrayList<>(pastOrders.getContent());
+        model.addAttribute("pastOrdersList", pastOrdersList);
+        model.addAttribute("pastOrdersCount", pastOrders.getTotalElements());
+
+        // Paging controls for active orders
+        model.addAttribute("activeCurrentPage", activeOrders.getNumber() + 1);
+        model.addAttribute("activeTotalPages", activeOrders.getTotalPages());
+
+        // Paging controls for past orders
+        model.addAttribute("pastCurrentPage", pastOrders.getNumber() + 1);
+        model.addAttribute("pastTotalPages", pastOrders.getTotalPages());
+
+        model.addAttribute("tab", tab);
 
         return "myOrders";
     }
@@ -154,11 +192,6 @@ public class UserController {
     public String writeTestimonial(Model model) {
 
         return "writeTestimonial";
-    }
-
-    @GetMapping("/userSignUp")
-    public String userSignup(){
-        return "userSignUp";
     }
 
     /**
