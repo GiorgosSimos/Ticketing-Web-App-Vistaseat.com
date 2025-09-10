@@ -28,7 +28,13 @@
                 </div>
                 <!-- Active Orders Pane -->
                 <div id="active-orders" class="tab-pane" th:style="${tab} == 'active' ? 'display: block' : 'display: none'">
-                    <div th:each="activeOrder : ${activeOrdersList}" class="mb-4">
+                    <div th:if="${activeOrdersCount == 0}"
+                        class="empty-state d-flex flex-column justify-content-center align-items-center text-center">
+                        <i class="bi bi-ticket-perforated-fill fs-2"></i>
+                        <h3 class="fw-semibold mb-1">No active orders found</h3>
+                    </div>
+                    <div th:if="${activeOrdersCount > 0}"
+                         th:each="activeOrder : ${activeOrdersList}" class="mb-4">
                         <a th:href="@{'/api/bookingComplete/' + ${activeOrder.bookingId}}"
                            class="text-decoration-none" style="color: inherit">
                             <div class="order-card-layout">
@@ -106,7 +112,13 @@
 
                 <!-- Past Orders Pane -->
                 <div id="past-orders" class="tab-pane" th:style="${tab} == 'past' ? 'display: block' : 'display: none'">
-                    <div th:each="pastOrder : ${pastOrdersList}" class="mb-4">
+                    <div th:if="${pastOrdersCount == 0}"
+                         class="empty-state d-flex flex-column justify-content-center align-items-center text-center">
+                        <i class="bi bi-ticket-perforated-fill fs-2"></i>
+                        <h3 class="fw-semibold mb-1">No past orders found</h3>
+                    </div>
+                    <div th:if="${pastOrdersCount > 0}"
+                         th:each="pastOrder : ${pastOrdersList}" class="mb-4">
                         <a th:href="@{'/api/bookingComplete/' + ${pastOrder.bookingId}}"
                            class="text-decoration-none" style="color: inherit">
                             <div class="order-card-layout">
