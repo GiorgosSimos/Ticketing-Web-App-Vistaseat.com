@@ -73,8 +73,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "managedBy", fetch = FetchType.LAZY)
     private List<Venue> managedVenues = new ArrayList<>();
 
-    // Spring Security Methods
+    // A user can make one or multiple testimonials
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Testimonial> testimonials = new ArrayList<>();
 
+    // Spring Security Methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+role.name()));

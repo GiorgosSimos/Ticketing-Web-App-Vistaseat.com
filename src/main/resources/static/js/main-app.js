@@ -72,3 +72,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const successAlert = document.getElementById("success-alert");
+    if (successAlert) {
+        setTimeout(() => {
+            successAlert.style.transition = "opacity 0.5s";
+            successAlert.style.opacity = 0;
+            setTimeout(() => successAlert.remove(), 500); // fully remove it
+        }, 3000); // 3 seconds
+    }
+});

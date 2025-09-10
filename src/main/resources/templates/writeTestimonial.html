@@ -13,13 +13,283 @@
 
     <div th:insert="~{fragments/header :: header}"></div>
 
-    <div class="user-account-settings-section">
-
+    <div class="testimonials-layout">
+        <!--Include sidebar-->
         <div th:replace="~{fragments/userAccountSidebar :: userAccountSidebar('writeTestimonial')}"></div>
 
+        <section class="testimonials-section">
+            <!--Update alert messages-->
+            <div th:if="${message}" class="alert alert-success" id="success-alert" role="alert" th:text="${message}"></div>
+            <div th:if="${error}" class="alert alert-danger" id="error-alert" role="alert" th:text="${error}"></div>
+
+            <div class="testimonials-container">
+                <div class="d-flex mb-4">
+                    <i class="bi bi-star fs-3 me-2"></i>
+                    <h3 class="mt-1">Write Your Testimonial</h3>
+                </div>
+                <p class="fw-semibold mb-4">Help us improve Vistaseat.com by sharing your feedback.
+                    Join the community to discover great events and
+                    provide us with the necessary knowledge to enhance our platform.</p>
+                <div class="rating-container">
+                    <span class="fw-semibold mb-2">Posting as:</span>
+                    <div class="d-flex gap-3 mb-4">
+                        <img th:src="@{/images/user_logo.png}" width="40px" height="40px"
+                             class="rounded-circle mt-1" alt="user_logo">
+                        <div class="d-flex flex-column">
+                            <span th:text="${user.firstName + ' ' + user.lastName}">User Name</span>
+                            <span th:text="${user.email}">userName@email.com</span>
+                        </div>
+                        <div class="registered-badge">
+                            <span class="badge rounded-pill bg-success">Registered User</span>
+                        </div>
+                    </div>
+                    <form id="testimonial-form"
+                          method="POST"
+                          th:action="@{/userAccount/testimonials/submit}">
+                        <!-- RATING -->
+                        <div class="mb-3">
+                            <label class="form-label d-block">Overall Rating</label>
+
+                            <div id="rating-widget" class="rating" aria-label="Star rating widget">
+                                <!-- Visible stars -->
+                                <div class="stars" aria-hidden="true">
+                                    <i class="bi bi-star" data-star="1"></i>
+                                    <i class="bi bi-star" data-star="2"></i>
+                                    <i class="bi bi-star" data-star="3"></i>
+                                    <i class="bi bi-star" data-star="4"></i>
+                                    <i class="bi bi-star" data-star="5"></i>
+                                </div>
+
+                                <!-- Overlay half-star-segments for 0.5 steps (10 segments) -->
+                                <div class="overlay" aria-hidden="true">
+                                    <button type="button" class="half-star-segment" data-value="0.5"></button>
+                                    <button type="button" class="half-star-segment" data-value="1.0"></button>
+                                    <button type="button" class="half-star-segment" data-value="1.5"></button>
+                                    <button type="button" class="half-star-segment" data-value="2.0"></button>
+                                    <button type="button" class="half-star-segment" data-value="2.5"></button>
+                                    <button type="button" class="half-star-segment" data-value="3.0"></button>
+                                    <button type="button" class="half-star-segment" data-value="3.5"></button>
+                                    <button type="button" class="half-star-segment" data-value="4.0"></button>
+                                    <button type="button" class="half-star-segment" data-value="4.5"></button>
+                                    <button type="button" class="half-star-segment" data-value="5.0"></button>
+                                </div>
+                            </div>
+
+                            <!-- Live label (e.g., "Excellent") + numeric -->
+                            <div class="small text-muted mt-1">
+                                <span id="rating-text">Select a rating</span>
+                                <span id="rating-number" class="ms-2"></span>
+                            </div>
+
+                            <!-- Hidden field that will be submitted -->
+                            <input type="hidden" name="rating" id="rating-value" value="">
+                            <!-- Optional validation feedback -->
+                            <div id="rating-error" class="invalid-feedback d-none">
+                                Please choose a rating.
+                            </div>
+                        </div>
+
+                        <!-- REVIEW -->
+                        <div class="mb-3">
+                            <label for="review" class="form-label">Your Review</label>
+                            <textarea id="review" name="review" class="form-control" rows="5"
+                                      minlength="5" maxlength="500" placeholder="Share your experience..."></textarea>
+                            <div class="d-flex justify-content-between small mt-1">
+                                <div id="review-error" class="text-danger" style="display:none;">
+                                    Review must be between 5 and 500 characters.
+                                </div>
+                                <div id="review-counter" class="text-muted">0 / 500</div>
+                            </div>
+                        </div>
+
+                        <!-- Guidelines Section -->
+                        <div class="guidelines-container">
+                            <p class="fw-semibold mb-2">Testimonial Guidelines:</p>
+                            <ul class="text-muted">
+                                <li>Minimum 5 and maximum 500 characters required. Be specific and helpful</li>
+                                <li>Be honest and specific about your experience</li>
+                                <li>Focus on the app's features, usability, and customer service</li>
+                                <li>Help other users by mentioning what you found most valuable</li>
+                                <li>Avoid personal information or inappropriate content</li>
+                            </ul>
+                        </div>
+
+                        <!-- ACTIONS -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-dark">
+                                <i class="bi bi-send me-2"></i>
+                                Submit Testimonial
+                            </button>
+                            <button type="button" id="clear-btn" class="btn btn-outline-secondary">Clear</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </section>
     </div>
 
     <div th:insert="~{fragments/footer :: footer}"></div>
 
+    <script>
+        (function () {
+            const labels = {
+                5: "Outstanding",
+                4.5: "Excellent",
+                4: "Great",
+                3.5: "Good",
+                3: "Fair",
+                2.5: "Average",
+                2: "Poor",
+                1.5: "Bad",
+                1: "Terrible",
+                0.5: "Atrocious"
+            };
+
+            function keyFor(v) {
+                // 2.0 -> "2", 1.5 -> "1.5"
+                return Number(v).toString();
+            }
+
+            const ratingWidget = document.getElementById('rating-widget');
+            const stars = Array.from(ratingWidget.querySelectorAll('.stars i'));
+            const segments = Array.from(ratingWidget.querySelectorAll('.half-star-segment'));
+            const ratingText = document.getElementById('rating-text');
+            const ratingNumber = document.getElementById('rating-number');
+            const ratingValueInput = document.getElementById('rating-value');
+            const ratingError = document.getElementById('rating-error');
+
+            const review = document.getElementById('review');
+            const reviewCounter = document.getElementById('review-counter');
+            const reviewError = document.getElementById('review-error');
+            const clearBtn = document.getElementById('clear-btn');
+            const form = document.getElementById('testimonial-form');
+
+            let selected = null; // the committed value after click
+            let hover = null;    // the transient value while hovering
+
+            function toFixedHalf(value) {
+                // Ensure numbers like 1 -> 1.0 and 1.5 -> 1.5
+                return Math.round(value * 2) / 2;
+            }
+
+            function applyStars(value) {
+                // value can be 0.0 .. 5.0 in 0.5 steps
+                const v = value || 0;
+                for (let i = 1; i <= 5; i++) {
+                    const icon = stars[i - 1];
+                    icon.classList.remove('bi-star', 'bi-star-half', 'bi-star-fill');
+
+                    if (v >= i) {
+                        icon.classList.add('bi-star-fill');
+                    } else if (v >= i - 0.5) {
+                        icon.classList.add('bi-star-half');
+                    } else {
+                        icon.classList.add('bi-star');
+                    }
+                }
+
+                ratingText.textContent = hasValue(v) ? (labels[keyFor(v)] || '') : 'Select a rating';
+            }
+
+            function hasValue(v) {
+                return v !== null && v !== undefined && !Number.isNaN(v);
+            }
+
+            // Hover handlers
+            segments.forEach(seg => {
+                seg.addEventListener('mouseenter', () => {
+                    hover = toFixedHalf(parseFloat(seg.dataset.value));
+                    applyStars(hover);
+                });
+            });
+
+            ratingWidget.addEventListener('mouseleave', () => {
+                hover = null;
+                applyStars(selected || 0);
+            });
+
+            // Click to commit selection
+            segments.forEach(seg => {
+                seg.addEventListener('click', () => {
+                    selected = toFixedHalf(parseFloat(seg.dataset.value));
+                    ratingValueInput.value = selected.toFixed(1);
+
+                    // clear Bootstrap validation state + hide message
+                    ratingValueInput.classList.remove('is-invalid');
+                    ratingError.classList.add('d-none');
+                    ratingError.classList.remove('d-block');
+
+                    applyStars(selected);
+                });
+            });
+
+            // Review live counter
+            function updateCounter() {
+                const len = review.value.length;
+                reviewCounter.textContent = `${len} / 500`;
+            }
+            review.addEventListener('input', () => {
+                updateCounter();
+                reviewError.style.display = (review.value.length >= 5 && review.value.length <= 500)
+                    ? 'none' : 'block';
+            });
+            updateCounter();
+            applyStars(0);
+
+            // Clear button
+            clearBtn.addEventListener('click', () => {
+                selected = null;
+                hover = null;
+                ratingValueInput.value = '';
+                applyStars(0);
+                ratingText.textContent = 'Select a rating';
+                ratingNumber.textContent = '';
+
+                review.value = '';
+                updateCounter();
+                reviewError.style.display = 'none';
+                ratingError.style.display = 'none';
+                review.focus();
+            });
+
+            // Validate on submit
+            form.addEventListener('submit', (e) => {
+                let ok = true;
+
+                // Rating required
+                if (!ratingValueInput.value) {
+                    // show error
+                    ratingValueInput.classList.add('is-invalid');
+                    ratingError.classList.remove('d-none');
+                    ratingError.classList.add('d-block');
+                    ok = false;
+                } else {
+                    // hide error
+                    ratingValueInput.classList.remove('is-invalid');
+                    ratingError.classList.add('d-none');
+                    ratingError.classList.remove('d-block');
+                }
+
+                // Review length 5..500
+                const len = review.value.trim().length;
+                if (len < 5 || len > 500) {
+                    reviewError.style.display = 'block';
+                    ok = false;
+                } else {
+                    reviewError.style.display = 'none';
+                }
+
+                if (!ok) {
+                    e.preventDefault();
+                    return;
+                }
+
+                // Normalize rating to BigDecimal-friendly string
+                ratingValueInput.value = Number(ratingValueInput.value).toFixed(1); // e.g., "4.5"
+            });
+        })();
+    </script>
+    <script th:src="@{/js/main-app.js}"></script>
 </body>
 </html>

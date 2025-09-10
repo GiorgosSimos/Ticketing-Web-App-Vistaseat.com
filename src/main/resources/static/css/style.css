@@ -741,3 +741,89 @@
     flex-direction: column;
 }
 
+.testimonials-layout {
+    display: grid;
+    min-height: 100vh;
+    grid-template-columns: 320px repeat(1, 1fr);
+    grid-auto-rows: auto 1fr;
+    grid-template-areas: "sidebar testimonials-container";
+}
+
+.testimonials-container {
+    grid-area: testimonials-container;
+    display: flex;
+    flex-direction: column;
+    width: 650px;
+    margin: 3rem auto;
+    background: rgb(242, 192, 120);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.registered-badge {
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+    border-left: 0;
+}
+
+.rating-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 1rem auto;
+    background: rgb(245, 239, 255);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.rating {
+    position: relative;
+    display: inline-block;
+    user-select: none;
+}
+
+.rating .stars {
+    display: flex;
+    gap: 4px;
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.bi-star-fill, .bi-star-half { color: #f5c518; }
+
+.rating .overlay {
+    /* 10 equal segments overlaying the stars, enabling 0.5 clicks */
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+}
+
+.rating .half-star-segment {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* Optional hover cursor feedback */
+.rating .half-star-segment:hover,
+.rating .half-star-segment:focus {
+    outline: none;
+}
+
+.guidelines-container {
+    width: 100%;
+    margin: 1rem auto;
+    background: rgb(198, 226, 255);
+    padding: 0.5rem 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.guidelines-container p {
+    margin-left: 1rem;
+}
