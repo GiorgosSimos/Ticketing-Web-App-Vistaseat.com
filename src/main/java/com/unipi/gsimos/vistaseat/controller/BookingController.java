@@ -88,7 +88,7 @@ public class BookingController {
         if (isLoggedIn) {
             String email = auth.getName();
             User user = userRepository.findByEmail(email).orElseThrow(() ->
-                    new EntityNotFoundException("User with " + email + " not found"));
+                    new EntityNotFoundException("User with email:" + email + " not found"));
             userDto = UserMapper.toUserDto(user);
         }
 

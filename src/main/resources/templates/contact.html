@@ -13,7 +13,7 @@
 
     <div th:insert="~{fragments/header :: header}"></div>
 
-    <section class="container my-4" th:object="${contactForm}">
+    <section class="container my-4">
         <h1 class="mb-3">Contact Us</h1>
         <p class="text-muted">We usually reply within 1–2 business days.</p>
 
@@ -21,28 +21,35 @@
         <div th:if="${success}" class="alert alert-success" role="alert">Thank you! Your message has been sent.</div>
         <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
 
-        <form id="contact-form" th:action="@{/submitContactForm}" method="post" novalidate>
+        <form id="contact-form" th:action="@{/submitContactForm}"
+              method="post" novalidate>
 
             <!-- Name -->
             <div class="mb-3">
                 <label for="name" class="form-label">Full Name</label>
-                <input id="name" type="text" class="form-control" th:field="*{name}"
+                <input id="name" name="name" type="text" class="form-control"
+                       th:value="${fullName}"
+                       th:disabled="${isLoggedIn}"
                        minlength="2" maxlength="80" required placeholder="Jane Doe">
+                <input type="hidden" th:if="${isLoggedIn}" name="name" th:value="${fullName}">
                 <div class="invalid-feedback">Please enter your name (2–80 characters).</div>
             </div>
 
             <!-- Email -->
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input id="email" type="email" class="form-control" th:field="*{email}"
+                <input id="email" name="email" type="email" class="form-control"
+                       th:value="${user?.email}"
+                       th:disabled="${isLoggedIn}"
                        maxlength="120" required placeholder="you@example.com">
+                <input type="hidden" th:if="${isLoggedIn}" name="email" th:value="${user?.email}">
                 <div class="invalid-feedback">Please enter a valid email address.</div>
             </div>
 
             <!-- Subject -->
             <div class="mb-3">
                 <label for="subject" class="form-label">Subject</label>
-                <input id="subject" type="text" class="form-control" th:field="*{subject}"
+                <input id="subject" name="subject" type="text" class="form-control"
                        minlength="5" maxlength="120" required placeholder="How can we help?">
                 <div class="invalid-feedback">Subject must be 5–120 characters.</div>
             </div>
@@ -50,7 +57,7 @@
             <!-- Category (optional) -->
             <div class="mb-3">
                 <label for="category" class="form-label">Category (optional)</label>
-                <select id="category" class="form-select" th:field="*{category}">
+                <select id="category" name="category" class="form-select">
                     <option value="">Select a category</option>
                     <option th:each="cat : ${categories}" th:value="${cat}"
                             th:text="${#strings.replace(#strings.capitalize(cat.name().toLowerCase()), '_', ' ')}">
@@ -61,7 +68,7 @@
             <!-- Message -->
             <div class="mb-3">
                 <label for="message" class="form-label">Message</label>
-                <textarea id="message" class="form-control" th:field="*{message}"
+                <textarea id="message" name="message" class="form-control"
                           rows="6" minlength="20" maxlength="1000" required
                           placeholder="Tell us what’s going on…"></textarea>
                 <div class="d-flex justify-content-between small mt-1">
@@ -72,7 +79,7 @@
 
             <!-- Consent -->
             <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="consent" th:field="*{consent}" required>
+                <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
                 <label class="form-check-label" for="consent">
                     I consent to being contacted about this inquiry and have read the
                     <a th:href="@{/termsOfUse}">Terms of Use</a>.
@@ -83,7 +90,7 @@
             <!-- Honeypot (spam trap) -->
             <div class="d-none">
                 <label>Leave this field empty</label>
-                <input type="text" th:field="*{hp}"/>
+                <input type="text" id="hp" name="hp"/>
             </div>
 
             <!-- Actions -->

@@ -50,4 +50,9 @@ public class ContactMessage {
     // Admin side usage
     @Column(name = "admin_notes", length = 2000)
     private String adminNotes = "Pending to be resolved";
+
+    // A user can submit or more contact messages, NULL for guests
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

@@ -77,6 +77,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Testimonial> testimonials = new ArrayList<>();
 
+    // A user can make one or multiple contact messages
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContactMessage> contactMessages = new ArrayList<>();
+
     // Spring Security Methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
