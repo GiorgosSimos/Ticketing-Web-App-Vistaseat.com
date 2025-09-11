@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Terms of Use | Vistaseat.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:insert="~{fragments/header :: header}"></div>
+
+    <!-- terms-of-use.html -->
+    <section class="container my-4">
+        <h1 class="mb-3">Terms of Use</h1>
+        <p class="text-muted">Last updated: <span th:text="${lastUpdated}">11 September 2025</span></p>
+
+        <h2>1) Introduction</h2>
+        <p>
+            Welcome to <strong th:text="${appName}">Vistaseat</strong> (the “Service”), operated by
+            <strong th:text="${companyName}">Your Company S.A.</strong> (“we”, “us”, or “our”).
+            These Terms of Use (“Terms”) govern your access to and use of the Service, including browsing events,
+            purchasing tickets, creating an account, posting reviews/testimonials, and any other features we provide.
+            By accessing or using the Service, you agree to be bound by these Terms.
+        </p>
+
+        <h2>2) Eligibility & Account</h2>
+        <ul>
+            <li>You must be at least 18 years old (or the age of majority in your jurisdiction) to purchase tickets.</li>
+            <li>You agree to provide accurate, current, and complete information when creating your account and to keep it up to date.</li>
+            <li>You are responsible for safeguarding your login credentials and for all activities under your account.</li>
+            <li>We may deactivate or terminate your account if we suspect a breach of these Terms or unlawful activity.</li>
+        </ul>
+
+        <h2>3) Tickets, Pricing & Fees</h2>
+        <ul>
+            <li>Ticket availability, seat maps, and pricing are provided by organizers/venues and may change at any time.</li>
+            <li>Prices may include taxes (e.g., VAT) and/or booking, service, or delivery fees. The final total is shown at checkout.</li>
+            <li>Orders are confirmed once payment is successfully authorized and you receive an order confirmation.</li>
+            <li>We reserve the right to cancel an order and refund you if there is a material pricing or availability error.</li>
+        </ul>
+
+        <h2>4) Delivery of Tickets</h2>
+        <ul>
+            <li>Tickets are delivered electronically (e.g., PDF/e-ticket with barcode/QR).</li>
+            <li>You are responsible for keeping your tickets safe and not sharing barcodes publicly.</li>
+        </ul>
+
+        <h2>5) Cancellations, Refunds & Event Changes</h2>
+        <ul>
+            <li>Unless otherwise stated by the organizer or required by law, <strong>all sales are final</strong>.</li>
+            <li>If an event is cancelled (not rescheduled), you may be entitled to a refund of the ticket price and certain fees as determined by the organizer/venue.</li>
+            <li>If an event is rescheduled, your tickets will generally remain valid for the new date; refund eligibility is determined by the organizer/venue’s policy.</li>
+            <li><em>EU consumer note:</em> the 14-day right of withdrawal typically <strong>does not apply</strong> to leisure services for a specific date or period (e.g., event tickets).</li>
+        </ul>
+
+        <h2>6) Venue Rules & Entry</h2>
+        <ul>
+            <li>Admission is subject to the venue’s rules (security checks, prohibited items, late seating policies, age restrictions, etc.).</li>
+            <li>Failure to comply may result in refusal of entry or removal without refund.</li>
+            <li>We are not responsible for partial view seats, acoustic conditions, or other venue-controlled factors unless explicitly stated.</li>
+        </ul>
+
+        <h2>7) Prohibited Uses</h2>
+        <ul>
+            <li>Reselling, speculating, or bulk-buying to circumvent purchase limits.</li>
+            <li>Using bots, scraping data, or interfering with the Service’s normal operation.</li>
+            <li>Posting unlawful, defamatory, hateful, or infringing content.</li>
+        </ul>
+
+        <h2>8) Reviews & Testimonials</h2>
+        <ul>
+            <li>You may submit ratings (1/2 – 5 stars in 0.5 steps) and written reviews (5–500 characters) reflecting your genuine experience.</li>
+            <li>You grant us a worldwide, royalty-free license to use, display, reproduce, and distribute your review in connection with the Service.</li>
+            <li>We may moderate or remove reviews that violate these Terms or applicable law.</li>
+        </ul>
+
+        <h2>9) Intellectual Property</h2>
+        <p>
+            The Service, including text, graphics, logos, trademarks, software, and other materials, is owned by us or our licensors
+            and is protected by intellectual property laws. You may not copy, modify, distribute, or create derivative works from the Service
+            except as expressly permitted by us.
+        </p>
+
+        <h2>10) Privacy & Data Protection</h2>
+        <p>
+            We process personal data in accordance with our Privacy Policy and applicable data-protection laws
+            (e.g., GDPR). By using the Service, you acknowledge our processing of your data as described there.
+        </p>
+
+        <h2>11) Third-Party Services</h2>
+        <p>
+            The Service may link to or rely on third-party sites or services (e.g., payment providers).
+            We are not responsible for their content, policies, or practices. Your use of third-party services is governed by their terms.
+        </p>
+
+        <h2>12) Warranties & Disclaimers</h2>
+        <p>
+            The Service is provided on an “as is” and “as available” basis. To the maximum extent permitted by law,
+            we disclaim all warranties, express or implied, including merchantability, fitness for a particular purpose,
+            and non-infringement. We do not guarantee uninterrupted, secure, or error-free operation.
+        </p>
+
+        <h2>13) Limitation of Liability</h2>
+        <p>
+            To the fullest extent permitted by law, we shall not be liable for indirect, incidental, special, consequential, or punitive damages,
+            or any loss of profits or revenues, arising out of your use of the Service or attendance at events.
+            Our aggregate liability to you for any claim shall not exceed the total amount paid by you for the affected order.
+            Nothing in these Terms excludes liability that cannot be limited under applicable law (e.g., fraud or willful misconduct).
+        </p>
+
+        <h2>14) Indemnification</h2>
+        <p>
+            You agree to indemnify and hold harmless <span th:text="${companyName}">Your Company S.A.</span>, its directors, employees, and partners
+            from any claims, damages, liabilities, and expenses arising from your breach of these Terms or misuse of the Service.
+        </p>
+
+        <h2>15) Suspension & Termination</h2>
+        <p>
+            We may suspend or terminate your access to the Service at any time if we believe you have violated these Terms or applicable law,
+            or to protect the integrity and security of the Service. Sections that by their nature should survive termination will survive (e.g., IP, reviews license, disclaimers, limitations, indemnity).
+        </p>
+
+        <h2>16) Changes to the Service & to these Terms</h2>
+        <p>
+            We may modify the Service or these Terms from time to time.
+            Material changes will be effective upon posting the updated Terms with a new “Last updated” date.
+            Your continued use after changes constitutes acceptance.
+        </p>
+
+        <h2>17) Governing Law & Jurisdiction</h2>
+        <p>
+            These Terms are governed by the laws of the <strong th:text="${jurisdiction}">Greece</strong>, without regard to conflict-of-law rules.
+            You agree to the exclusive jurisdiction of the courts of <strong th:text="${forum}">Athens, Greece</strong>, unless mandatory consumer protection rules provide otherwise.
+        </p>
+
+        <h2>18) Consumer Rights</h2>
+        <p>
+            If you act as a consumer within the EU/EEA, you may have statutory rights that cannot be waived by contract.
+            Nothing in these Terms limits such rights. Information on the EU Online Dispute Resolution (ODR) platform may be available from official EU sources.
+        </p>
+
+        <h2>19) Force Majeure</h2>
+        <p>
+            We are not liable for delays or failures caused by events beyond our reasonable control, including strikes, natural disasters,
+            network or power outages, or governmental actions.
+        </p>
+
+        <h2>20) Severability & Entire Agreement</h2>
+        <p>
+            If any provision of these Terms is found invalid or unenforceable, the remaining provisions remain in full force.
+            These Terms, together with our Privacy Policy and any order-specific terms shown at checkout, constitute the entire agreement between you and us regarding the Service.
+        </p>
+
+        <h2>21) Contact Us</h2>
+        <address>
+            <div><strong th:text="${companyName}">Your Company S.A.</strong></div>
+            <div th:text="${companyAddress}">123 Example St, Athens, GR</div>
+            <div>VAT/Tax ID: <span th:text="${vatId}">EL000000000</span></div>
+            <div>Company Reg. No.: <span th:text="${companyRegNo}">GEMI 123456789</span></div>
+            <div>Email: <a th:href="'mailto:' + ${supportEmail}" th:text="${supportEmail}">support@example.com</a></div>
+        </address>
+    </section>
+
+
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>
