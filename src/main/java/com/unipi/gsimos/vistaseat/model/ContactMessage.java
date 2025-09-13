@@ -36,7 +36,6 @@ public class ContactMessage {
     @Column(nullable = false, length = 1000)
     private String message;
 
-    // Operational fields
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ContactStatus status = ContactStatus.IN_PROGRESS;

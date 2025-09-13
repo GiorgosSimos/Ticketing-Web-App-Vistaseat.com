@@ -827,3 +827,49 @@
 .guidelines-container p {
     margin-left: 1rem;
 }
+
+/* Testimonials section */
+
+.testimonial-quote {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+.testimonial-author {
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.star-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 2px;
+    margin-bottom: 1.5rem;
+}
+
+.full-star-style {
+    color: goldenrod;
+    font-size: 2rem;
+}
+
+.empty-star-style {
+    color: black;
+    font-size: 2rem;
+}
+
+.quote-mark {
+    font-size: 2rem;
+    opacity: .35;
+    vertical-align: -0.35em;
+    padding-right: .15rem;
+}
+.carousel-item {
+    min-height: 180px;
+}
+
+.slides-style {
+    background-color: rgb(230, 224, 240);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}

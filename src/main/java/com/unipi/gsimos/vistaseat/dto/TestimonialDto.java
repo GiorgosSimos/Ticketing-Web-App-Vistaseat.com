@@ -15,7 +15,15 @@ import java.time.LocalDateTime;
 public class TestimonialDto {
 
     private Long id;
+    private Long userId;
+    private String author;
     private BigDecimal rating;
     private String review;
     private LocalDateTime createdAt;
+
+    // Calculation for star depiction in testimonials section (home page)
+    private int fullStars;
+    private boolean halfStars;
+    private int emptyStars;
+
 }
