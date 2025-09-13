@@ -125,7 +125,7 @@
                         <td th:text="${booking.eventName}"></td>
                         <td th:text="${booking.email}"></td>
                         <td th:text="${booking.numberOfTickets}"></td>
-                        <td>€<span th:text="${booking.totalAmount}">29.99</span></td>
+                        <td th:text="${booking.totalAmount} + ' €'"></td>
                         <td th:text="${booking.status}">Confirmed</td>
                     </tr>
                     </tbody>

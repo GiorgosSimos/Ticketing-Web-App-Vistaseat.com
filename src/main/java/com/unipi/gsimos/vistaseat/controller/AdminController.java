@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.controller;
 
+import com.unipi.gsimos.vistaseat.model.BookingStatus;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
@@ -83,7 +84,8 @@ public class AdminController {
         model.addAttribute("totalBookings", bookingRepository.count());
 
         // Total Revenue
-        model.addAttribute("totalRevenue", bookingRepository.getTotalRevenue());
+        model.addAttribute("totalRevenue", bookingRepository
+                .getTotalRevenueByStatus(BookingStatus.CONFIRMED));
 
         // Recent Users
         model.addAttribute("recentUsers", userService.getLast10Users());

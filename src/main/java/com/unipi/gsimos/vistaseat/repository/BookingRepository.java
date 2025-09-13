@@ -1,6 +1,7 @@
 package com.unipi.gsimos.vistaseat.repository;
 
 import com.unipi.gsimos.vistaseat.model.Booking;
+import com.unipi.gsimos.vistaseat.model.BookingStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,8 +35,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findTop10ByOrderByBookingDateDesc();
 
-    @Query("SELECT COALESCE(SUM(b.totalAmount), 0) FROM Booking b")
-    BigDecimal getTotalRevenue();
+    @Query("SELECT COALESCE(SUM(b.totalAmount), 0) " +
+            "FROM Booking b WHERE b.status = :status")
+    BigDecimal getTotalRevenueByStatus(@Param("status") BookingStatus status);
 
     @Query("SELECT b FROM Booking b " +
             "JOIN b.eventOccurrence eo " +
