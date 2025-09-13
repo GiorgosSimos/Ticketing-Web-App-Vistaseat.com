@@ -74,8 +74,8 @@
                     </svg>
                     <span> Total Revenue</span>
                 </div>
-                <br><span>€</span>
-                <span th:text="${totalRevenue}"></span>
+                <br>
+                <span th:text="${totalRevenue} + ' €'"></span>
             </div>
             <div class="history-section">
             </div>
@@ -108,15 +108,24 @@
             <div class="tab-content" id="bookings" style="display:none;">
                 <table>
                     <thead>
-                    <tr>
-                        <th>Booking ID</th><th>Date</th><th>Total Price</th><th>Status</th>
+                    <tr class="text-nowrap">
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Event Name</th>
+                        <th>User Email</th>
+                        <th>No of Tickets</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="booking : ${recentBookings}">
                         <td th:text="${booking.id}">123</td>
-                        <td th:text="${booking.date}">2025-04-01</td>
-                        <td>€<span th:text="${booking.totalPrice}">29.99</span></td>
+                        <td th:text="${#temporals.format(booking.bookingDate, 'EEE, MMM d, yyyy • h:mm a')}">Saturday, Sep 13, 2025 • 1:20 PM</td>
+                        <td th:text="${booking.eventName}"></td>
+                        <td th:text="${booking.email}"></td>
+                        <td th:text="${booking.numberOfTickets}"></td>
+                        <td>€<span th:text="${booking.totalAmount}">29.99</span></td>
                         <td th:text="${booking.status}">Confirmed</td>
                     </tr>
                     </tbody>

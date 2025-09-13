@@ -1,5 +1,6 @@
 package com.unipi.gsimos.vistaseat.service;
 
+import com.unipi.gsimos.vistaseat.dto.BookingDto;
 import com.unipi.gsimos.vistaseat.dto.BookingInfo;
 import com.unipi.gsimos.vistaseat.dto.OrderCardDto;
 import com.unipi.gsimos.vistaseat.dto.PendingBookingDto;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface BookingService {
 
@@ -22,5 +24,7 @@ public interface BookingService {
     Page<OrderCardDto> getActiveOrdersByUserId(Long userId, Pageable pageable);
 
     Page<OrderCardDto> getPastOrdersByUserId(Long userId, Pageable pageable);
+
+    List<BookingDto> getLast10Bookings();
 
 }

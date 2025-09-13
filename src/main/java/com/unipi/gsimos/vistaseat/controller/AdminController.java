@@ -3,6 +3,7 @@ package com.unipi.gsimos.vistaseat.controller;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
+import com.unipi.gsimos.vistaseat.service.BookingService;
 import com.unipi.gsimos.vistaseat.service.UserService;
 import com.unipi.gsimos.vistaseat.service.VenueService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,13 +32,15 @@ public class AdminController {
     private final VenueService venueService;
     private final EventRepository eventRepository;
     private final BookingRepository bookingRepository;
+    private final BookingService bookingService;
 
-    public AdminController(UserRepository userRepository, UserService userService, VenueService venueService, EventRepository eventRepository, BookingRepository bookingRepository) {
+    public AdminController(UserRepository userRepository, UserService userService, VenueService venueService, EventRepository eventRepository, BookingRepository bookingRepository, BookingService bookingService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.venueService = venueService;
         this.eventRepository = eventRepository;
         this.bookingRepository = bookingRepository;
+        this.bookingService = bookingService;
     }
 
     @GetMapping("/adminLogin")
@@ -76,10 +79,17 @@ public class AdminController {
         // Total Events count
         model.addAttribute("totalEvents",eventRepository.count());
 
+        // Total Bookings count
         model.addAttribute("totalBookings", bookingRepository.count());
+
+        // Total Revenue
+        model.addAttribute("totalRevenue", bookingRepository.getTotalRevenue());
 
         // Recent Users
         model.addAttribute("recentUsers", userService.getLast10Users());
+
+        // Recent Bookings
+        model.addAttribute("recentBookings", bookingService.getLast10Bookings());
 
         return "adminDashboard";
     }

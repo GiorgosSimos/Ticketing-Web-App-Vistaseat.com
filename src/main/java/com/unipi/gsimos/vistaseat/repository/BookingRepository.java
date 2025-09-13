@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
@@ -29,6 +31,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Total number of bookings across all occurrences scheduled in a given venue between a range of dates
     Long countByEventOccurrence_Event_Venue_IdAndEventOccurrence_EventDateBetween(
             Long venueId, LocalDateTime windowStart, LocalDateTime windowEnd);
+
+    List<Booking> findTop10ByOrderByBookingDateDesc();
+
+    @Query("SELECT COALESCE(SUM(b.totalAmount), 0) FROM Booking b")
+    BigDecimal getTotalRevenue();
 
     @Query("SELECT b FROM Booking b " +
             "JOIN b.eventOccurrence eo " +

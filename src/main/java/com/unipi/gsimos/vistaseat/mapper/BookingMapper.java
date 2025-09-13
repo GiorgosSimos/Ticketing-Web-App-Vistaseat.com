@@ -43,7 +43,7 @@ public class BookingMapper {
         return booking;
     }
 
-    public BookingDto toDto(Booking booking) {
+    public static BookingDto toDto(Booking booking) {
 
         BookingDto bookingDto = new BookingDto();
 

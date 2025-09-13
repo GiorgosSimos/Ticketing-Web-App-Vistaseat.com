@@ -1,6 +1,7 @@
 package com.unipi.gsimos.vistaseat.service.impl;
 
 import com.unipi.gsimos.vistaseat.dto.*;
+import com.unipi.gsimos.vistaseat.mapper.BookingMapper;
 import com.unipi.gsimos.vistaseat.model.*;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
@@ -26,6 +27,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -74,6 +77,14 @@ public class BookingServiceImpl implements BookingService {
     public Page<OrderCardDto> getPastOrdersByUserId(Long userId, Pageable pageable) {
         return bookingRepository.findPastBookingsByUserId(userId, pageable)
                 .map(OrderCardDto::from);
+    }
+
+    @Override
+    public List<BookingDto> getLast10Bookings() {
+        List<Booking> bookings = bookingRepository.findTop10ByOrderByBookingDateDesc();
+            return bookings.stream()
+                    .map(BookingMapper::toDto)
+                    .collect(Collectors.toList());
     }
 
     @Override
