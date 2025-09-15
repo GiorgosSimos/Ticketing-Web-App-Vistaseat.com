@@ -74,7 +74,10 @@
     <script>
         (function () {
             var p = location.pathname + location.search;
-            document.getElementById('connect-link').href = '/userLogin?redirectTo=' + encodeURIComponent(p);
+            var connect = document.getElementById('connect-link');
+            if (connect) {
+                connect.href = '/userLogin?redirectTo=' + encodeURIComponent(p);
+            }
         })();
     </script>
     <script defer

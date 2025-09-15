@@ -27,4 +27,6 @@ public interface BookingService {
 
     List<BookingDto> getLast10Bookings();
 
+    Page<BookingDto> getAllBookings(Pageable pageable);
+
 }

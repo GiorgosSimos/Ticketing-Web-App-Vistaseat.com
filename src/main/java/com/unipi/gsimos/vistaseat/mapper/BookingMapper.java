@@ -49,8 +49,10 @@ public class BookingMapper {
 
         bookingDto.setId(booking.getId());
         bookingDto.setOccurrenceId(booking.getEventOccurrence().getId());
+        bookingDto.setOccurrenceDate(booking.getEventOccurrence().getEventDate());
         bookingDto.setEventId(booking.getEventOccurrence().getEvent().getId());
         bookingDto.setEventName(booking.getEventOccurrence().getEvent().getName());
+        bookingDto.setEventVenueName(booking.getEventOccurrence().getEvent().getVenue().getName());
         bookingDto.setFirstName(booking.getFirstName());
         bookingDto.setLastName(booking.getLastName());
         bookingDto.setPhoneNumber(booking.getPhoneNumber());

@@ -100,7 +100,7 @@
                         <td th:text="${user.firstName}">Jane</td>
                         <td th:text="${user.lastName}">Doe</td>
                         <td th:text="${user.email}">jane@example.com</td>
-                        <td th:text="${#temporals.format(user.registrationDate, 'EEEE, MMM d, yyyy • h:mm a')}"></td>
+                        <td th:text="${#temporals.format(user.registrationDate, 'EEE, MMM d, yyyy  h:mm a')}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -108,24 +108,26 @@
             <div class="tab-content" id="bookings" style="display:none;">
                 <table>
                     <thead>
-                    <tr class="text-nowrap">
-                        <th>ID</th>
-                        <th>Date</th>
+                    <tr>
                         <th>Event Name</th>
-                        <th>User Email</th>
-                        <th>No of Tickets</th>
-                        <th>Total Price</th>
+                        <th>Venue</th>
+                        <th>Event Date</th>
+                        <th>Email</th>
+                        <th>Booked On</th>
+                        <th>Tickets</th>
+                        <th>Total Price (€)</th>
                         <th>Status</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="booking : ${recentBookings}">
-                        <td th:text="${booking.id}">123</td>
-                        <td th:text="${#temporals.format(booking.bookingDate, 'EEE, MMM d, yyyy • h:mm a')}">Saturday, Sep 13, 2025 • 1:20 PM</td>
                         <td th:text="${booking.eventName}"></td>
+                        <td th:text="${booking.eventVenueName}"></td>
+                        <td th:text="${#temporals.format(booking.occurrenceDate, 'dd-MM-yyyy - h:mm a')}">13-09-2025 • 1:20 PM</td>
                         <td th:text="${booking.email}"></td>
+                        <td th:text="${#temporals.format(booking.bookingDate, 'dd-MM-yyyy - h:mm a')}">13-09-2025 • 1:20 PM</td>
                         <td th:text="${booking.numberOfTickets}"></td>
-                        <td th:text="${booking.totalAmount} + ' €'"></td>
+                        <td th:text="${booking.totalAmount}"></td>
                         <td th:text="${booking.status}">Confirmed</td>
                     </tr>
                     </tbody>

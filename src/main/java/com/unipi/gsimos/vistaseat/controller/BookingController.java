@@ -39,7 +39,6 @@ public class BookingController {
     private final BookingService bookingService;
     private final EventOccurrenceRepository eventOccurrenceRepository;
     private final BookingRepository bookingRepository;
-    private final BookingMapper bookingMapper;
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final TicketRepository ticketRepository;
@@ -47,14 +46,50 @@ public class BookingController {
     private final UserRepository userRepository;
 
     @GetMapping("/adminDashboard/manageBookings")
-    public String displayBookings(Model model) {
+    public String displayBookings(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(required = false) String searchQuery,
+                                  Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
 
+        Pageable pageable = PageRequest.of(page, size,Sort.by("bookingDate").descending());
+        Page<BookingDto> bookingsPage;
+
+        bookingsPage = bookingService.getAllBookings(pageable);
+
+        List<BookingDto> bookingsList = new ArrayList<>(bookingsPage.getContent());
+        model.addAttribute("bookingsList", bookingsList);
+
+        // Paging controls
+        model.addAttribute("currentPage", bookingsPage.getNumber() + 1);
+        model.addAttribute("totalPages", bookingsPage.getTotalPages());
+
         return "manageBookings";
+    }
+
+    @GetMapping("/adminDashboard/manageBookings/editBooking/{bookingId}")
+    public String showEditBookingForm(@PathVariable Long bookingId,
+                                      Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+
+        return "editBooking";
+
+    }
+
+    @PostMapping("/adminDashboard/manageBookings/delete/{bookingId}")
+    public String deleteBooking(@PathVariable Long bookingId,
+                                RedirectAttributes redirectAttributes) {
+
+        return null;
+
     }
 
     @GetMapping("/api/makeBooking")
@@ -129,7 +164,7 @@ public class BookingController {
 
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + bookingId));
-        BookingDto bookingDto = bookingMapper.toDto(booking);
+        BookingDto bookingDto = BookingMapper.toDto(booking);
 
         EventOccurrence occurrence = eventOccurrenceRepository.findById(booking.getEventOccurrence().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Occurrence not found with id: "

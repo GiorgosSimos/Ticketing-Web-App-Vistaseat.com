@@ -88,6 +88,13 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public Page<BookingDto> getAllBookings(Pageable pageable) {
+
+        Page<Booking> bookings = bookingRepository.findAll(pageable);
+        return bookings.map(BookingMapper::toDto);
+    }
+
+    @Override
     public BookingInfo prepareBookingInfo(Long occurrenceId, int requestedTickets) {
 
         // Check if requested tickets is between MIN_TICKETS and MAX_TICKETS values

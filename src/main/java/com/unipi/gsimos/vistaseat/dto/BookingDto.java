@@ -18,8 +18,12 @@ public class BookingDto {
     private Long id;
 
     private Long occurrenceId;
+    private LocalDateTime occurrenceDate;
+    private BigDecimal bookingFee;
+    private BookingStatus bookingStatus;
     private Long eventId;
     private String eventName;
+    private String eventVenueName;
     private Long userId;
     private String firstName;
     private String lastName;
