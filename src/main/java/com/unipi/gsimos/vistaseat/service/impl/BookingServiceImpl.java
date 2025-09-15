@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.repository.PaymentRepository;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.BookingService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
@@ -236,4 +237,18 @@ public class BookingServiceImpl implements BookingService {
         stopWatch.stop();
         log.info("Expired {} bookings (took {} ms)", rows, stopWatch.getTotalTimeMillis());
     }
+
+    @Override
+    @Transactional
+    public void deleteBooking(Long id) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found with id: " + id));
+
+        if (!booking.getTickets().isEmpty() || !booking.getPayments().isEmpty())
+            throw new EntityExistsException("Cannot delete booking: it is associated with existing tickets or payments.");
+
+        bookingRepository.delete(booking);
+    }
+
+
 }

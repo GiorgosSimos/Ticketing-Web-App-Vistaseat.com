@@ -71,7 +71,7 @@ public class BookingController {
         return "manageBookings";
     }
 
-    @GetMapping("/adminDashboard/manageBookings/editBooking/{bookingId}")
+    @GetMapping("/adminDashboard/manageBookings/viewBooking/{bookingId}")
     public String showEditBookingForm(@PathVariable Long bookingId,
                                       Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -88,7 +88,14 @@ public class BookingController {
     public String deleteBooking(@PathVariable Long bookingId,
                                 RedirectAttributes redirectAttributes) {
 
-        return null;
+        try {
+            bookingService.deleteBooking(bookingId);
+            redirectAttributes.addFlashAttribute("message", "Booking deleted successfully.");
+            return "redirect:/adminDashboard/manageBookings?success";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return  "redirect:/adminDashboard/manageBookings";
+        }
 
     }
 

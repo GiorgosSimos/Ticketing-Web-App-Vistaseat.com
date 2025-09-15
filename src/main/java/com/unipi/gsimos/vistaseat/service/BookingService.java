@@ -15,6 +15,8 @@ public interface BookingService {
 
     Long createBooking(PendingBookingDto pendingBookingDto);
 
+    void deleteBooking(Long id);
+
     BookingInfo prepareBookingInfo(Long occurrenceId, int requestedTickets);
 
     void confirmBooking(Long bookingId, PaymentMethods paymentMethod);

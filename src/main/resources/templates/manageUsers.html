@@ -5,7 +5,10 @@
     <title>Manage Users | Vistaseat.com</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/adminStyle.css}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/admin.js}" defer></script>
 </head>
 <body>
@@ -24,9 +27,7 @@
 
             <div class="manage-user-container mt-5">
                 <div class="d-flex align-items-center mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" fill="currentColor" class="bi bi-person-fill-gear me-2" viewBox="0 0 16 16">
-                        <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
-                    </svg>
+                    <i class="bi bi-person-fill-gear fs-2 me-2"></i>
                     <h2 class="mb-0">Manage Users</h2>
                 </div>
                 <!-- User Search Field -->
@@ -35,11 +36,7 @@
                         <input type="text" class="form-control" placeholder="Search User..." name="searchQuery"
                                th:value="${searchQuery}"/>
                         <button class="btn btn-outline-secondary" type="submit">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
-                                 viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0
-                                    1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                            </svg>
+                            <i class="bi bi-search"></i>
                         </button>
                     </div>
                     <input type="hidden" name="role" th:value="${selectRole}" />
@@ -106,17 +103,7 @@
                                           data-message="View booking history of this user?"
                                           style="display: inline;">
                                         <button class="btn btn-sm btn-info me-1" id="btn-booking-history" title="View Booking History">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                 class="bi bi-journal-text" viewBox="0 0 16 16">
-                                                <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0
-                                            1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0
-                                            1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
-                                                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1
-                                            1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
-                                                <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1
-                                            0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0
-                                            1h-2a.5.5 0 0 1 0-1z"/>
-                                            </svg>
+                                            <i class="bi bi-journal-text"></i>
                                         </button>
                                     </form>
                                     <!-- Toggle User Status Button -->
@@ -127,13 +114,7 @@
                                           style="display: inline;">
                                         <button class="btn btn-sm btn-warning me-1" id="btn-toggle-status"
                                                 title="Change User Status" type="submit" >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-lock" viewBox="0 0 16 16">
-                                                <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m0 5.996V14H3s-1
-                                            0-1-1 1-4 6-4q.845.002 1.544.107a4.5 4.5 0 0 0-.803.918A11 11 0 0 0 8 10c-2.29
-                                            0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664zM9 13a1 1 0 0 1 1-1v-1a2 2
-                                            0 1 1 4 0v1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zm3-3a1 1 0 0 0-1 1v1h2v-1a1
-                                            1 0 0 0-1-1"/>
-                                            </svg>
+                                            <i class="bi bi-person-lock"></i>
                                         </button>
                                     </form>
                                     <!-- Delete User Button -->
@@ -144,14 +125,7 @@
                                           style="display: inline;">
                                         <button class="btn btn-sm btn-danger" id="btn-delete-user"
                                                 title="Delete User" type="submit">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                 class="bi bi-trash" viewBox="0 0 16 16">
-                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0
-                                            1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1
-                                            0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4
-                                            4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                                            </svg>
+                                            <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -162,7 +136,7 @@
                 </div>
 
                 <!-- Pagination Controls -->
-                <div class="d-flex justify-content-end align-items-center mt-3">
+                <div class="d-flex justify-content-end align-items-center my-3">
                     <!-- First Page - Go to first page (index 0)-->
                     <button class="btn btn-sm btn btn-light me-1"
                             th:disabled="${currentPage == 1}"
@@ -173,11 +147,7 @@
                     <button class="btn btn-sm btn btn-light me-2"
                             th:disabled="${currentPage == 1}"
                             th:onclick="'goToPage(' + (${currentPage} - 2) + ')'">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left"
-                             viewBox="0 0 16 16">
-                            <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11
-                                3.204v9.592a1 1 0 0 1-1.659.753"/>
-                        </svg>
+                        <i class="bi bi-caret-left"></i>
                     </button>
 
                     <!-- Page Info -->
@@ -187,11 +157,7 @@
                     <button class="btn btn-sm btn btn-light me-1"
                             th:disabled="${currentPage == totalPages}"
                             th:onclick="'goToPage(' + ${currentPage} + ')'">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right"
-                             viewBox="0 0 16 16">
-                            <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5
-                                2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
-                        </svg>
+                        <i class="bi bi-caret-right"></i>
                     </button>
 
                     <!-- Last Page -->
@@ -201,10 +167,13 @@
                         Last Page
                     </button>
                 </div>
+
             </div>
-            <br>
         </section>
     </div>
+
+    <!-- Bootstrap modal to confirm dialogues-->
+    <div th:replace="~{fragments/confirmModal :: confirmModalFragment}"></div>
 
     <!-- Include Footer-->
     <div th:insert="~{fragments/adminFooter :: footer}"></div>

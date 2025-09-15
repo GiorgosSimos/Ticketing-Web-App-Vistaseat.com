@@ -6,8 +6,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/adminStyle.css}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/admin.js}" defer></script>
 </head>
 <body>
@@ -26,10 +28,7 @@
                 class="btn btn-outline-dark btn-sm d-inline-flex align-items-center"
                 role="button"
                 title="Display all venue occurrences ">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
-                    <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-                    <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-                </svg>
+                <i class="bi bi-calendar3 fs-4"></i>
              </a>
         </div>
         <p th:text="${venue.street} + ' ' + ${venue.number} + ' ' + ${venue.city} + ' ' + ${venue.zipcode}"
@@ -43,12 +42,7 @@
                     <input type="text" class="form-control" placeholder="Search Events..." name="searchQuery"
                            th:value="${searchQuery}">
                     <button class="btn btn-outline-secondary" type="submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             class="bi bi-search"
-                             viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0
-                            1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                        </svg>
+                        <i class="bi bi-search"></i>
                     </button>
                 </div>
             </form>
@@ -56,11 +50,7 @@
             <!-- Right: Add Event for Venue Button -->
             <a th:href="@{/adminDashboard/manageEvents/addEvent(fixedVenueId=${venue.id})}"
                class="btn btn-primary d-flex align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     class="bi bi-plus-circle me-2" viewBox="0 0 16 16">
-                    <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 13A6 6 0 1 1 8 2a6 6 0 0 1 0 12z"/>
-                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                </svg>
+                <i class="bi bi-plus-circle me-2"></i>
                 Add Event for this Venue
             </a>
         </div>
@@ -69,16 +59,7 @@
         <!-- Display Message when no events are found -->
         <div th:if="${eventsCount == 0}"
              class="empty-state d-flex flex-column justify-content-center align-items-center text-center">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 class="bi bi-calendar3 empty-icon mb-3" viewBox="0 0 16 16" aria-hidden="true">
-                <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384
-                 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-                <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
-                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
-                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
-                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3
-                 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-            </svg>
+            <i class="bi bi-calendar3 empty-icon mb-3"></i>
             <h3 class="fw-semibold mb-1">No events found</h3>
         </div>
 
@@ -121,13 +102,7 @@
                                   data-message="Manage the occurrences of this event?"
                                   style="display: inline;">
                                 <button class="btn btn-sm btn-info me-1" id="btn-manage-occurrences" title="Manage Occurrences">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
-                                        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384
-                                            1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857z"/>
-                                        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m-9 3a1 1 0 1 0
-                                            0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0
-                                            2m-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2m3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-                                    </svg>
+                                    <i class="bi bi-calendar3"></i>
                                 </button>
                             </form>
                             <!-- Button: Edit Event -->
@@ -139,10 +114,7 @@
                                 <!-- Hidden Input to include the fixedVenueId request param -->
                                 <input type="hidden" name="fixedVenueId" th:value="${event.venueId}"/>
                                 <button class="btn btn-sm btn-warning me-1" id="btn-edit-event" title="Edit Event" type="submit" >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
-                                        <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004
-                                            3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364zm13.37 9.019.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11z"/>
-                                    </svg>
+                                    <i class="bi bi-wrench"></i>
                                 </button>
                             </form>
                             <!-- Delete Event Button -->
@@ -153,14 +125,7 @@
                                   style="display: inline;">
                                 <button class="btn btn-sm btn-danger" id="btn-delete-event"
                                         title="Delete Venue" type="submit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                         class="bi bi-trash" viewBox="0 0 16 16">
-                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0
-                                        1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1
-                                        0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4
-                                        4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                                    </svg>
+                                    <i class="bi bi-trash"></i>
                                 </button>
                             </form>
                         </td>
@@ -172,7 +137,7 @@
 
         <!-- Pagination Controls -->
         <div th:if="${totalPages > 0}"
-                class="d-flex justify-content-end align-items-center mt-3">
+                class="d-flex justify-content-end align-items-center my-3">
             <!-- First Page - Go to first page (index 0)-->
             <button class="btn btn-sm btn btn-light me-1"
                     th:disabled="${currentPage == 1}"
@@ -183,11 +148,7 @@
             <button class="btn btn-sm btn btn-light me-2"
                     th:disabled="${currentPage == 1}"
                     th:onclick="'goToPage(' + (${currentPage} - 2) + ')'">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left"
-                     viewBox="0 0 16 16">
-                    <path d="M10 12.796V3.204L4.519 8zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11
-                            3.204v9.592a1 1 0 0 1-1.659.753"/>
-                </svg>
+                <i class="bi bi-caret-left"></i>
             </button>
 
             <!-- Page Info -->
@@ -197,11 +158,7 @@
             <button class="btn btn-sm btn btn-light me-1"
                     th:disabled="${currentPage == totalPages}"
                     th:onclick="'goToPage(' + ${currentPage} + ')'">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right"
-                     viewBox="0 0 16 16">
-                    <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5
-                            2.345 5 3.204v9.592a1 1 0 0 0 1.659.753"/>
-                </svg>
+                <i class="bi bi-caret-right"></i>
             </button>
 
             <!-- Last Page -->
@@ -213,10 +170,11 @@
         </div>
     </div>
 
-<br>
+    <!-- Bootstrap modal to confirm dialogues-->
+    <div th:replace="~{fragments/confirmModal :: confirmModalFragment}"></div>
 
-<!-- Include Footer-->
-<div th:insert="~{fragments/adminFooter :: footer}"></div>
+    <!-- Include Footer-->
+    <div th:insert="~{fragments/adminFooter :: footer}"></div>
 
 <script>
 

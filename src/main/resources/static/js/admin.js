@@ -25,18 +25,33 @@ document.addEventListener('DOMContentLoaded',  () => {
 
 });
 
-// Pop up alert for Actions buttons
+// Bootstrap modal for Actions buttons
 document.addEventListener("DOMContentLoaded", function () {
     const actionForms = document.querySelectorAll('.confirm-form-submission');
+    let targetForm = null; // store the form being submitted
+
     actionForms.forEach(form => {
         form.addEventListener('submit', function (event) {
-            const message = form.getAttribute('data-message');
-            if (!confirm(message)) {
-                event.preventDefault();
-            }
+            event.preventDefault(); // stop normal submission
+            targetForm = form;
+
+            const message = form.getAttribute('data-message') || "Are you sure?";
+            document.getElementById("confirmModalMessage").textContent = message;
+
+            // Show modal
+            const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            confirmModal.show();
+
+            // Handle proceed button
+            document.getElementById("confirmProceedBtn").onclick = function () {
+                confirmModal.hide();
+                targetForm.submit(); // submit the stored form
+            };
         });
     });
 });
+
+
 
 // Function to fade out and remove an alert.
 // If the success alert is on the page, wait 3 seconds,
