@@ -48,8 +48,10 @@ public class BookingController {
     @GetMapping("/adminDashboard/manageBookings")
     public String displayBookings(@RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(required = false) SearchField searchField,
                                   @RequestParam(required = false) String searchQuery,
                                   Model model) {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
@@ -59,7 +61,22 @@ public class BookingController {
         Pageable pageable = PageRequest.of(page, size,Sort.by("bookingDate").descending());
         Page<BookingDto> bookingsPage;
 
-        bookingsPage = bookingService.getAllBookings(pageable);
+        if (searchField == SearchField.EVENT_NAME) {
+            bookingsPage = bookingService.getAllBookingsByEventName(searchQuery, pageable);
+        } else if (searchField == SearchField.BOOKING_ID) {
+            Long bookingId = parseLongOrNull(searchQuery);
+            if (bookingId == null) {
+                bookingsPage = bookingService.getAllBookings(pageable);
+            } else {
+                bookingsPage = bookingService.getBookingById(bookingId, pageable);
+            }
+        } else if (searchField == SearchField.CUSTOMER_EMAIL) {
+            bookingsPage = bookingService.getAllBookingsByEmail(searchQuery, pageable);
+        } else if (searchField == SearchField.VENUE_NAME) {
+            bookingsPage = bookingService.getAllBookingsByVenueName(searchQuery, pageable);
+        } else {
+            bookingsPage = bookingService.getAllBookings(pageable);
+        }
 
         List<BookingDto> bookingsList = new ArrayList<>(bookingsPage.getContent());
         model.addAttribute("bookingsList", bookingsList);
@@ -242,6 +259,15 @@ public class BookingController {
         model.addAttribute("tab", tab);
 
         return "myOrders";
+    }
+
+    private Long parseLongOrNull(String s) {
+        if (s == null) return null;
+        try {
+            return Long.valueOf(s.trim());
+        }  catch (NumberFormatException e) {
+            return null;
+        }
     }
 
 }

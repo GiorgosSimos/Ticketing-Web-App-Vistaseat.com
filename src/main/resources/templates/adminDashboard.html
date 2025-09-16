@@ -108,14 +108,14 @@
             <div class="tab-content" id="bookings" style="display:none;">
                 <table>
                     <thead>
-                    <tr>
-                        <th>Event Name</th>
+                    <tr class="text-nowrap">
+                        <th>Event</th>
                         <th>Venue</th>
-                        <th>Event Date</th>
-                        <th>Email</th>
+                        <th>Date</th>
+                        <th>Customer</th>
                         <th>Booked On</th>
                         <th>Tickets</th>
-                        <th>Total Price (€)</th>
+                        <th>Amount (€)</th>
                         <th>Status</th>
                     </tr>
                     </thead>
@@ -124,7 +124,10 @@
                         <td th:text="${booking.eventName}"></td>
                         <td th:text="${booking.eventVenueName}"></td>
                         <td th:text="${#temporals.format(booking.occurrenceDate, 'dd-MM-yyyy - h:mm a')}">13-09-2025 • 1:20 PM</td>
-                        <td th:text="${booking.email}"></td>
+                        <td>
+                            <span th:text="${booking.firstName + ' ' + booking.lastName}"></span><br>
+                            <span th:text="${booking.email}"></span>
+                        </td>
                         <td th:text="${#temporals.format(booking.bookingDate, 'dd-MM-yyyy - h:mm a')}">13-09-2025 • 1:20 PM</td>
                         <td th:text="${booking.numberOfTickets}"></td>
                         <td th:text="${booking.totalAmount}"></td>

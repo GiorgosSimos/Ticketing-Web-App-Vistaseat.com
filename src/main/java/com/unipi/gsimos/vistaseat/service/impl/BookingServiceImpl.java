@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -236,6 +237,47 @@ public class BookingServiceImpl implements BookingService {
         int rows = bookingRepository.expireOlderThan(LocalDateTime.now());
         stopWatch.stop();
         log.info("Expired {} bookings (took {} ms)", rows, stopWatch.getTotalTimeMillis());
+    }
+
+    @Override
+    public Page<BookingDto> getAllBookingsByEventName(String eventName, Pageable pageable) {
+
+        Page<Booking> bookings = bookingRepository
+                .findByEventOccurrence_Event_NameContainingIgnoreCase(eventName, pageable);
+
+        List<BookingDto> bookingDtos = bookings.getContent().stream().map(BookingMapper::toDto).toList();
+
+        return new PageImpl<>(bookingDtos, pageable, bookings.getTotalElements());
+    }
+
+    @Override
+    public Page<BookingDto> getAllBookingsByEmail(String email, Pageable pageable) {
+
+        Page<Booking> bookings = bookingRepository.findByEmailContainingIgnoreCase(email, pageable);
+        List<BookingDto> bookingDtos = bookings.getContent().stream().map(BookingMapper::toDto).toList();
+
+        return new PageImpl<>(bookingDtos, pageable, bookings.getTotalElements());
+    }
+
+    @Override
+    public Page<BookingDto> getAllBookingsByVenueName(String venueName, Pageable pageable) {
+
+        Page<Booking> bookings = bookingRepository
+                .findByEventOccurrence_Event_Venue_NameContainingIgnoreCase(venueName, pageable);
+
+        List<BookingDto>  bookingDtos = bookings.getContent().stream().map(BookingMapper::toDto).toList();
+
+        return new PageImpl<>(bookingDtos, pageable, bookings.getTotalElements());
+    }
+
+    @Override
+    public Page<BookingDto> getBookingById(Long bookingId, Pageable pageable) {
+
+        Page<Booking> bookings = bookingRepository.findById(bookingId, pageable);
+
+        List<BookingDto> bookingDtos = bookings.getContent().stream().map(BookingMapper::toDto).toList();
+
+        return new PageImpl<>(bookingDtos, pageable, bookings.getTotalElements());
     }
 
     @Override

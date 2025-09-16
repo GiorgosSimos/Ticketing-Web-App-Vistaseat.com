@@ -31,4 +31,13 @@ public interface BookingService {
 
     Page<BookingDto> getAllBookings(Pageable pageable);
 
+    Page<BookingDto> getAllBookingsByEventName(String eventName, Pageable pageable);
+
+    Page<BookingDto> getAllBookingsByEmail(String email, Pageable pageable);
+
+    Page<BookingDto> getAllBookingsByVenueName(String venueName, Pageable pageable);
+
+    // Returns one row. Used Page for UI uniformity
+    Page<BookingDto> getBookingById(Long bookingId, Pageable pageable);
+
 }

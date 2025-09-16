@@ -497,3 +497,20 @@ th i.fa-solid {
     margin-left:  auto;
 }
 
+.search-bookings-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3rem;
+}
+
+.search-bookings-field {
+    display: flex;
+    flex: 0 1 35%;
+}
+
+.search-criteria-field {
+    display: flex;
+    flex: 0 1 15%;
+}
+

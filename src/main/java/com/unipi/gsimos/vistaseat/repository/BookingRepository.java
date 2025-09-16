@@ -23,6 +23,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Total number of bookings across all occurrences scheduled in a given venue
     Long countByEventOccurrence_Event_Venue_Id(Long eventVenueId);
 
+    // List of bookings across all occurrences of a given event name
+    Page<Booking> findByEventOccurrence_Event_NameContainingIgnoreCase(String eventName, Pageable pageable);
+
+    Page<Booking> findByEmailContainingIgnoreCase(String email, Pageable pageable);
+
+    Page<Booking> findByEventOccurrence_Event_Venue_NameContainingIgnoreCase(String eventVenueName, Pageable pageable);
+
+    Page<Booking> findById(Long bookingId, Pageable pageable);
+
     long countByEventOccurrence_Event_Venue_IdAndEventOccurrence_EventDateAfter(
             Long venueId, LocalDateTime windowStart);
 

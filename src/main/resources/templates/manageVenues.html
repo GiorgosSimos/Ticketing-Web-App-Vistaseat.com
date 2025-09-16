@@ -78,7 +78,6 @@
                                 <td th:text="${venue.capacity}">75500</td>
                                 <td  th:text="${venue.eventCount}">10</td>
                                 <td class="text-nowrap">
-                                    <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
                                     <!-- Action Button: View Events held in this Venue -->
                                     <form th:action="@{'/adminDashboard/manageVenues/eventsForVenue/' + ${venue.id}}"
                                           method="get"
