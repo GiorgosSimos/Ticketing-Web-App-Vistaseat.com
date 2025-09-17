@@ -281,6 +281,21 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public Page<BookingDto> getBookingsByEventDateRange(LocalDate from, LocalDate to, Pageable pageable) {
+
+        boolean isDateFilterFilled = from != null && to != null;
+
+        LocalDateTime fromDate = isDateFilterFilled ? from.atStartOfDay() : null;
+        LocalDateTime toDate = isDateFilterFilled ? to.plusDays(1).atStartOfDay().minusNanos(1) : null;
+
+        Page<Booking> bookings = bookingRepository.findBookingsByEventDateRange(fromDate, toDate, pageable);
+
+        List<BookingDto> bookingDtos = bookings.getContent().stream().map(BookingMapper::toDto).toList();
+
+        return new PageImpl<>(bookingDtos, pageable, bookings.getTotalElements());
+    }
+
+    @Override
     @Transactional
     public void deleteBooking(Long id) {
         Booking booking = bookingRepository.findById(id)

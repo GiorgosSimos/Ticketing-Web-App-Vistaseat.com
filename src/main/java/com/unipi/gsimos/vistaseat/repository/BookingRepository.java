@@ -70,5 +70,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 """)
     int expireOlderThan(LocalDateTime now);
 
+    @Query("""
+       SELECT b
+       FROM Booking b
+       JOIN b.eventOccurrence eo
+       WHERE eo.eventDate BETWEEN :from AND :to
+       """)
+    Page<Booking> findBookingsByEventDateRange(@Param("from") LocalDateTime from,
+                                               @Param("to") LocalDateTime to,
+                                               Pageable pageable);
 
 }

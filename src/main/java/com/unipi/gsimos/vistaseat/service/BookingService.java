@@ -7,6 +7,7 @@ import com.unipi.gsimos.vistaseat.dto.PendingBookingDto;
 import com.unipi.gsimos.vistaseat.model.PaymentMethods;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,5 +40,7 @@ public interface BookingService {
 
     // Returns one row. Used Page for UI uniformity
     Page<BookingDto> getBookingById(Long bookingId, Pageable pageable);
+
+    Page<BookingDto> getBookingsByEventDateRange(@Param("from") LocalDate from, @Param("to") LocalDate to, Pageable pageable);
 
 }

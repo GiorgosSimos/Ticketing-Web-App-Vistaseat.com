@@ -497,20 +497,31 @@ th i.fa-solid {
     margin-left:  auto;
 }
 
+.advanced-search-container {
+    display: flex;
+    gap: 3rem;
+}
+
 .search-bookings-bar {
     display: flex;
-    justify-content: space-between;
+    flex: 1.2;
     align-items: center;
     gap: 3rem;
 }
 
-.search-bookings-field {
+.search-bookings-input-field {
     display: flex;
-    flex: 0 1 35%;
+    flex: 0 1 60%;
 }
 
 .search-criteria-field {
     display: flex;
-    flex: 0 1 15%;
+    flex: 0 1 auto;
+}
+
+.bookings-range-picker {
+    display: flex;
+    flex: 1;
+    justify-content: space-evenly;
 }
 

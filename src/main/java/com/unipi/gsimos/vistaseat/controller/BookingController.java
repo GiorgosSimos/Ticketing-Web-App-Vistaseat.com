@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,9 @@ public class BookingController {
                                   @RequestParam(defaultValue = "10") int size,
                                   @RequestParam(required = false) SearchField searchField,
                                   @RequestParam(required = false) String searchQuery,
+                                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                                  @RequestParam(required = false)
+                                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
                                   Model model) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -74,6 +79,8 @@ public class BookingController {
             bookingsPage = bookingService.getAllBookingsByEmail(searchQuery, pageable);
         } else if (searchField == SearchField.VENUE_NAME) {
             bookingsPage = bookingService.getAllBookingsByVenueName(searchQuery, pageable);
+        } else if (from != null && to != null) {
+            bookingsPage = bookingService.getBookingsByEventDateRange(from, to, pageable);
         } else {
             bookingsPage = bookingService.getAllBookings(pageable);
         }
@@ -84,6 +91,10 @@ public class BookingController {
         // Paging controls
         model.addAttribute("currentPage", bookingsPage.getNumber() + 1);
         model.addAttribute("totalPages", bookingsPage.getTotalPages());
+
+        // Date Picker parameters
+        model.addAttribute("from", from);
+        model.addAttribute("to", to);
 
         return "manageBookings";
     }
