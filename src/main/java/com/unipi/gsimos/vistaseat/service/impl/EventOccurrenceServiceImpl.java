@@ -121,6 +121,15 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
     }
 
     @Override
+    public List<EventOccurrenceCardDto> getOccurrencesByEventId(Long eventId) {
+
+        List<EventOccurrence> occurrences = eventOccurrenceRepository.findAllByEventId(eventId);
+
+        return occurrences.stream().map(EventOccurrenceCardDto::from).toList();
+
+    }
+
+    @Override
     public List<EventOccurrenceCardDto> getUpcomingOccurrencesByEventIdAndDateRange(Long eventId,
                                                                                     LocalDate from,
                                                                                     LocalDate to) {

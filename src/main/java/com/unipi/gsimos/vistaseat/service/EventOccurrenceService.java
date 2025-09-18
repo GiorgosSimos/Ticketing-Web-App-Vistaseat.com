@@ -28,6 +28,8 @@ public interface EventOccurrenceService {
 
     long sumBookingCounts(List<EventOccurrenceDto> occurrencesList);
 
+    List<EventOccurrenceCardDto> getOccurrencesByEventId(Long eventId);
+
     // Returns all the occurrences of a specific event within a certain date range
     List<EventOccurrenceCardDto> getUpcomingOccurrencesByEventIdAndDateRange(Long eventId,
                                                                      @Nullable LocalDate from,

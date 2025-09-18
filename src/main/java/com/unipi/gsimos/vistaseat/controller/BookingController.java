@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.mapper.UserMapper;
 import com.unipi.gsimos.vistaseat.model.*;
 import com.unipi.gsimos.vistaseat.repository.*;
 import com.unipi.gsimos.vistaseat.service.BookingService;
+import com.unipi.gsimos.vistaseat.service.EventOccurrenceService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,7 @@ public class BookingController {
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
     private final UserRepository userRepository;
+    private final EventOccurrenceService eventOccurrenceService;
 
     @GetMapping("/adminDashboard/manageBookings")
     public String displayBookings(@RequestParam(defaultValue = "0") int page,
@@ -105,8 +107,40 @@ public class BookingController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking with id: " + bookingId + " not found."));
+        BookingDto bookingDto = BookingMapper.toDto(booking);
+
+        EventOccurrence occurrence = eventOccurrenceRepository.findById(booking.getEventOccurrence().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Occurrence not found with id: "
+                        + booking.getEventOccurrence().getId()));
+
+        Event event = booking.getEventOccurrence().getEvent();
+
+        CategoriesEventCardDto eventCardDto = CategoriesEventCardDto.from(event);
+
+        List<EventOccurrenceCardDto> occurrenceCards = eventOccurrenceService.getOccurrencesByEventId(event.getId());
+
+        Payment payment = paymentRepository.findByBookingIdAndStatus(bookingId, PaymentStatus.COMPLETED);
+        PaymentDto paymentDto = payment != null ? paymentMapper.toDto(payment) : null;
+        Long paymentId = paymentDto != null ? paymentDto.getId() : null;
+        PaymentMethods paymentMethod = paymentDto != null ? paymentDto.getPaymentMethod() : null;
+        LocalDateTime paymentDate = paymentDto != null ? paymentDto.getPaymentDateTime() : null;
+
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("booking", bookingDto);
+        model.addAttribute("CONFIRMED", BookingStatus.CONFIRMED);
+        model.addAttribute("SOLD_OUT", EventOccurrenceCardDto.AvailabilityLevel.SOLD_OUT);
+        model.addAttribute("eventCard", eventCardDto);
+        model.addAttribute("CURRENT_DATETIME", LocalDateTime.now());
+        model.addAttribute("occurrenceCards", occurrenceCards);
+        model.addAttribute("occurrenceCount", occurrenceCards.size());
+        model.addAttribute("occurrenceDateTime", occurrence.getEventDate());
+        model.addAttribute("occurrenceDuration", occurrence.getDuration());
+        model.addAttribute("transactionID", paymentId);
+        model.addAttribute("paymentMethod", paymentMethod);
+        model.addAttribute("paymentDate", paymentDate);
 
         return "editBooking";
 
@@ -206,10 +240,11 @@ public class BookingController {
                         + booking.getEventOccurrence().getId()));
 
         Event event = occurrence.getEvent();
+
         CategoriesEventCardDto eventCardDto = CategoriesEventCardDto.from(event);
 
         Payment payment = paymentRepository.findByBookingIdAndStatus(bookingId, PaymentStatus.COMPLETED);
-        PaymentDto paymentDto = payment !=null ? paymentMapper.toDto(payment) : null;
+        PaymentDto paymentDto = payment != null ? paymentMapper.toDto(payment) : null;
         Long paymentId = paymentDto != null ? paymentDto.getId() : null;
         PaymentMethods paymentMethod = paymentDto != null ? paymentDto.getPaymentMethod() : null;
         LocalDateTime paymentDate = paymentDto != null ? paymentDto.getPaymentDateTime() : null;

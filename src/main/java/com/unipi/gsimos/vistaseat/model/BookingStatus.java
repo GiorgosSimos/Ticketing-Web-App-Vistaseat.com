@@ -4,5 +4,5 @@ public enum BookingStatus {
     PENDING, // Booking awaits the completion of a payment transaction.
     CONFIRMED, // Payment Transaction is complete. Booking is active.
     CANCELLED, // Reservation expired after 15-minute window, payment failed.
-    REFUNDED
+    REFUNDED // Event was postponed or cancelled, user chose to cancel
 }

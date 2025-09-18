@@ -1,10 +1,256 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>View Booking | Vistaseat.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/adminStyle.css}">
+    <script th:src="@{/js/admin.js}" defer></script>
 </head>
 <body>
+    <!-- Include Header-->
+    <div th:replace="fragments/adminHeader :: adminHeader(${firstName}, ${lastName})"></div>
 
+    <!-- Title Section-->
+    <section class="container py-5">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex flex-column">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-receipt-cutoff fs-2 me-2"></i>
+                    <h2 class="mb-0">Booking Details</h2>
+                </div>
+                <p>Modify booking details, change dates, or cancel reservation</p>
+            </div>
+
+            <!-- Cancel Booking Button -->
+            <button class="btn btn-danger"
+                    type="button"
+                    id="cancelBookingBtn"
+                    th:attr="disabled=${booking.status != CONFIRMED}">
+                <i class="bi bi-x-circle-fill me-1"></i>
+                Cancel Booking
+            </button>
+        </div>
+        <hr>
+    </section>
+
+    <!-- Order Details Section -->
+    <section class="container pb-5">
+        <div class="booking-details-layout">
+
+            <!-- Left side: 70% -->
+            <div class="d-flex flex-column">
+                <!-- Booking details Card -->
+                <div class="booking-details-card mb-4">
+                    <div class="d-flex py-2 two-column-span">
+                        <i class="bi bi-receipt-cutoff fs-3 me-3"></i>
+                        <h3 class="fw-semibold mt-1">Order Details</h3>
+                    </div>
+                    <label class="text-muted">Booking Number</label>
+                    <label class="text-muted">Booked On</label>
+                    <span class="fw-semibold" th:text="'No. ' + ${booking.id}">No. 34</span>
+                    <span class="fw-semibold"
+                          th:text="${#temporals.format(booking.bookingDate,
+                           'MMM d, yyyy ''at'' h:mm a')}">No. 34</span>
+
+                    <hr class="two-column-span">
+
+                    <label class="text-muted">Status</label>
+                    <label class="text-muted">Total Amount</label>
+                    <span class="booking-status-badge badge badge-rounded-pill "
+                          th:classappend="${booking.status == CONFIRMED} ? 'bg-success' : 'bg-danger'"
+                          th:text="${booking.status}">CONFIRMED</span>
+                    <span class="fw-semibold" th:text="${booking.totalAmount} + '€'">27€</span>
+                </div>
+                <!-- Event Information Card -->
+                <div class="booked-event-info-flex-style-card mb-4">
+                    <div class="d-flex">
+                        <i class="bi bi-calendar2-event-fill fs-3 me-3"></i>
+                        <h3 class="fw-semibold mt-1">Event Information Details</h3>
+                    </div>
+
+                    <article class="booked-event-information-card">
+                        <!-- 30% – Event image -->
+                        <div class="booked-event-information-card-image">
+                            <img th:src="@{${eventCard.eventImageURL}}" alt="event_image">
+                        </div>
+                        <!-- 70% – Event info -->
+                        <div class="booked-event-information-card-body">
+                            <div class="event-type two-column-span"
+                                 th:text="${eventCard.eventType}">CINEMA</div>
+                            <h2 class="event-title two-column-span"
+                                th:text="${booking.eventName}">Nuovo Cinema Paradiso</h2>
+                            <p class="event-description two-column-span"
+                               th:text="${eventCard.eventDescription}">Event Description</p>
+
+                            <div class="event-meta">
+                                <span class="meta-label">
+                                    <i class="bi bi-geo-fill"></i>
+                                    Venue:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="${eventCard.eventVenueName}">Cinema Open Air - Starlit Sky
+                                </span>
+
+                                <span class="meta-label">
+                                    <i class="bi bi-calendar-week"></i>
+                                    Date:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="${#temporals.format(occurrenceDateTime,
+                                      'MMM d, yyyy ''at'' h:mm a')}">Aug 3, 2025 at 1:15PM</span>
+
+                                <span class="meta-label">
+                                    <i class="bi bi-hourglass"></i>
+                                    Duration:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="|${occurrenceDuration / 60}h ${occurrenceDuration % 60}m|">2h 53m</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Change to Different Showtime -->
+                <div class="available-occurrences-container">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-calendar fs-2 me-2"></i>
+                        <h2 class="mb-0">Change to Different Showtime</h2>
+                    </div>
+                    <!-- No occurrences exist -->
+                    <div th:if="${occurrenceCount == 0}"
+                         class="empty-state d-flex flex-column align-items-center text-center">
+                        <i class="bi bi-calendar3 empty-icon fs-2 mb-3"></i>
+                        <h3 class="fw-semibold mb-1">Sorry, no occurrences found!</h3>
+                    </div>
+                    <!-- Other occurrences -->
+                    <div th:each="occurrenceCard :${occurrenceCards}"
+                         class="text-decoration-none mb-4">
+                        <div class="book-occurrence-card">
+                            <div class="availability-ribbon"
+                                 th:classappend="${occurrenceCard.availabilityLevel.color}"></div>
+                            <div class="occurrence-details-grid col-lg-6 col-md-4 col-ms-2 mx-2">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-calendar-event me-2"></i>
+                                    <span th:text="${#temporals.format(occurrenceCard.dateTime, 'EEEE, MMM d, yyyy')}"
+                                          class="fw-semibold mb-0">Wednesday, Dec 23, 2024</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-clock me-2"></i>
+                                    <span th:text="${#temporals.format(occurrenceCard.dateTime, 'h:mm a')}"
+                                          class="fw-semibold mb-0">7:30 PM</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-0 two-column-span">
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    <span th:text="${occurrenceCard.venueName}" class="fw-semibold mb-0">Athens Open Theatre</span>
+                                </div>
+                                <div class="d-flex align-items-center text-muted ms-4 mb-2 two-column-span">
+                        <span th:text="${occurrenceCard.venueStreet} + ' ' + ${occurrenceCard.venueNumber} +
+                                        ' ' + ${occurrenceCard.venueCity} + ' ' + ${occurrenceCard.venueZipcode()}"
+                              class="mb-0">Aiolou 69, Athens 64100</span>
+                                </div>
+                            </div>
+                            <div class="availability-badge">
+                    <span class="badge rounded-pill"
+                          th:text="${occurrenceCard.availabilityLevel.label}"
+                          th:classappend="${occurrenceCard.availabilityLevel.badge}">
+                        Available
+                    </span>
+                            </div>
+                            <div class="booking-price">
+                                <p th:text="${occurrenceCard.price} + '€'" class="mb-0 fw-bold">From 89€</p>
+                                <p class="text-muted">per ticket</p>
+                            </div>
+                            <div class="cta-tickets">
+                                <button class="btn btn-lg btn-dark"
+                                        th:data-event="${booking.eventName}"
+                                        th:data-datetime="${#temporals.format(occurrenceCard.dateTime,
+                                              'EEEE, MMM d, yyyy • h:mm a')}"
+                                        th:data-venue="${occurrenceCard.venueName}"
+                                        th:data-price="${occurrenceCard.price}"
+                                        th:data-occ-id="${occurrenceCard.occurrenceId}"
+                                        data-open="tickets"
+                                        th:disabled="${occurrenceCard.availabilityLevel == SOLD_OUT}">
+                                    <i class="bi bi-ticket-perforated me-2"></i>
+                                    Tickets
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right side: 30% -->
+            <div class="d-flex flex-column">
+                <!-- Payment Details -->
+                <div class="booking-details-card mb-4">
+                    <div class="d-flex py-2 two-column-span">
+                        <i class="bi bi-credit-card-fill fs-3 me-3"></i>
+                        <h3 class="fw-semibold">Payment Details</h3>
+                    </div>
+                    <label th:text="'Subtotal (' + ${booking.numberOfTickets} + ' tickect(s))'">
+                        Number of tickets
+                    </label>
+                    <span class="d-flex justify-content-end fw-semibold"
+                          th:text="${booking.ticketsPrice} + '€'">200€</span>
+
+                    <label>Service Fee</label>
+                    <span class="d-flex justify-content-end fw-semibold"
+                          th:text="${booking.serviceFee} + '€'">200€</span>
+
+                    <hr class="two-column-span">
+
+                    <label class="text-muted">Total Amount</label>
+                    <span class="d-flex justify-content-end fw-semibold"
+                          th:text="${booking.totalAmount} + '€'">27€</span>
+
+                    <hr class="two-column-span">
+
+                    <p class="text-muted my-2 two-column-span"
+                       th:text="${transactionID != null} ? 'Order paid on: ' + ${#temporals.format(paymentDate,
+                    'MMM d, yyyy ''at'' h:mm:ss a')} + ' with ' + ${paymentMethod} : 'Incomplete Transaction'">
+                        Payment Method
+                    </p>
+                    <p class="text-muted two-column-span"
+                       th:text="${transactionID != null} ?'Transaction ID: ' + ${transactionID} : 'Transaction ID: -'">Transaction ID</p>
+                </div>
+                <!-- Contact Info Card-->
+                <div class="contact-info-card mb-4">
+                    <div class="d-flex">
+                        <i class="bi bi-person-rolodex fs-3 me-3"></i>
+                        <h3 class="fw-semibold mt-1">Contact Information</h3>
+                    </div>
+                    <div class="d-flex">
+                        <i class="bi bi-person-fill fs-6 me-2"></i>
+                        <span class="fw-semibold" th:text="${booking.firstName} + ' ' +${booking.lastName}">
+                            Full Name</span>
+                    </div>
+                    <div class="d-flex">
+                        <i class="bi bi-envelope-at-fill fs-6 me-2"></i>
+                        <span class="fw-semibold" th:text="${booking.email}">Email</span>
+                    </div>
+                    <div class="d-flex">
+                        <i class="bi bi-telephone-fill fs-6 me-2"></i>
+                        <span class="fw-semibold" th:text="${booking.phoneNumber}">Phone</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+
+
+
+    <!-- Bootstrap modal for confirm dialogues-->
+    <div th:replace="~{fragments/confirmModal :: confirmModalFragment}"></div>
+
+    <!-- Include Footer-->
+    <div th:replace="fragments/adminFooter :: footer"></div>
 </body>
 </html>
