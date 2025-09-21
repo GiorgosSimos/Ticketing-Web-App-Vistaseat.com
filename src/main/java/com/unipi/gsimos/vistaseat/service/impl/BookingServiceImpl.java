@@ -328,6 +328,39 @@ public class BookingServiceImpl implements BookingService {
 
     }
 
+    // Actually works as cancel booking-tickets and refund payment
+    @Override
+    @Transactional
+    public void cancelBookingAndRefund(Long bookingId) {
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking with id: " + bookingId + " not found."));
+
+        // Check to prevent cancelling an already cancelled booking
+        if (booking.getStatus().equals(BookingStatus.CANCELLED) ||booking.getStatus().equals(BookingStatus.REFUNDED)) {
+            throw new IllegalArgumentException("This booking is already cancelled");
+        }
+        // Update current booking
+        booking.setStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+
+        // Cancel tickets associated with the booking
+        List<Ticket> tickets = booking.getTickets();
+        tickets.forEach(ticket -> ticket.setStatus(TicketStatus.CANCELLED));
+
+        // Create a new refund payment
+        Payment previousPayment = paymentRepository.findByBookingId(bookingId);
+
+        Payment refund = new Payment();
+        refund.setPaymentDate(LocalDateTime.now());
+        refund.setAmount(booking.getTotalAmount());
+        refund.setPaymentMethod(previousPayment.getPaymentMethod());
+        refund.setStatus(PaymentStatus.REFUNDED);
+        refund.setBooking(booking);
+        paymentRepository.save(refund);
+
+    }
+
     @Override
     @Transactional
     public void deleteBooking(Long id) {

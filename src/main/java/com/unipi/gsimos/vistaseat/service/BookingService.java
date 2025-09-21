@@ -24,6 +24,8 @@ public interface BookingService {
 
     void rescheduleBooking (Long bookingId, Long newOccurrenceId);
 
+    void cancelBookingAndRefund (Long bookingId);
+
     Long countBookingsByVenueAndDateBetween(Long venueId, LocalDate windowStart, LocalDate windowEnd);
 
     Page<OrderCardDto> getActiveOrdersByUserId(Long userId, Pageable pageable);

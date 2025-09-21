@@ -131,6 +131,7 @@ public class BookingController {
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("booking", bookingDto);
         model.addAttribute("CONFIRMED", BookingStatus.CONFIRMED);
+        model.addAttribute("CANCELLED", BookingStatus.CANCELLED);
         model.addAttribute("SOLD_OUT", EventOccurrenceCardDto.AvailabilityLevel.SOLD_OUT);
         model.addAttribute("eventCard", eventCardDto);
         model.addAttribute("CURRENT_DATETIME", LocalDateTime.now());
@@ -158,6 +159,21 @@ public class BookingController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "An  error occurred while rescheduling the booking.");
             return "redirect:/adminDashboard/manageBookings/viewBooking/";
+        }
+
+    }
+
+    @PostMapping("/adminDashboard/manageBookings/viewBooking/{bookingId}/cancel-refund")
+    public String cancelBookingAndRefund(@PathVariable Long bookingId,
+                                         RedirectAttributes redirectAttributes) {
+
+        try {
+            bookingService.cancelBookingAndRefund(bookingId);
+            redirectAttributes.addFlashAttribute("message", "Booking successfully cancelled.");
+            return "redirect:/adminDashboard/manageBookings/viewBooking/"+bookingId+"?cancelled=success";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An  error occurred while canceling the booking.");
+            return "redirect:/adminDashboard/manageBookings/viewBooking/"+bookingId;
         }
 
     }
