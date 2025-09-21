@@ -709,10 +709,10 @@ th i.fa-solid {
     text-align: center;
 }
 
-.cta-tickets {
-    display: flex;
-    flex: 1 1 auto;
-    justify-content: center;
-    align-items: center;
-    min-width: 8rem;
+.is-disabled .book-occurrence-card {
+    opacity: 0.5;
+}
+
+.is-disabled {
+    cursor: not-allowed;
 }

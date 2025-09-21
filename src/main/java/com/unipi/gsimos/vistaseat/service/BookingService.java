@@ -22,6 +22,8 @@ public interface BookingService {
 
     void confirmBooking(Long bookingId, PaymentMethods paymentMethod);
 
+    void rescheduleBooking (Long bookingId, Long newOccurrenceId);
+
     Long countBookingsByVenueAndDateBetween(Long venueId, LocalDate windowStart, LocalDate windowEnd);
 
     Page<OrderCardDto> getActiveOrdersByUserId(Long userId, Pageable pageable);

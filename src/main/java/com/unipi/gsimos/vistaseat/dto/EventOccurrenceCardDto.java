@@ -14,6 +14,9 @@ public record EventOccurrenceCardDto(
         int venueNumber,
         String venueCity,
         int venueZipcode,
+        boolean soldOut,
+        int initialSeats,
+        int availableSeats,
         AvailabilityLevel availabilityLevel) {
 
     public static float getAvailability(EventOccurrence occurrence) {
@@ -64,6 +67,9 @@ public record EventOccurrenceCardDto(
                 eventOccurrence.getEvent().getVenue().getNumber(),
                 eventOccurrence.getEvent().getVenue().getCity(),
                 eventOccurrence.getEvent().getVenue().getZipcode(),
+                eventOccurrence.isSoldOut(),
+                eventOccurrence.getAvailableSeats(),
+                eventOccurrence.getRemainingSeats(),
                 level(eventOccurrence)
         );
     }

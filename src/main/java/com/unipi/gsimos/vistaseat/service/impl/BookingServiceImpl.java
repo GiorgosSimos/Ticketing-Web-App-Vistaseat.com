@@ -30,6 +30,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -293,6 +294,38 @@ public class BookingServiceImpl implements BookingService {
         List<BookingDto> bookingDtos = bookings.getContent().stream().map(BookingMapper::toDto).toList();
 
         return new PageImpl<>(bookingDtos, pageable, bookings.getTotalElements());
+    }
+
+    @Override
+    @Transactional
+    public void rescheduleBooking(Long bookingId, Long newOccurrenceId) {
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking with id: " + bookingId + " not found."));
+        int bookedTickets = booking.getNumberOfTickets();
+
+        EventOccurrence bookedOccurrence = booking.getEventOccurrence();
+
+        EventOccurrence newOccurrence = eventOccurrenceRepository.findById(newOccurrenceId)
+                .orElseThrow(()-> new EntityNotFoundException("Event occurrence with id: " + newOccurrenceId + " not found"));
+
+        // Check to prevent reschedules to past occurrences
+        if (newOccurrence.getEventDate().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Cannot reschedule this booking to a past event");
+        }
+
+        // Check to prevent reschedules to the current occurrence
+        if (Objects.equals(bookedOccurrence.getId(), newOccurrence.getId())) {
+            throw new IllegalArgumentException("Selected occurrence is the same as the current one.");
+        }
+        // Check to prevent reschedules to an occurrence with not enough seats remaining
+        if (bookedTickets > newOccurrence.getRemainingSeats()) {
+            throw new IllegalArgumentException("Not enough seats remaining for booking to be rescheduled");
+        }
+
+        booking.setEventOccurrence(newOccurrence);
+        bookingRepository.save(booking);
+
     }
 
     @Override

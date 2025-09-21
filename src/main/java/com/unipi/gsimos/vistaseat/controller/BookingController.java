@@ -146,6 +146,22 @@ public class BookingController {
 
     }
 
+    @PostMapping("/adminDashboard/manageBookings/viewBooking/{bookingId}/reschedule")
+    public String rescheduleBooking(@PathVariable Long bookingId,
+                                    @RequestParam("newOccurrenceId") Long newOccurrenceId,
+                                    RedirectAttributes redirectAttributes) {
+
+        try {
+            bookingService.rescheduleBooking(bookingId, newOccurrenceId);
+            redirectAttributes.addFlashAttribute("message", "Booking successfully rescheduled.");
+            return "redirect:/adminDashboard/manageBookings/viewBooking/"+bookingId+"?rescheduled=success";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An  error occurred while rescheduling the booking.");
+            return "redirect:/adminDashboard/manageBookings/viewBooking/";
+        }
+
+    }
+
     @PostMapping("/adminDashboard/manageBookings/delete/{bookingId}")
     public String deleteBooking(@PathVariable Long bookingId,
                                 RedirectAttributes redirectAttributes) {
