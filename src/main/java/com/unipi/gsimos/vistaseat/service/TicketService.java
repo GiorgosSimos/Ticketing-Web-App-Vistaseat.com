@@ -8,6 +8,8 @@ public interface TicketService {
 
     List<Ticket> createTickets(Long bookingId);
 
+    void cancelTickets(Long bookingId);
+
     byte[] generatePdfTicket(Long ticketId);
 
     byte[] generatePdfTicketsForBooking(Long bookingId);

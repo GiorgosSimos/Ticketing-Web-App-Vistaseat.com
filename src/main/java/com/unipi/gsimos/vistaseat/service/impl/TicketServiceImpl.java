@@ -7,6 +7,7 @@ import com.unipi.gsimos.vistaseat.repository.TicketRepository;
 import com.unipi.gsimos.vistaseat.service.TicketService;
 import com.unipi.gsimos.vistaseat.utilities.TicketNumberGenerator;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -178,6 +179,18 @@ public class TicketServiceImpl implements TicketService {
         } catch (Exception e) {
             throw new RuntimeException("Multi-ticket PDF generation failed", e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void cancelTickets(Long bookingId) {
+
+        Booking cancelledAndRefundedBooking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking with id: " + bookingId + " not found"));
+
+        List<Ticket> tickets = cancelledAndRefundedBooking.getTickets();
+        tickets.forEach(ticket -> ticket.setStatus(TicketStatus.CANCELLED));
+
     }
 
     /**

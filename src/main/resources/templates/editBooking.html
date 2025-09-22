@@ -41,10 +41,11 @@
                             "
                     th:with="
                              isPast=${booking.occurrenceDate.isBefore(CURRENT_DATETIME)},
-                             alreadyCancelled=${booking.status == CANCELLED}
+                             alreadyCancelled=${booking.status == CANCELLED},
+                             refunded=${booking.status == REFUNDED}
                             "
-                    th:disabled="${isPast or alreadyCancelled}"
-                    th:classappend="${(isPast or alreadyCancelled)} ? ' is-disabled' : ''">
+                    th:disabled="${isPast or alreadyCancelled or refunded}"
+                    th:classappend="${(isPast or alreadyCancelled or refunded)} ? ' is-disabled' : ''">
                 <i class="bi bi-x-circle-fill me-1"></i>
                 Cancel Booking
             </button>
@@ -152,12 +153,14 @@
                                     "
                                 th:with="
                                         isPast=${occurrenceCard.dateTime.isBefore(CURRENT_DATETIME)},
-                                        isCurrent=${occurrenceCard.occurrenceId == booking.occurrenceId ? true : false},
+                                        isCurrent=${occurrenceCard.occurrenceId == booking.occurrenceId},
                                         isSoldOut=${occurrenceCard.soldOut},
+                                        isCancelled=${booking.status == CANCELLED},
+                                        refunded=${booking.status == REFUNDED},
                                         notEnoughTickets=${booking.numberOfTickets > occurrenceCard.availableSeats}
                                         "
-                                th:disabled="${isPast or isCurrent or isSoldOut or notEnoughTickets}"
-                                th:classappend="${(isPast or isCurrent)} ? ' is-disabled' : ''">
+                                th:disabled="${isPast or isCurrent or isSoldOut or isCancelled or refunded or notEnoughTickets}"
+                                th:classappend="${(isPast or isCurrent or isSoldOut or isCancelled or refunded or notEnoughTickets)} ? ' is-disabled' : ''">
                             <div class="book-occurrence-card">
                                 <div class="availability-ribbon"
                                      th:classappend="${occurrenceCard.availabilityLevel.color}">
@@ -244,7 +247,23 @@
                         Payment Method
                     </p>
                     <p class="text-muted two-column-span"
-                       th:text="${transactionID != null} ?'Transaction ID: ' + ${transactionID} : 'Transaction ID: -'">Transaction ID</p>
+                       th:text="${transactionID != null} ?'Transaction ID: ' + ${transactionID} : 'Transaction ID: -'">
+                        Transaction ID
+                    </p>
+                    <!-- In case of refund -->
+                    <div th:if="${booking.status == REFUNDED}"
+                         class="two-column-span">
+                        <hr>
+                        <p class="fw-semibold"
+                                th:text="${refundId != null} ? 'Amount of ' + ${refundedAmount} + '€ refunded on: '
+                                + ${#temporals.format(refundDate, 'MMM d, yyyy ''at'' h:mm:ss a')} : 'Incomplete Transaction'">
+                            Refund Details
+                        </p>
+                        <p class="fw-semibold"
+                           th:text="${refundId != null} ?'Refund Transaction ID: ' + ${refundId} : 'Refund Transaction ID: -'">
+                            Refund Transaction ID: -
+                        </p>
+                    </div>
                 </div>
                 <!-- Contact Info Card-->
                 <div class="contact-info-card mb-4">
@@ -389,7 +408,7 @@
                     const amount = btn.getAttribute('data-total-amount');
 
                     numberOfSeats.textContent = 'Number of booked seats: '+seats || '—';
-                    totalAmount.textContent = 'Amount to be refunded ' + amount + '€' || '—';
+                    totalAmount.textContent = 'Amount to be refunded: ' + amount + '€' || '—';
 
                     modal.show();
                 });

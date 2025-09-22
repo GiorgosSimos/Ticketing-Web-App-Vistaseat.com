@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -127,11 +128,19 @@ public class BookingController {
         PaymentMethods paymentMethod = paymentDto != null ? paymentDto.getPaymentMethod() : null;
         LocalDateTime paymentDate = paymentDto != null ? paymentDto.getPaymentDateTime() : null;
 
+        // In case the booking is refunded
+        Payment refund = paymentRepository.findByBookingIdAndStatus(bookingId, PaymentStatus.REFUNDED);
+        PaymentDto refundDto = refund != null ? paymentMapper.toDto(refund) : null;
+        Long refundId = refundDto != null ? refundDto.getId() : null;
+        BigDecimal refundedAmount = refundDto != null ? refundDto.getAmount() : null;
+        LocalDateTime refundDate = refundDto != null ? refundDto.getPaymentDateTime() : null;
+
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("booking", bookingDto);
         model.addAttribute("CONFIRMED", BookingStatus.CONFIRMED);
         model.addAttribute("CANCELLED", BookingStatus.CANCELLED);
+        model.addAttribute("REFUNDED", BookingStatus.REFUNDED);
         model.addAttribute("SOLD_OUT", EventOccurrenceCardDto.AvailabilityLevel.SOLD_OUT);
         model.addAttribute("eventCard", eventCardDto);
         model.addAttribute("CURRENT_DATETIME", LocalDateTime.now());
@@ -142,6 +151,9 @@ public class BookingController {
         model.addAttribute("transactionID", paymentId);
         model.addAttribute("paymentMethod", paymentMethod);
         model.addAttribute("paymentDate", paymentDate);
+        model.addAttribute("refundId", refundId);
+        model.addAttribute("refundedAmount", refundedAmount);
+        model.addAttribute("refundDate", refundDate);
 
         return "editBooking";
 

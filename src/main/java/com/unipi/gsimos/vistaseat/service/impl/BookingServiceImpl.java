@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.repository.EventOccurrenceRepository;
 import com.unipi.gsimos.vistaseat.repository.PaymentRepository;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.BookingService;
+import com.unipi.gsimos.vistaseat.service.TicketService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -45,6 +46,7 @@ public class BookingServiceImpl implements BookingService {
     private final EventOccurrenceRepository eventOccurrenceRepository;
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
+    private final TicketService ticketService;
 
     @Override
     public Long countBookingsByVenueAndDateBetween(Long venueId, LocalDate windowStart, LocalDate windowEnd) {
@@ -309,6 +311,11 @@ public class BookingServiceImpl implements BookingService {
         EventOccurrence newOccurrence = eventOccurrenceRepository.findById(newOccurrenceId)
                 .orElseThrow(()-> new EntityNotFoundException("Event occurrence with id: " + newOccurrenceId + " not found"));
 
+        // Check to prevent rescheduling an already cancelled or refunded booking
+        if (booking.getStatus().equals(BookingStatus.CANCELLED) || booking.getStatus().equals(BookingStatus.REFUNDED)) {
+            throw new IllegalArgumentException("This booking is already cancelled");
+        }
+
         // Check to prevent reschedules to past occurrences
         if (newOccurrence.getEventDate().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Cannot reschedule this booking to a past event");
@@ -341,15 +348,14 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalArgumentException("This booking is already cancelled");
         }
         // Update current booking
-        booking.setStatus(BookingStatus.CANCELLED);
+        booking.setStatus(BookingStatus.REFUNDED);
         bookingRepository.save(booking);
 
         // Cancel tickets associated with the booking
-        List<Ticket> tickets = booking.getTickets();
-        tickets.forEach(ticket -> ticket.setStatus(TicketStatus.CANCELLED));
+        ticketService.cancelTickets(bookingId);
 
         // Create a new refund payment
-        Payment previousPayment = paymentRepository.findByBookingId(bookingId);
+        Payment previousPayment = paymentRepository.findByBookingIdAndStatus(bookingId, PaymentStatus.COMPLETED);
 
         Payment refund = new Payment();
         refund.setPaymentDate(LocalDateTime.now());
