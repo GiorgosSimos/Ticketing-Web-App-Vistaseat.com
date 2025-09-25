@@ -55,20 +55,18 @@ public class EventController {
         Pageable pageable = PageRequest.of(page, size);
         Page<EventDto> eventsPage;
 
-        if (searchQuery != null && !searchQuery.isEmpty()) {
-            eventsPage = eventService.getEventsByName(searchQuery.trim(), pageable);
+        if (searchQuery != null && !searchQuery.isEmpty() && eventType != null) {
+            eventsPage= eventService.getEventsByNameAndType(searchQuery.trim(), eventType, pageable);
+        } else if (searchQuery != null && !searchQuery.isEmpty()) {
+            eventsPage = eventService.getEventsByName(searchQuery, pageable);
         } else if (eventType != null) {
-            eventsPage = eventService.getEventsByEventType(eventType, page, size);
+            eventsPage = eventService.getEventsByEventType(eventType, pageable);
         } else {
-            eventsPage = eventService.getAllEvents(page, size);
+            eventsPage = eventService.getAllEvents(pageable);
         }
 
         List<EventDto> eventsList = new ArrayList<>(eventsPage.getContent());
         model.addAttribute("events", eventsList);
-
-        // Paging controls
-        model.addAttribute("currentPage", eventsPage.getNumber() + 1);
-        model.addAttribute("totalPages", eventsPage.getTotalPages());
 
         // Sort in descending/ascending order by event occurrence count
         if ("occurrenceCount".equals(sort)) {
@@ -83,9 +81,9 @@ public class EventController {
         model.addAttribute("sort", sort);
         model.addAttribute("sortDirection", sortDirection);
 
-        // This keeps track of the current event type filter
-        // so the right button can be highlighted or pre-selected in the UI.
-        model.addAttribute("selectEventType", eventType);
+        // Paging controls
+        model.addAttribute("currentPage", eventsPage.getNumber() + 1);
+        model.addAttribute("totalPages", eventsPage.getTotalPages());
 
         return "manageEvents";
 

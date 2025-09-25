@@ -16,7 +16,7 @@ public interface EventService {
 
     void deleteEvent(Long eventId);
 
-    Page<EventDto> getAllEvents (int page, int size);
+    Page<EventDto> getAllEvents (Pageable pageable);
 
     Page<EventDto> getEventsByName (String searchQuery, Pageable pageable);
 
@@ -24,7 +24,9 @@ public interface EventService {
 
     Page<EventDto> getEventsByVenueId(Long venueId, Pageable pageable);
 
-    Page<EventDto> getEventsByEventType (EventType eventType, int page, int size);
+    Page<EventDto> getEventsByEventType (EventType eventType, Pageable  pageable);
+
+    Page<EventDto> getEventsByNameAndType (String searchQuery, EventType eventType, Pageable pageable);
 
     List<CategoriesEventCardDto> getEvents(EventType eventType,
                                            @Nullable String eventName,

@@ -15,7 +15,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -48,9 +47,22 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventDto> getAllEvents(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Event> events = eventRepository.findAll(pageable);
+    public Page<EventDto> getEventsByVenueId(Long venueId, Pageable pageable) {
+        Page<Event> events = eventRepository.findAllByVenueId(venueId, pageable);
+        List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
+        return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
+    }
+
+    @Override
+    public Page<EventDto> getEventsByNameAndVenue(String searchQuery, Long venueId , Pageable pageable) {
+        Page<Event> events = eventRepository.findEventByNameContainingIgnoreCaseAndVenueId(searchQuery, venueId, pageable);
+        List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
+        return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
+    }
+
+    @Override
+    public Page<EventDto> getEventsByNameAndType(String searchQuery, EventType eventType, Pageable pageable) {
+        Page<Event> events = eventRepository.findEventByNameContainingIgnoreCaseAndEventType(searchQuery, eventType, pageable);
         List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
         return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
         //return events.map(eventMapper::toDto);
@@ -66,24 +78,19 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventDto> getEventsByVenueId(Long venueId, Pageable pageable) {
-        Page<Event> events = eventRepository.findAllByVenueId(venueId, pageable);
-        List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
-        return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
-    }
-
-    @Override
-    public Page<EventDto> getEventsByNameAndVenue(String searchQuery, Long venueId , Pageable pageable) {
-        Page<Event> events = eventRepository.findEventByNameContainingIgnoreCaseAndVenueId(searchQuery, venueId, pageable);
-        List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
-        return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
-    }
-
-    @Override
-    public Page<EventDto> getEventsByEventType(EventType eventType, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<EventDto> getEventsByEventType(EventType eventType, Pageable pageable) {
         Page<Event> events = eventRepository.findAllByEventType(eventType, pageable);
-        return events.map(eventMapper::toDto);
+        List<EventDto>  eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
+        return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
+        //return events.map(eventMapper::toDto);
+    }
+
+    @Override
+    public Page<EventDto> getAllEvents(Pageable pageable) {
+        Page<Event> events = eventRepository.findAll(pageable);
+        List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
+        return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
+        //return events.map(eventMapper::toDto);
     }
 
     @Override
@@ -123,6 +130,7 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findUpcomingEventsAtVenue(venueId, pattern, fromDate, toDate);
         return events.stream().map(CategoriesEventCardDto::from).toList();
     }
+
 
     @Override
     @Transactional

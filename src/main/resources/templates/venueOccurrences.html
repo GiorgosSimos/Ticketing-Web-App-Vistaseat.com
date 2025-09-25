@@ -159,7 +159,7 @@
                         >20/12/2025 20:30</td>
                         <td th:text="'€ ' + ${occurrence.price}">10 $</td>
                         <td th:text="|${occurrence.duration / 60}h ${occurrence.duration % 60}m|">2h 12m</td>
-                        <td th:text="${occurrence.availableSeats} - ${occurrence.bookingCount} + '/'
+                        <td th:text="${occurrence.availableSeats} - ${occurrence.seatsSold} + '/'
                                    + ${occurrence.availableSeats}">286/300</td>
                         <td th:text="${occurrence.bookingCount}">14</td>
                         <!-- Availability badge -->
@@ -170,7 +170,6 @@
                             </span>
                         </td>
                         <td class="text-nowrap">
-                            <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
                             <!-- TODO Action Button: Manage Bookings -->
                             <form
 
