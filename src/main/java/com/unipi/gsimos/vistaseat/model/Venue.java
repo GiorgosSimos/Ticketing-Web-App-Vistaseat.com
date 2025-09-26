@@ -50,6 +50,4 @@ public class Venue {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id", nullable = false)
     private User managedBy;
-
-    //TODO - Auditorium Entity Implementation for Venues with multiple auditoriums
 }

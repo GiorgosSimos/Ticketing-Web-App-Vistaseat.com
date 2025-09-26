@@ -102,7 +102,7 @@
                 </svg>
                 <span> Total Bookings</span>
             </div>
-            <span th:text="${totalVenueBookings}">120</span>
+            <span th:text="${venueTotalBookings}">120</span>
         </div>
         <div class="eventOccurrence-card">
             <div class="d-flex align-items-center mb-2">
@@ -112,7 +112,7 @@
                 </svg>
                 <span> Revenue From Venue</span>
             </div>
-            <span>109,500</span>
+            <span th:text="${venueTotalRevenue} + ' €'">109,500</span>
         </div>
         <hr>
     </section>
@@ -123,7 +123,7 @@
         <!-- Display Message when no occurrences are found -->
         <div th:if="${occurrenceCount == 0}"
              class="empty-state d-flex flex-column justify-content-center align-items-center text-center">
-            <i class="bi bi-calendar3 empty-icon mb-3"></i>
+            <i class="bi bi-calendar3 empty-icon fs-1 mb-3"></i>
             <h3 class="fw-semibold mb-1">No occurrences found</h3>
         </div>
 
@@ -303,6 +303,7 @@
 
                         url.searchParams.set('from', from);
                         url.searchParams.set('to',   to);
+                        url.searchParams.set('page', '0');
 
                         badge.classList.remove('d-none');
                         badge.textContent = `${from} → ${to}`;
@@ -326,6 +327,7 @@
             function clearFilter() {
                 url.searchParams.delete('from');
                 url.searchParams.delete('to');
+                url.searchParams.set('page', '0');
                 badge.classList.add('d-none');
                 clearBtn.classList.add('d-none');
             }

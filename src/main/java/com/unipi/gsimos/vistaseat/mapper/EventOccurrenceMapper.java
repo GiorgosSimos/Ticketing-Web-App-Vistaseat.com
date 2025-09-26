@@ -37,6 +37,7 @@ public class EventOccurrenceMapper {
         eventOccurrenceDto.setDuration(eventOccurrence.getDuration());
         eventOccurrenceDto.setAvailableSeats(eventOccurrence.getAvailableSeats());
         eventOccurrenceDto.setSeatsSold(eventOccurrence.getSeatsSold());
+        eventOccurrenceDto.setOccurrenceTotalRevenue(eventOccurrence.getOccurrenceRevenue());
         eventOccurrenceDto.setEventId(eventOccurrence.getEvent().getId());
         eventOccurrenceDto.setEventName(eventOccurrence.getEvent().getName());
 

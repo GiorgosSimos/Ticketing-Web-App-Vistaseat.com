@@ -39,6 +39,8 @@ public class EventOccurrenceDto {
 
     private int seatsSold;
 
+    private BigDecimal occurrenceTotalRevenue;
+
     /**
      * Availability expressed as a decimal in the range {@code 0.0 – 1.0}
      * (returns 0 when remaining seats is 0).

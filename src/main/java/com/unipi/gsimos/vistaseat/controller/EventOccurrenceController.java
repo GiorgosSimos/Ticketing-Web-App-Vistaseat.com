@@ -26,8 +26,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -68,12 +70,19 @@ public class EventOccurrenceController {
         Long numberOfOccurrences = eventOccurrenceRepository.countEventOccurrenceByEventId(eventId);
         long totalEventBookings = bookingRepository.countBookingsByEventOccurrence_Event_Id(eventId);
 
-        // TODO Calculate total event revenue
+        List<EventOccurrence> eventOccurrences = event.getOccurrences();
+        BigDecimal eventRevenue = BigDecimal.ZERO;
+        for (EventOccurrence eventOccurrence : eventOccurrences) {
+           eventRevenue = eventRevenue.add(
+                   Optional.ofNullable(eventOccurrence.getOccurrenceRevenue()).orElse(BigDecimal.ZERO)
+           );
+        }
 
         EventDto eventDto = eventMapper.toDto(event);
 
         model.addAttribute("numberOfEventOccurrences", numberOfOccurrences);
         model.addAttribute("totalEventBookings", totalEventBookings);
+        model.addAttribute("totalEventRevenue", eventRevenue);
         model.addAttribute("event", eventDto);
 
         return "manageOccurrences";

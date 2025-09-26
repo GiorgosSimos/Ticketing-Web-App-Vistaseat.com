@@ -48,6 +48,12 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "FROM Booking b WHERE b.status = :status")
     BigDecimal getTotalRevenueByStatus(@Param("status") BookingStatus status);
 
+    @Query("SELECT COALESCE(SUM(b.totalAmount), 0) " +
+            "FROM Booking b " +
+            "WHERE b.eventOccurrence.id = :occurrenceId AND b.status = :status")
+    BigDecimal getTotalRevenueByOccurrenceIdAndStatus(@Param("occurrenceId") Long occurrenceId,
+                                                      @Param("status") BookingStatus status);
+
     @Query("SELECT b FROM Booking b " +
             "JOIN b.eventOccurrence eo " +
             "WHERE b.user.id = :userId " +

@@ -28,11 +28,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 //A Web controller (@Controller) works with HTML forms (using @ModelAttribute, returns view names for Thymeleaf).
 @Controller
@@ -254,22 +252,38 @@ public class VenueController {
 
         long occurrencesCount = occurrencesPage.getTotalElements();
 
-        long totalVenueBookings = bookingService.countBookingsByVenueAndDateBetween(venueId, from, to);
+        long venueTotalBookings = bookingService.countBookingsByVenueAndDateBetween(venueId, from, to);
 
-        // TODO Calculate total venue revenue dynamically with date filter
+        // Sum revenue across ALL pages
+        BigDecimal venueRevenue = BigDecimal.ZERO;
+        int pageNum = 0;
+        Page<EventOccurrenceDto> pages;
+
+        do {
+            Pageable newPageable = PageRequest.of(pageNum, size, Sort.by("eventDate").ascending());
+            pages = eventOccurrenceService
+                    .getOccurrencesByVenueIdAndDate(venueId, from, to, newPageable);
+
+            for (EventOccurrenceDto occurrenceDto : pages.getContent()) {
+                venueRevenue = venueRevenue.add(
+                        Optional.ofNullable(occurrenceDto.getOccurrenceTotalRevenue()).orElse(BigDecimal.ZERO));
+            }
+
+            pageNum++;
+        } while (pages.hasNext());
 
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("venue", venueDto);
         model.addAttribute("occurrences", occurrencesList);
         model.addAttribute("occurrenceCount", occurrencesCount);
-        model.addAttribute("totalVenueBookings", totalVenueBookings);
+        model.addAttribute("venueTotalBookings", venueTotalBookings);
+        model.addAttribute("venueTotalRevenue", venueRevenue);
         model.addAttribute("from", from);
         model.addAttribute("to", to);
         // Paging controls
         model.addAttribute("currentPage", occurrencesPage.getNumber() + 1);
         model.addAttribute("totalPages", occurrencesPage.getTotalPages());
-
 
         return "venueOccurrences";
 

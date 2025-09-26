@@ -50,10 +50,24 @@ public class EventOccurrence {
     @OneToMany(mappedBy = "eventOccurrence", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Booking> bookings;
 
+    @Formula("""
+   (SELECT COALESCE(SUM(b.total_amount), 0)
+      FROM bookings b
+     WHERE b.event_occurrence_id = event_occurrence_id
+       AND b.status = 'CONFIRMED')
+""")
+    BigDecimal occurrenceRevenue;
+
     /**
      * Number of tickets for this occurrence, confirmed or pending to be sold.
      * <p>
      * Computed by the database via {@code @Formula}; never persisted here.
+     * We reference the physical database table bookings.
+     * {@code @Formula} works directly at SQL level, not with entity/field mappings.
+     * This field is not a mapped column — instead, it is filled using the SQL snippet provided.
+     * Hibernate will embed this SQL expression into the SELECT it generates for the entity.
+     * If no bookings match, SUM would normally return NULL. COALESCE(..., 0) makes sure it becomes 0.
+     *
      */
     @Formula("""
    (SELECT COALESCE(SUM(b.number_of_tickets), 0)
