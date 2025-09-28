@@ -170,12 +170,12 @@
                             </span>
                         </td>
                         <td class="text-nowrap">
-                            <!-- TODO Action Button: Manage Bookings -->
-                            <form
-
-                                    class="confirm-form-submission"
-                                    data-message="Manage the bookings of this occurrence?"
-                                    style="display: inline;">
+                            <!-- Action Button: Manage Bookings -->
+                            <form th:action="@{'/adminDashboard/manageBookingsOfOccurrence/' + ${occurrence.id}}"
+                                  method="get"
+                                  class="confirm-form-submission"
+                                  data-message="Manage bookings of this occurrence?"
+                                  style="display: inline;">
                                 <button class="btn btn-sm btn-info me-1" id="btn-manage-bookings" title="Manage Bookings">
                                     <i class="bi bi-calendar3"></i>
                                 </button>
