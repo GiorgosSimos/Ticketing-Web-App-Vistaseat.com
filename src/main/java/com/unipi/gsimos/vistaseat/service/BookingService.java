@@ -34,6 +34,8 @@ public interface BookingService {
 
     Page<BookingDto> getBookingsByOccurrenceId(Long occurrenceId, Pageable pageable);
 
+    Page<BookingDto> getBookingsByIdAndOccurrenceId(Long bookingId, Long occurrenceId, Pageable pageable);
+
     List<BookingDto> getLast10Bookings();
 
     Page<BookingDto> getAllBookings(Pageable pageable);
@@ -41,6 +43,8 @@ public interface BookingService {
     Page<BookingDto> getAllBookingsByEventName(String eventName, Pageable pageable);
 
     Page<BookingDto> getAllBookingsByEmail(String email, Pageable pageable);
+
+    Page<BookingDto> getAllBookingsByOccurrenceIdAndLastName(Long occurrenceId, String lastName, Pageable pageable);
 
     Page<BookingDto> getAllBookingsByVenueName(String venueName, Pageable pageable);
 

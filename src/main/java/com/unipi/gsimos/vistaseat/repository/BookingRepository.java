@@ -25,10 +25,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Page<Booking> findByEventOccurrenceId(Long eventOccurrenceId, Pageable pageable);
 
+    Page<Booking> findByIdAndEventOccurrenceId(Long bookingId, Long eventOccurrenceId, Pageable pageable);
+
     // List of bookings across all occurrences of a given event name
     Page<Booking> findByEventOccurrence_Event_NameContainingIgnoreCase(String eventName, Pageable pageable);
 
     Page<Booking> findByEmailContainingIgnoreCase(String email, Pageable pageable);
+
+    Page<Booking> findByEventOccurrenceIdAndLastNameContainingIgnoreCase(Long eventOccurrenceId, String lastName, Pageable pageable);
 
     Page<Booking> findByEventOccurrence_Event_Venue_NameContainingIgnoreCase(String eventVenueName, Pageable pageable);
 

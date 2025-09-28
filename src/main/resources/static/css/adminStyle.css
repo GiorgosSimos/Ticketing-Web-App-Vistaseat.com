@@ -825,3 +825,15 @@ th i.fa-solid {
     flex: 1;
     justify-content: flex-end;
 }
+
+.search-occurrence-bookings-bar {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 3rem;
+}
+
+.search-occurrence-bookings-input-field {
+    display: flex;
+    flex: 0 1 30%;
+}

@@ -258,7 +258,14 @@ public class BookingServiceImpl implements BookingService {
 
         Page<Booking> bookings = bookingRepository.findByEmailContainingIgnoreCase(email, pageable);
         List<BookingDto> bookingDtos = bookings.getContent().stream().map(BookingMapper::toDto).toList();
+        return new PageImpl<>(bookingDtos, pageable, bookings.getTotalElements());
+    }
 
+    @Override
+    public Page<BookingDto> getAllBookingsByOccurrenceIdAndLastName(Long occurrenceId, String lastName, Pageable pageable) {
+
+        Page<Booking> bookings = bookingRepository.findByEventOccurrenceIdAndLastNameContainingIgnoreCase(occurrenceId, lastName, pageable);
+        List<BookingDto> bookingDtos = bookings.getContent().stream().map(BookingMapper::toDto).toList();
         return new PageImpl<>(bookingDtos, pageable, bookings.getTotalElements());
     }
 
@@ -281,6 +288,16 @@ public class BookingServiceImpl implements BookingService {
         List<BookingDto> bookingDtos = bookings.getContent().stream().map(BookingMapper::toDto).toList();
 
         return new PageImpl<>(bookingDtos, pageable, bookings.getTotalElements());
+    }
+
+    @Override
+    public Page<BookingDto> getBookingsByIdAndOccurrenceId(Long bookingId, Long occurrenceId, Pageable pageable) {
+
+        Page<Booking> booking = bookingRepository.findByIdAndEventOccurrenceId(bookingId, occurrenceId, pageable);
+
+        List<BookingDto> bookingDtos = booking.getContent().stream().map(BookingMapper::toDto).toList();
+
+        return new PageImpl<>(bookingDtos, pageable, booking.getTotalElements());
     }
 
     @Override

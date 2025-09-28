@@ -363,6 +363,8 @@ public class BookingController {
     public String displayOccurrenceBookings (@PathVariable Long occurrenceId,
                                              @RequestParam(defaultValue = "0") int page,
                                              @RequestParam(defaultValue = "10") int size,
+                                             @RequestParam(required = false) SearchField searchField,
+                                             @RequestParam(required = false) String searchQuery,
                                              Model model) {
 
         Authentication  auth = SecurityContextHolder.getContext().getAuthentication();
@@ -378,12 +380,24 @@ public class BookingController {
 
         Pageable pageable = PageRequest.of(page, size,Sort.by("bookingDate").descending());
 
-        Page<BookingDto> bookingsPage = bookingService.
-                getBookingsByOccurrenceId(occurrenceId, pageable);
+        Page<BookingDto> bookingsPage;
+
+        if (searchField == SearchField.BOOKING_ID) {
+            Long bookingId = parseLongOrNull(searchQuery);
+            if (bookingId == null) {
+                bookingsPage = bookingService.getBookingsByOccurrenceId(occurrenceId, pageable);
+            } else {
+                bookingsPage = bookingService.getBookingsByIdAndOccurrenceId(bookingId, occurrenceId, pageable);
+            }
+        } else if (searchField == SearchField.CUSTOMER_NAME) {
+            bookingsPage = bookingService.getAllBookingsByOccurrenceIdAndLastName(occurrenceId, searchQuery, pageable);
+        } else {
+            bookingsPage = bookingService.getBookingsByOccurrenceId(occurrenceId, pageable);
+        }
 
         List<BookingDto> bookingsList = new ArrayList<>(bookingsPage.getContent());
 
-        long totalBookings = bookingsPage.getTotalElements();
+        long totalBookings = occurrence.getBookings().size();
 
         long occurrenceTotalTickets = 0;
 

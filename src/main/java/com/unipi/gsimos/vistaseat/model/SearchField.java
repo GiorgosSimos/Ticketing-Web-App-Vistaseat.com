@@ -5,6 +5,7 @@ public enum SearchField {
 
     BOOKING_ID,
     EVENT_NAME,
+    CUSTOMER_NAME,
     CUSTOMER_EMAIL,
     VENUE_NAME
 }
