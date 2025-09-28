@@ -32,6 +32,8 @@ public interface BookingService {
 
     Page<OrderCardDto> getPastOrdersByUserId(Long userId, Pageable pageable);
 
+    Page<BookingDto> getBookingsByOccurrenceId(Long occurrenceId, Pageable pageable);
+
     List<BookingDto> getLast10Bookings();
 
     Page<BookingDto> getAllBookings(Pageable pageable);

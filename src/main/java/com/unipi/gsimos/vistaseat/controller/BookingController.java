@@ -1,10 +1,7 @@
 package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.*;
-import com.unipi.gsimos.vistaseat.mapper.BookingMapper;
-import com.unipi.gsimos.vistaseat.mapper.PaymentMapper;
-import com.unipi.gsimos.vistaseat.mapper.TicketMapper;
-import com.unipi.gsimos.vistaseat.mapper.UserMapper;
+import com.unipi.gsimos.vistaseat.mapper.*;
 import com.unipi.gsimos.vistaseat.model.*;
 import com.unipi.gsimos.vistaseat.repository.*;
 import com.unipi.gsimos.vistaseat.service.BookingService;
@@ -49,6 +46,8 @@ public class BookingController {
     private final TicketMapper ticketMapper;
     private final UserRepository userRepository;
     private final EventOccurrenceService eventOccurrenceService;
+    private final EventMapper eventMapper;
+    private final EventOccurrenceMapper eventOccurrenceMapper;
 
     @GetMapping("/adminDashboard/manageBookings")
     public String displayBookings(@RequestParam(defaultValue = "0") int page,
@@ -358,6 +357,57 @@ public class BookingController {
         }  catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    @GetMapping("/adminDashboard/manageBookingsOfOccurrence/{occurrenceId}")
+    public String displayOccurrenceBookings (@PathVariable Long occurrenceId,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "10") int size,
+                                             Model model) {
+
+        Authentication  auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        EventOccurrence occurrence = eventOccurrenceRepository.
+                findById(occurrenceId).orElseThrow(() -> new EntityNotFoundException("Occurrence not found with id: " + occurrenceId));
+
+        EventOccurrenceDto eventOccurrenceDto = eventOccurrenceMapper.toDto(occurrence);
+
+        Event event = occurrence.getEvent();
+        EventDto eventDto = eventMapper.toDto(event);
+
+        Pageable pageable = PageRequest.of(page, size,Sort.by("bookingDate").descending());
+
+        Page<BookingDto> bookingsPage = bookingService.
+                getBookingsByOccurrenceId(occurrenceId, pageable);
+
+        List<BookingDto> bookingsList = new ArrayList<>(bookingsPage.getContent());
+
+        long totalBookings = bookingsPage.getTotalElements();
+
+        long occurrenceTotalTickets = 0;
+
+        List<Booking> occurrenceBookings = occurrence.getBookings();
+
+        for (Booking booking : occurrenceBookings) {
+            if (booking.getStatus().equals(BookingStatus.CONFIRMED)) {
+                occurrenceTotalTickets += booking.getNumberOfTickets();
+            }
+        }
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("event", eventDto);
+        model.addAttribute("occurrence", eventOccurrenceDto);
+        model.addAttribute("bookingsList", bookingsList);
+        model.addAttribute("numberOfTotalBookings", totalBookings);
+        model.addAttribute("occurrenceTotalTickets", occurrenceTotalTickets);
+        // Paging controls
+        model.addAttribute("currentPage", bookingsPage.getNumber() + 1);
+        model.addAttribute("totalPages", bookingsPage.getTotalPages());
+
+        return "occurrenceBookings";
+
     }
 
 }

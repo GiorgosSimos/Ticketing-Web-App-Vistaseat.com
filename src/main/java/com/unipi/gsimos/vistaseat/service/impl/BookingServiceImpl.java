@@ -284,6 +284,15 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public Page<BookingDto> getBookingsByOccurrenceId(Long occurrenceId, Pageable pageable) {
+
+        Page<Booking> bookings = bookingRepository.findByEventOccurrenceId(occurrenceId, pageable);
+        List<BookingDto> bookingDtos = bookings.getContent().stream().map(BookingMapper::toDto).toList();
+        return new PageImpl<>(bookingDtos, pageable, bookings.getTotalElements());
+
+    }
+
+    @Override
     public Page<BookingDto> getBookingsByEventDateRange(LocalDate from, LocalDate to, Pageable pageable) {
 
         boolean isDateFilterFilled = from != null && to != null;
