@@ -30,6 +30,20 @@
                 <p>Modify booking details, change dates, or cancel reservation</p>
             </div>
 
+            <!-- View Tickets Button -->
+            <a th:if="${booking.status == CONFIRMED}"
+               th:href="@{'/adminDashboard/manageBookings/' + ${booking.id} + '/viewTickets'}"
+               class="btn btn-dark">
+                <i class="bi bi-ticket-perforated me-2"></i>
+                View Tickets
+            </a>
+
+            <span th:if="${booking.status != CONFIRMED}"
+                  class="btn btn-dark is-disabled">
+                <i class="bi bi-ticket-perforated me-2"></i>
+                View Tickets
+            </span>
+
             <!-- Cancel Booking Button -->
             <button class="btn btn-danger"
                     type="button"

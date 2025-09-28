@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Booking Tickets | Vistaseat.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/adminStyle.css}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/admin.js}" defer></script>
+</head>
+<body>
+
+    <!-- Include Header -->
+    <div th:insert="~{fragments/adminHeader :: adminHeader(${firstName}, ${lastName})}"></div>
+
+    <!-- Alert messages for changes made -->
+    <div th:if="${message}" class="alert alert-success" id="success-alert" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" id="access-denied-alert" th:text="${error} "></div>
+
+    <section th:if="${booking.status != CONFIRMED}"
+             class="d-flex flex-column justify-content-center align-items-center p-5 tickets-notice">
+        <figure>
+            <img th:src="@{/images/warning_symbol.png}" alt="warning_symbol">
+        </figure>
+        <h4 class="mb-4">This booking is canceled or has expired</h4>
+        <div class="d-flex justify-content-center">
+            <a th:herf="" class="btn btn-outline-light text-black">
+                <i class="bi bi-house-door-fill me-2"></i>
+                Back to Booking
+            </a>
+        </div>
+    </section>
+    <!-- Hero Section -->
+    <section th:if="${booking.status == CONFIRMED}"
+             class="d-flex flex-column justify-content-center align-items-center p-5 tickets-notice">
+        <figure>
+            <img th:src="@{/images/tick_symbol.png}" alt="Booking Image">
+        </figure>
+        <h2 class="fw-bold">Booking Confirmed</h2>
+        <p class="fw-semibold">Tickets have been generated successfully.</p>
+        <div class="d-flex justify-content-center">
+            <a th:href="@{'/api/booking/' + ${booking.id} + '/ticketsPdf'}"
+               class="btn btn-dark me-2">
+                <i class="bi bi-download me-2"></i>
+                Download Tickets
+            </a>
+            <a th:text="'Email tickets to ' + ${booking.firstName}"
+                    class="btn btn-outline-light text-black">
+                <i class="bi bi-envelope-at-fill me-2"></i>
+                Email tickets
+            </a>
+        </div>
+    </section>
+
+
+    <section th:if="${booking.status == CONFIRMED}"
+             class="container py-5">
+        <div class="view-tickets-layout">
+            <!-- Left side: 70% -->
+            <div class="d-flex flex-column">
+                <!-- Event Information Card -->
+                <div class="event-info-flex-style-card mb-4">
+                    <div class="d-flex">
+                        <i class="bi bi-calendar2-event-fill fs-3 me-3"></i>
+                        <h3 class="fw-semibold mt-1">Event Information Details</h3>
+                    </div>
+
+                    <article class="event-information-card">
+                        <!-- 30% – Event image -->
+                        <div class="event-information-card-image">
+                            <img th:src="@{${eventCard.eventImageURL}}" alt="event_image">
+                        </div>
+                        <!-- 70% – Event info -->
+                        <div class="event-information-card-body">
+                            <div class="event-type two-column-span"
+                                 th:text="${eventCard.eventType}">CINEMA</div>
+                            <h2 class="event-title two-column-span"
+                                th:text="${booking.eventName}">Nuovo Cinema Paradiso</h2>
+                            <p class="event-description two-column-span"
+                               th:text="${eventCard.eventDescription}">Event Description</p>
+
+                            <div class="event-meta">
+                                <span class="meta-label">
+                                    <i class="bi bi-geo-fill"></i>
+                                    Venue:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="${eventCard.eventVenueName}">Cinema Open Air - Starlit Sky
+                                </span>
+
+                                <span class="meta-label">
+                                    <i class="bi bi-calendar-week"></i>
+                                    Date:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="${#temporals.format(occurrenceDateTime,
+                                      'MMM d, yyyy ''at'' h:mm a')}">Aug 3, 2025 at 1:15PM</span>
+
+                                <span class="meta-label">
+                                    <i class="bi bi-hourglass"></i>
+                                    Duration:
+                                </span>
+                                <span class="meta-value"
+                                      th:text="|${occurrenceDuration / 60}h ${occurrenceDuration % 60}m|">2h 53m</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <!-- Event Tickets Card -->
+                <div class="event-tickets-card-container">
+                    <div class="d-flex py-2">
+                        <i class="bi bi-ticket-perforated-fill fs-3 me-3"></i>
+                        <h3 class="fw-semibold">Tickets</h3>
+                    </div>
+                    <div th:each="ticket,iterSrart :${tickets}"
+                         class="ticket-sample-card">
+                        <div class="ticket-details">
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold"
+                                      th:text="'Ticket #' + ${iterSrart.count}">Ticket #1</span>
+                                <span th:text="${ticket.ticketNumber}"
+                                      class="text-muted">Ticket No: THT1234567897</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted">Section</span>
+                                    <span class="fw-semibold">N/A</span>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted">Row</span>
+                                    <span class="fw-semibold">N/A</span>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted">Seat</span>
+                                    <span class="fw-semibold">N/A</span>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted">Price</span>
+                                    <span class="fw-semibold"
+                                          th:text="${eventCard.price} + ' €'">10€</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ticket-cta-buttons">
+                            <a th:href="@{/api/tickets/{id}/pdf(id=${ticket.id}, mode='VIEW')}"
+                               target="_blank"
+                               class="btn btn-dark me-2">
+                                <i class="bi bi-download me-2"></i>
+                                Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right side: 30% -->
+            <div class="d-flex flex-column">
+                <!-- Contact Info Card-->
+                <div class="contact-info-card mb-4">
+                    <div class="d-flex">
+                        <i class="bi bi-person-rolodex fs-3 me-3"></i>
+                        <h3 class="fw-semibold mt-1">Contact Information</h3>
+                    </div>
+                    <div class="d-flex">
+                        <i class="bi bi-person-fill fs-6 me-2"></i>
+                        <span class="fw-semibold" th:text="${booking.firstName} + ' ' +${booking.lastName}">
+                            Full Name</span>
+                    </div>
+                    <div class="d-flex">
+                        <i class="bi bi-envelope-at-fill fs-6 me-2"></i>
+                        <span class="fw-semibold" th:text="${booking.email}">Email</span>
+                    </div>
+                    <div class="d-flex">
+                        <i class="bi bi-telephone-fill fs-6 me-2"></i>
+                        <span class="fw-semibold" th:text="${booking.phoneNumber}">Phone</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Include Footer-->
+    <div th:insert="~{fragments/adminFooter :: footer}"></div>
+
+</body>
+</html>
