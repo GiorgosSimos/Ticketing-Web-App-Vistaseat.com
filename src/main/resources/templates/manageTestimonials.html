@@ -47,7 +47,21 @@
                             <thead class="table-secondary">
                             <tr class="text-nowrap">
                                 <th>ID</th>
-                                <th>Rating (⭐)</th>
+                                <th class="text-center">
+                                    <a th:href="@{/adminDashboard/manageTestimonials(
+                                                page=${param.page},
+                                                size=${param.size},
+                                                sort='rating',
+                                                sortDirection=${sortDirection == 'asc' ? 'desc' : 'asc'}
+                                             )}"
+                                       style="text-decoration: none; color: inherit;">
+                                       <i class="bi"
+                                           th:classappend="${sortDirection == 'asc'}
+                                           ? ' bi-arrow-up-circle-fill'
+                                           : ' bi-arrow-down-circle-fill'"></i>
+                                        Rating (⭐)
+                                    </a>
+                                </th>
                                 <th>Review</th>
                                 <th>Author</th>
                                 <th>Written At</th>
@@ -58,7 +72,8 @@
                             <tbody>
                             <tr th:each="testimonial : ${testimonials}">
                                 <td th:text="${testimonial.id}">123</td>
-                                <td th:text="${testimonial.rating}+'/5'"></td>
+                                <td class="text-center"
+                                    th:text="${testimonial.rating}+'/5'"></td>
                                 <td th:text="${testimonial.review}"></td>
                                 <td>
                                     <span th:text="${testimonial.author}"></span><br>

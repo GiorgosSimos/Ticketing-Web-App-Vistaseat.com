@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -39,6 +40,8 @@ public class TestimonialController {
     @GetMapping("/adminDashboard/manageTestimonials")
     public String manageTestimonials (@RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "10") int size,
+                                      @RequestParam(required = false) String sort,
+                                      @RequestParam(defaultValue = "desc") String sortDirection,
                                       Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
@@ -51,6 +54,19 @@ public class TestimonialController {
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("testimonials", testimonialsList);
+
+        // Sort in descending/ascending order by rating
+        if ("rating".equals(sort)) {
+            if ("asc".equalsIgnoreCase(sortDirection)) {
+                testimonialsList.sort(Comparator.comparing(TestimonialDto::getRating));
+            } else {
+                testimonialsList.sort(Comparator.comparing(TestimonialDto::getRating).reversed());
+            }
+        }
+
+        // Sort by number of rating
+        model.addAttribute("sort", sort);
+        model.addAttribute("sortDirection", sortDirection);
 
         // Paging controls
         model.addAttribute("currentPage", testimonials.getNumber() + 1);
