@@ -47,6 +47,7 @@ public class TestimonialMapper {
         testimonialDto.setAuthor(testimonial.getUser().getFirstName() + " " + testimonial.getUser().getLastName());
         testimonialDto.setRating(testimonial.getRating());
         testimonialDto.setReview(testimonial.getReview());
+        testimonialDto.setVisible(testimonial.isDisplayed());
         testimonialDto.setCreatedAt(testimonial.getCreatedAt());
         testimonialDto.setFullStars(fullStarsCount);
         testimonialDto.setHalfStars(hasHalfStar);

@@ -67,15 +67,28 @@
             Manage Bookings
           </a>
         </li>
+        <li>
+            <a href="/adminDashboard/manageTestimonials"
+                 th:class="'nav-link ' + (${activePage} == 'manageTestimonials' ? 'active' : 'link-body-emphasis')"
+                 th:attr="aria-current=${activePage == 'manageTestimoniasl' ? 'page' : null}">
+                 <i class="bi bi-pen-fill fs-5 me-2"></i>
+                Manage Testimonials
+            </a>
+        </li>
+        <li>
+            <a href="/adminDashboard/manageContactMessages"
+                 th:class="'nav-link ' + (${activePage} == 'manageContactMessages' ? 'active' : 'link-body-emphasis')"
+                 th:attr="aria-current=${activePage == 'manageContactMessages' ? 'page' : null}">
+                  <i class="bi bi-chat-square-fill fs-5 me-2"></i>
+                  Manage Messages
+            </a>
+        </li>
         <hr>
         <li>
           <a href="/adminAccount"
              th:class="'nav-link ' + (${activePage} == 'adminAccount' ? 'active' : 'link-body-emphasis')"
              th:attr="aria-current=${activePage == 'adminAccount' ? 'page' : null}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-vcard me-2" viewBox="0 0 16 16">
-              <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5"/>
-              <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z"/>
-            </svg>
+            <i class="bi bi-person-vcard fs-5 me-2"></i>
             Account
           </a>
         </li>

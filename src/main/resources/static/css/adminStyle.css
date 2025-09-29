@@ -837,3 +837,39 @@ th i.fa-solid {
     display: flex;
     flex: 0 1 30%;
 }
+
+/* Styling for manageTestimonials page */
+.manage-testimonials-layout {
+    display: grid;
+    min-height: 100vh;
+    grid-template-columns: var(--sidebar-width) repeat(1, 1fr);
+    grid-auto-rows: auto 1fr;
+    grid-template-areas: "sidebar manage-testimonial-container";
+}
+
+.manage-testimonials-container {
+    grid-area: manage-testimonial-container;
+    width: 95%;
+    padding-right: 1rem;
+    padding-left:  1rem;
+    margin-right: auto;
+    margin-left:  auto;
+}
+
+/* Styling for contactMessages page */
+.manage-contact-messages-layout {
+    display: grid;
+    min-height: 100vh;
+    grid-template-columns: var(--sidebar-width) repeat(1, 1fr);
+    grid-auto-rows: auto 1fr;
+    grid-template-areas: "sidebar manage-contact-messages-container";
+}
+
+.manage-contact-messages-container {
+    grid-area: manage-contact-messages-container;
+    width: 95%;
+    padding-right: 1rem;
+    padding-left:  1rem;
+    margin-right: auto;
+    margin-left:  auto;
+}

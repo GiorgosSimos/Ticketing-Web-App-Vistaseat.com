@@ -19,6 +19,7 @@ public class TestimonialDto {
     private String author;
     private BigDecimal rating;
     private String review;
+    private boolean visible;
     private LocalDateTime createdAt;
 
     // Calculation for star depiction in testimonials section (home page)
