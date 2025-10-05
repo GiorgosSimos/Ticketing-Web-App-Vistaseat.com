@@ -17,6 +17,7 @@ public class TestimonialDto {
     private Long id;
     private Long userId;
     private String author;
+    private String authorEmail;
     private BigDecimal rating;
     private String review;
     private boolean visible;

@@ -1,27 +1,13 @@
 package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.dto.*;
-import com.unipi.gsimos.vistaseat.mapper.UserMapper;
-import com.unipi.gsimos.vistaseat.model.ContactCategory;
-import com.unipi.gsimos.vistaseat.model.ContactMessage;
-import com.unipi.gsimos.vistaseat.model.User;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
-import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.repository.VenueRepository;
-import com.unipi.gsimos.vistaseat.service.ContactMessageService;
 import com.unipi.gsimos.vistaseat.service.TestimonialService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,8 +19,6 @@ public class AppController {
 
     private final VenueRepository venueRepository;
     private final EventRepository eventRepository;
-    private final ContactMessageService contactMessageService;
-    private final UserRepository userRepository;
     private final TestimonialService testimonialService;
 
     @GetMapping("/home")
@@ -111,84 +95,6 @@ public class AppController {
         model.addAttribute("supportEmail", "support@vistaseat.com");
 
         return "aboutUs";
-
-    }
-
-    @GetMapping("/contact")
-    public String getContactForm(Model model) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        // A user is logged-in if we have an auth object, it’s marked authenticated,
-        // and it’s NOT the anonymous token/principal.
-        boolean isLoggedIn =
-                auth != null
-                        && auth.isAuthenticated()
-                        && !(auth instanceof AnonymousAuthenticationToken)
-                        && (auth.getPrincipal() instanceof UserDetails);
-
-        UserDto userDto = null;
-        String fullName = null;
-
-        if (isLoggedIn) {
-            String email = auth.getName();
-            User user = userRepository.findByEmail(email).orElseThrow(() ->
-                    new EntityNotFoundException("User with " + email + " not found"));
-            userDto = UserMapper.toUserDto(user);
-            fullName = user.getFirstName() + " " + user.getLastName();
-        }
-
-        model.addAttribute("contactForm", new ContactFormDto());
-        model.addAttribute("categories", ContactCategory.values());
-        model.addAttribute("isLoggedIn", isLoggedIn);
-        model.addAttribute("fullName", fullName);
-        model.addAttribute("user", userDto);
-
-        return "contact";
-
-    }
-
-    @PostMapping("/submitContactForm")
-    public String submitContactForm(@ModelAttribute("contactForm") ContactFormDto contactForm,
-                                    BindingResult bindingResult,
-                                    Model model) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-
-        if (contactForm.getHp() != null && !contactForm.getHp().isBlank()) {
-            bindingResult.reject("error", "Spam detected");
-        }
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("error", "Please correct the errors and try again");
-        }
-
-        ContactMessage contactMessage = new ContactMessage();
-
-        contactMessage.setName(contactForm.getName());
-        contactMessage.setEmail(contactForm.getEmail());
-        if (       auth.isAuthenticated()
-                && !(auth instanceof AnonymousAuthenticationToken)
-                && auth.getPrincipal() instanceof UserDetails) {
-           User user = userRepository.findByEmail(email)
-                   .orElseThrow(() -> new EntityNotFoundException("User with email:" + email + " not found"));
-           contactMessage.setUser(user);
-        }
-        contactMessage.setSubject(contactForm.getSubject());
-        contactMessage.setCategory(contactForm.getCategory());
-        contactMessage.setMessage(contactForm.getMessage());
-
-        try {
-            contactMessageService.createContactMessage(contactMessage);
-            model.addAttribute("success", true);
-            model.addAttribute("contactForm", new ContactFormDto());
-            return "/contact";
-        }
-        catch (Exception e) {
-            model.addAttribute("error", "An unexpected error occurred");
-            return "/contact";
-        }
 
     }
 

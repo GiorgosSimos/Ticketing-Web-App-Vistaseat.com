@@ -148,15 +148,4 @@ public class AdminController {
         return "redirect:/adminAccount";
     }
 
-    @GetMapping("/adminDashboard/manageContactMessages")
-    public String manageContactMessages (Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-
-        model.addAttribute("firstName", user.getFirstName());
-        model.addAttribute("lastName", user.getLastName());
-
-        return "manageContactMessages";
-
-    }
 }

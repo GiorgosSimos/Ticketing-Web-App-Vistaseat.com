@@ -45,6 +45,7 @@ public class TestimonialMapper {
         testimonialDto.setId(testimonial.getId());
         testimonialDto.setUserId(testimonial.getUser().getId());
         testimonialDto.setAuthor(testimonial.getUser().getFirstName() + " " + testimonial.getUser().getLastName());
+        testimonialDto.setAuthorEmail(testimonial.getUser().getEmail());
         testimonialDto.setRating(testimonial.getRating());
         testimonialDto.setReview(testimonial.getReview());
         testimonialDto.setVisible(testimonial.isDisplayed());
