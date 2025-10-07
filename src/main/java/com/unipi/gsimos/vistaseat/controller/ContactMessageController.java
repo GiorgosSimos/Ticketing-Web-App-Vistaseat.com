@@ -8,6 +8,7 @@ import com.unipi.gsimos.vistaseat.model.ContactCategory;
 import com.unipi.gsimos.vistaseat.model.ContactMessage;
 import com.unipi.gsimos.vistaseat.model.ContactStatus;
 import com.unipi.gsimos.vistaseat.model.User;
+import com.unipi.gsimos.vistaseat.repository.ContactMessageRepository;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
 import com.unipi.gsimos.vistaseat.service.ContactMessageService;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,6 +36,7 @@ public class ContactMessageController {
 
     private final ContactMessageService contactMessageService;
     private final UserRepository userRepository;
+    private final ContactMessageRepository contactMessageRepository;
 
 
     @GetMapping("/contact")
@@ -134,10 +136,13 @@ public class ContactMessageController {
 
         List<ContactMessageDto> contactMessages = new ArrayList<>(messages.getContent());
 
+        long unresolvedMessages = contactMessageRepository.countContactMessageByStatus(ContactStatus.IN_PROGRESS);
+
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("messages", contactMessages);
         model.addAttribute("RESOLVED", ContactStatus.RESOLVED);
+        model.addAttribute("unresolvedMessagesCount", unresolvedMessages);
 
         // Paging controls
         model.addAttribute("currentPage", messages.getNumber() + 1);
