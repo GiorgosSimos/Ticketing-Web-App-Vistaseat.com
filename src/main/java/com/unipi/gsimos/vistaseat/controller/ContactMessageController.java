@@ -118,12 +118,19 @@ public class ContactMessageController {
     @GetMapping("/adminDashboard/manageContactMessages")
     public String manageContactMessages (@RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "10") int size,
+                                         @RequestParam(required = false) String searchQuery,
                                          Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
 
         Pageable pageable = PageRequest.of(page, size, Sort.by( "createdAt").descending());
-        Page<ContactMessageDto> messages = contactMessageService.getAllContactMessages(pageable);
+        Page<ContactMessageDto> messages;
+
+        if(searchQuery != null) {
+            messages = contactMessageService.getContactMessagesByAuthor(searchQuery, pageable);
+        } else {
+            messages = contactMessageService.getAllContactMessages(pageable);
+        }
 
         List<ContactMessageDto> contactMessages = new ArrayList<>(messages.getContent());
 

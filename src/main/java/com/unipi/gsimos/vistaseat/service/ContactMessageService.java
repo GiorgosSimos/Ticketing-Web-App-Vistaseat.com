@@ -14,4 +14,6 @@ public interface ContactMessageService {
     void resolveContactMessage(Long contactMessageId, String adminNotes);
 
     Page<ContactMessageDto> getAllContactMessages(Pageable pageable);
+
+    Page<ContactMessageDto> getContactMessagesByAuthor(String author, Pageable pageable);
 }

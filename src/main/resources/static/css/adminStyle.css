@@ -873,3 +873,8 @@ th i.fa-solid {
     margin-right: auto;
     margin-left:  auto;
 }
+
+.search-contact-messages-input-field {
+    display: flex;
+    flex: 0 1 30%;
+}

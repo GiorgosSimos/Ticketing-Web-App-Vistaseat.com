@@ -74,4 +74,13 @@ public class ContactMessageServiceImpl implements ContactMessageService {
         List<ContactMessageDto> contactMessageDtos = contactMessages.stream().map(contactMessageMapper::toDto).toList();
         return new PageImpl<>(contactMessageDtos, pageable, contactMessages.getTotalElements());
     }
+
+    @Override
+    public Page<ContactMessageDto> getContactMessagesByAuthor(String author, Pageable pageable) {
+
+        Page<ContactMessage> contactMessages = contactMessageRepository.findContactMessageByNameContainingIgnoreCase(author, pageable);
+        List<ContactMessageDto> contactMessageDtos = contactMessages.stream().map(contactMessageMapper::toDto).toList();
+        return new PageImpl<>(contactMessageDtos, pageable, contactMessages.getTotalElements());
+
+    }
 }
