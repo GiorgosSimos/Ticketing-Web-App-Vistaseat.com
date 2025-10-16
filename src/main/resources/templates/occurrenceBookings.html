@@ -130,10 +130,11 @@
                     <button class="btn btn-outline-danger" type="button" title="Clear"
                             th:unless="${#strings.isEmpty(param.searchQuery)}"
                             onclick="
-                                        const f = this.form;
-                                        f.querySelector('[name=searchQuery]').value='';
-                                        f.querySelector('[name=searchField]').value='BOOKING_ID';
-                                        f.submit();">
+                                     const f = this.form;
+                                     f.querySelector('[name=searchQuery]').value='';
+                                     f.querySelector('[name=searchField]').value='BOOKING_ID';
+                                     f.submit();
+                                    ">
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
@@ -143,7 +144,7 @@
                     <select class="form-select " name="searchField" title="Search Criteria"
                             th:with="sel=${#lists.isEmpty(param.searchField) ? 'BOOKING_ID' : param.searchField[0]}">
                         <option value="BOOKING_ID"     th:selected="${sel == 'BOOKING_ID'}">ID</option>
-                        <option value="CUSTOMER_NAME" th:selected="${sel == 'CUSTOMER_NAME'}">Customer name</option>
+                        <option value="CUSTOMER_NAME" th:selected="${sel == 'CUSTOMER_NAME'}">Customer Last name</option>
                     </select>
                 </div>
             </form>
