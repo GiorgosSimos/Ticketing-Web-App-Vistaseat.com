@@ -40,10 +40,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param pageable the pagination information including page number and page size
      * @return a {@link Page} of users with the specified role
      */
-    Page<User> findAllByRole(UserRole role, Pageable pageable);
+    Page<User> findByRole(UserRole role, Pageable pageable);
 
     Page<User> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
             String firstName, String lastName, Pageable pageable);
+
+    // In SQL: (role = ? AND first_name LIKE ?) OR (role = ? AND last_name LIKE ?)
+    Page<User> findByRoleAndFirstNameContainingIgnoreCaseOrRoleAndLastNameContainingIgnoreCase(
+            UserRole role1, String firstName,
+            UserRole role2, String lastName,
+            Pageable pageable);
+
 
     List<User> findTop10ByRoleOrderByIdDesc(UserRole role);
 

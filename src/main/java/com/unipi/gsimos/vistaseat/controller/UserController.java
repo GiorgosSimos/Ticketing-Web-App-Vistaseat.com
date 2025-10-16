@@ -120,8 +120,10 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, size);
         Page<UserDto> usersPage;
 
-        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-            usersPage = userService.searchUsersByName(searchQuery.trim(), pageable);
+        if (searchQuery != null && !searchQuery.isEmpty() && role != null) {
+            usersPage = userService.searchUsersByNameAndRole(searchQuery, role, pageable);
+        } else if (searchQuery != null && !searchQuery.isEmpty()) {
+            usersPage = userService.searchUsersByName(searchQuery, pageable);
         } else if (role != null) {
             usersPage = userService.getUsersByRole(role, page, size);
         } else {
@@ -134,11 +136,37 @@ public class UserController {
         model.addAttribute("firstName", user.getFirstName());
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("users", usersPage.getContent());
+        model.addAttribute("REGISTERED", UserRole.REGISTERED);
+        model.addAttribute("DOMAIN_ADMIN", UserRole.DOMAIN_ADMIN);
 
-        // User counts
-        model.addAttribute("totalUsers", userService.countAllUsers());
-        model.addAttribute("registered", userService.countUsersByRole(UserRole.REGISTERED));
-        model.addAttribute("admins", userService.countUsersByRole(UserRole.DOMAIN_ADMIN));
+        // Calculate User counts
+        int currentPage = 0, registeredUsers = 0, admins = 0;
+        Page<UserDto> pages;
+
+        do {
+            if (searchQuery != null && !searchQuery.isEmpty() && role != null) {
+                pages = userService.searchUsersByNameAndRole(searchQuery, role, PageRequest.of(currentPage, size));
+            } else if (searchQuery != null && !searchQuery.isEmpty()) {
+                pages = userService.searchUsersByName(searchQuery, PageRequest.of(currentPage, size));
+            } else if (role != null) {
+                pages = userService.getUsersByRole(role, currentPage, size);
+            } else {
+                pages = userService.getAllUsers(currentPage, size);
+            }
+
+            for (UserDto currentUser : pages.getContent()) {
+                if (currentUser.getRole() == UserRole.REGISTERED) {
+                    registeredUsers++;
+                } else {
+                    admins++;
+                }
+            }
+            currentPage++;
+        } while (currentPage < pages.getTotalPages());
+
+        model.addAttribute("totalUsers", usersPage.getTotalElements());
+        model.addAttribute("registered", registeredUsers);
+        model.addAttribute("admins", admins);
 
         // .getNumber() is zero-based, +1 is used for display purposes
         model.addAttribute("currentPage", usersPage.getNumber() + 1);

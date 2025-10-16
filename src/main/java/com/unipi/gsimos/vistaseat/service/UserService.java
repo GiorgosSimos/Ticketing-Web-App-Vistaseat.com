@@ -23,6 +23,8 @@ public interface UserService {
 
     Page<UserDto> searchUsersByName(String searchQuery, Pageable pageable);
 
+    Page<UserDto> searchUsersByNameAndRole(String searchQuery, UserRole role, Pageable pageable);
+
     UserDto updateUser(Long userId, UserDto updatedUser);
 
     void deleteUser(Long userId) throws AccessDeniedException;

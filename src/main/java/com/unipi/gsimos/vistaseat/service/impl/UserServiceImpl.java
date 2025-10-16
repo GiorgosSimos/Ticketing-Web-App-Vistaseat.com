@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> getUsersByRole(UserRole role, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("registrationDate").descending());
-        Page<User> users = userRepository.findAllByRole(role, pageable);
+        Page<User> users = userRepository.findByRole(role, pageable);
         return users.map(UserMapper::toUserDto);
     }
 
@@ -174,6 +174,14 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(searchQuery, searchQuery, pageable)
                 .map(UserMapper::toUserDto);
+    }
+
+    @Override
+    public Page<UserDto> searchUsersByNameAndRole(String searchQuery, UserRole role, Pageable pageable) {
+        return userRepository
+                .findByRoleAndFirstNameContainingIgnoreCaseOrRoleAndLastNameContainingIgnoreCase(
+                        role, searchQuery, role, searchQuery, pageable
+                ).map(UserMapper::toUserDto);
     }
 
     @Override
