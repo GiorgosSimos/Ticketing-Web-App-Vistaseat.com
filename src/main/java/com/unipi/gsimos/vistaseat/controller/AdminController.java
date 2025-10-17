@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.time.LocalDate;
 
 @Controller
 public class AdminController {
@@ -157,7 +158,7 @@ public class AdminController {
         model.addAttribute("lastName", user.getLastName());
         model.addAttribute("appName", "Vistaseat.com");
         model.addAttribute("supportEmail", "support@vistaseat.com");
-        model.addAttribute("lastUpdated", java.time.LocalDate.now().toString());
+        model.addAttribute("lastUpdated", LocalDate.now().toString());
 
         return "adminGuide";
 

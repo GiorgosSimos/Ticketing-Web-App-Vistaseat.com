@@ -17,7 +17,6 @@
     <!-- Include Header -->
     <div th:insert="~{fragments/adminHeader :: adminHeader(${firstName}, ${lastName})}"></div>
 
-
     <section class="container my-4">
         <header class="d-flex flex-wrap align-items-center mb-3">
             <div class="me-auto">
@@ -26,13 +25,17 @@
                     <span class="ms-2 small">Last updated: <span th:text="${lastUpdated}">2025-10-17</span></span>
                 </p>
             </div>
+            <!-- Search Contents -->
             <div class="ms-auto" style="max-width: 360px; width: 100%;">
-                <input id="helpSearch" class="form-control" type="search" placeholder="Search in guide (e.g., refund, venues, registrations)">
+                <input id="helpSearch"
+                       class="form-control"
+                       type="search"
+                       placeholder="Search in guide (e.g., refund, venues, registrations)">
             </div>
         </header>
 
         <div class="row g-4">
-            <!-- TOC -->
+            <!-- Table Of Contents -->
             <nav class="col-lg-3">
                 <div class="list-group small position-sticky" style="top: 1rem;" id="toc">
                     <a class="list-group-item list-group-item-action" href="#dashboard">Admin Dashboard</a>
@@ -68,9 +71,8 @@
                                 <div class="accordion-body">
                                     <p>The Admin Dashboard is the "control panel" for the entire management system—the brain of <strong th:text="${appName}">Vistaseat.com</strong>. From here, admins can see high-level KPIs, drill into users, events, venues, bookings, and system activity.</p>
                                     <ul>
-                                        <li><strong>Access:</strong> <a th:href="@{/admin}">/admin</a> (ADMIN role required).</li>
-                                        <li><strong>Navigation:</strong> Use the left navigation menu to jump into each management area.</li>
-                                        <li><strong>Best practice:</strong> Review KPIs and Recent History on login to spot anomalies (spikes in refunds, sudden registrations, etc.).</li>
+                                        <li><strong>Access:</strong> ADMIN role required.</li>
+                                        <li><strong>Navigation:</strong> Use the left navigation menu or the drop-down menu by clicking on the admin icon in the header section, to jump into each management area.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -105,7 +107,6 @@
                                         <li><strong>User Registrations:</strong> newest first.</li>
                                         <li><strong>Bookings:</strong> newest first.</li>
                                     </ul>
-                                    <p class="small text-muted mb-0">Tip: Link each row to its detail page to speed up triage.</p>
                                 </div>
                             </div>
                         </div>
@@ -124,7 +125,7 @@
                             </h2>
                             <div id="mu1c" class="accordion-collapse collapse show" data-bs-parent="#accUsers">
                                 <div class="accordion-body">
-                                    <p>Table shows: first name, last name, email, user role (registered, admin), phone number, status (active/inactive), registration date.</p>
+                                    <p>Information displayed: First name, last name, email, user role (REGISTERED, DOMAIN_ADMIN), phone number, status (active/inactive), registration date.</p>
                                     <ul>
                                         <li><strong>Search by name</strong> (first/last/both).</li>
                                         <li><strong>Filter by role</strong>: All, Registered, Admins.</li>
@@ -143,7 +144,7 @@
                                     <ul>
                                         <li>Display user bookings.</li>
                                         <li>Toggle user status (active/inactive).</li>
-                                        <li>Delete user <span class="text-danger">(only if the user has no bookings)</span>.</li>
+                                        <li>Delete user <span class="text-danger">(Caution: action allowed only if the user has no bookings)</span>.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -163,7 +164,7 @@
                             </h2>
                             <div id="mv1c" class="accordion-collapse collapse show" data-bs-parent="#accVenues">
                                 <div class="accordion-body">
-                                    <p>Table shows: venue name, street, number, zipcode, city, capacity, total events count (active + upcoming).</p>
+                                    <p>Information displayed: Venue name, street, number, zipcode, city, capacity, total events count (active + upcoming).</p>
                                     <p><strong>Search:</strong> by venue name.</p>
                                 </div>
                             </div>
@@ -180,7 +181,7 @@
                                         <li>Add new venue.</li>
                                         <li>View scheduled events for a venue.</li>
                                         <li>Edit venue details.</li>
-                                        <li>Delete venue <span class="text-danger">(only if not associated with any events)</span>.</li>
+                                        <li>Delete venue <span class="text-danger">(Caution: action allowed only if the venue is not associated with any events)</span>.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -201,9 +202,9 @@
                             <div id="ve1c" class="accordion-collapse collapse show" data-bs-parent="#accVenueEvents">
                                 <div class="accordion-body">
                                     <ul>
-                                        <li>Edit event details.</li>
-                                        <li>Delete event <span class="text-danger">(only if the event has no occurrences)</span>.</li>
                                         <li>Add a new event for this venue.</li>
+                                        <li>Edit event details.</li>
+                                        <li>Delete event <span class="text-danger">(Caution: action allowed only if the event has no occurrences)</span>.</li>
                                         <li>View occurrences per event.</li>
                                         <li>View all occurrences for the selected venue.</li>
                                     </ul>
@@ -225,14 +226,15 @@
                             </h2>
                             <div id="vo1c" class="accordion-collapse collapse show" data-bs-parent="#accVenueOcc">
                                 <div class="accordion-body">
-                                    <p>Columns: event name, occurrence date & time, ticket price, duration, available seats, bookings count, availability badge.</p>
-                                    <p><strong>Date range filter</strong> to search occurrences.</p>
-                                    <div class="mt-2">
+                                    <p>Information displayed: Event name, occurrence date & time, ticket price, duration, available seats, bookings count, availability badge.</p>
+                                    <div class="my-2">
+                                        <span class="text-muted me-1">Availability badges:</span>
                                         <span class="badge bg-success me-1">Green: &gt; 50%</span>
                                         <span class="badge bg-secondary me-1">Grey: 50% – 25%</span>
                                         <span class="badge bg-warning text-dark me-1">Orange: 25% – 0.1%</span>
                                         <span class="badge bg-danger">Red: Sold-out</span>
                                     </div>
+                                    <p><strong>Date range filter</strong> to search occurrences.</p>
                                 </div>
                             </div>
                         </div>
@@ -246,9 +248,9 @@
                                 <div class="accordion-body">
                                     <ul>
                                         <li>Add a new occurrence for this venue.</li>
-                                        <li>Manage bookings for an occurrence.</li>
                                         <li>Edit an occurrence.</li>
-                                        <li>Delete an occurrence <span class="text-danger">(only if it has no bookings)</span>.</li>
+                                        <li>Manage bookings for an occurrence.</li>
+                                        <li>Delete an occurrence <span class="text-danger">(Caution: action allowed only if the occurrence has no bookings)</span>.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -263,12 +265,12 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="me1">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#me1c">
-                                    Data Shown & Search
+                                    Data Shown & Filters
                                 </button>
                             </h2>
                             <div id="me1c" class="accordion-collapse collapse show" data-bs-parent="#accEvents">
                                 <div class="accordion-body">
-                                    <p>Columns: event name, event type (theater, cinema, music concert, sports, museum visit, archaeological site visit), number of occurrences.</p>
+                                    <p>Information displayed: Event name, event type (theater, cinema, music concert, sports, museum visit, archaeological site visit), number of occurrences.</p>
                                     <p><strong>Search:</strong> by event name or type.</p>
                                 </div>
                             </div>
@@ -283,9 +285,9 @@
                                 <div class="accordion-body">
                                     <ul>
                                         <li>Add new event.</li>
-                                        <li>Manage occurrences of an event.</li>
                                         <li>Edit event details.</li>
-                                        <li>Delete event <span class="text-danger">(only if it has no occurrences)</span>.</li>
+                                        <li>Manage occurrences of an event.</li>
+                                        <li>Delete event <span class="text-danger">(Caution: action allowed only for events that have no occurrences)</span>.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -305,13 +307,8 @@
                             </h2>
                             <div id="eo1c" class="accordion-collapse collapse show" data-bs-parent="#accEventOcc">
                                 <div class="accordion-body">
-                                    <p>Shows an event image, event type, venue name, and a short description. Each occurrence lists: date & time, ticket price, duration, available seats, bookings count, and availability badge.</p>
-                                    <div class="mt-2">
-                                        <span class="badge bg-success me-1">Green: &gt; 50%</span>
-                                        <span class="badge bg-secondary me-1">Grey: 50% – 25%</span>
-                                        <span class="badge bg-warning text-dark me-1">Orange: 25% – 0.1%</span>
-                                        <span class="badge bg-danger">Red: Sold-out</span>
-                                    </div>
+                                    <p class="mb-2">Displays the event image, event type, venue name and event description.</p>
+                                    <p class="mb-2">For every event occurrence: date & time, ticket price, duration, available seats, bookings count, and availability badge.</p>
                                 </div>
                             </div>
                         </div>
@@ -324,10 +321,10 @@
                             <div id="eo2c" class="accordion-collapse collapse" data-bs-parent="#accEventOcc">
                                 <div class="accordion-body">
                                     <ul>
-                                        <li>Add a new occurrence for this event.</li>
-                                        <li>Manage bookings of an event occurrence.</li>
+                                        <li>Add a new occurrence for this event <span class="text-danger">(Caution: New occurrences must have a 30-minute window before and after scheduled occurrences)</span></li>
                                         <li>Edit an occurrence.</li>
-                                        <li>Delete an occurrence <span class="text-danger">(only if it has no bookings)</span>.</li>
+                                        <li>Manage bookings of an event occurrence.</li>
+                                        <li>Delete an occurrence <span class="text-danger">(Caution: action allowed only if the occurrence has no bookings)</span>.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -342,13 +339,13 @@
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="mb1">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#mb1c">
-                                    Data Shown & Advanced Search
+                                    Data Shown & Filters
                                 </button>
                             </h2>
                             <div id="mb1c" class="accordion-collapse collapse show" data-bs-parent="#accBookings">
                                 <div class="accordion-body">
-                                    <p>Columns: booking ID, event name, venue name, event date, booking date, customer name & email, number of tickets, total amount (tickets + service fee), booking status (pending, confirmed, cancelled, refunded).</p>
-                                    <p><strong>Advanced search:</strong> by booking ID, event name, customer email, venue name and/or date range.</p>
+                                    <p>Information displayed: Booking ID, event name, venue name, event date, booking date, customer name & email, number of tickets, total amount (tickets + service fee), booking status (pending, confirmed, cancelled, refunded).</p>
+                                    <p><strong>Search by:</strong> booking ID, event name, customer email, venue name and/or date range.</p>
                                 </div>
                             </div>
                         </div>
@@ -362,7 +359,7 @@
                                 <div class="accordion-body">
                                     <ul>
                                         <li>Manage booking details.</li>
-                                        <li>Delete booking <span class="text-danger">(cannot delete a confirmed booking that is associated with active tickets and payment)</span>.</li>
+                                        <li>Delete booking <span class="text-danger">(Caution: action not allowed for confirmed bookings that are associated with active tickets and payments)</span>.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -382,9 +379,12 @@
                             </h2>
                             <div id="bd1c" class="accordion-collapse collapse show" data-bs-parent="#accBookingDetails">
                                 <div class="accordion-body">
-                                    <p>View order details: booking ID, booking date, status, event details, payment details (tickets amount + service fee), payment date & method (card/PayPal), client contact info, and tickets.</p>
+                                    <p>Information displayed: Booking ID, booking date, status, event details, payment details (tickets amount + service fee), payment date & method (card/PayPal), client contact info, and tickets.</p>
                                     <ul>
-                                        <li>Cancel a booking <span class="text-danger">(only for confirmed & upcoming bookings; use for emergencies)</span>.</li>
+                                        <li>Cancel a booking <span class="text-danger">(Caution: action allowed only for confirmed & upcoming bookings.
+                                            To be used by admins in case of emergency such as a cancelled event.
+                                            When a booking is cancelled, the total amount paid by the customer is refunded
+                                            using the customer's initial payment method)</span>.</li>
                                         <li>Reschedule a booking to a new date <span class="text-muted">(if available)</span>.</li>
                                     </ul>
                                 </div>
@@ -406,7 +406,7 @@
                             <div id="t1c" class="accordion-collapse collapse show" data-bs-parent="#accTestimonials">
                                 <div class="accordion-body">
                                     <p>All testimonials are <strong>hidden by default</strong>. Admins can toggle visibility (visible/hidden). Limit to <strong>no more than 10</strong> visible testimonials for a polished UI in user mode.</p>
-                                    <p>Columns: testimonial ID, rating (0.5 – 5 stars), text review, author name & email, testimonial date.</p>
+                                    <p>Information displayed: Testimonial ID, rating (0.5 – 5 stars), text review, author name & email, testimonial date.</p>
                                     <ul>
                                         <li>Delete a testimonial at any time.</li>
                                     </ul>
@@ -429,11 +429,11 @@
                             <div id="cm1c" class="accordion-collapse collapse show" data-bs-parent="#accContact">
                                 <div class="accordion-body">
                                     <p>Users can submit contact messages for issues while using the app. Admins review and resolve them, adding notes as needed.</p>
-                                    <p>Columns: message ID, subject, text message, category, author name & email, created date/time, status (<em>In progress</em> or <em>Resolved</em>), resolved date/time, admin notes.</p>
+                                    <p>Information displayed: Message ID, subject, text message, category, author name & email, created date/time, status (<em>In progress</em> or <em>Resolved</em>), resolved date/time, admin notes.</p>
                                     <ul>
                                         <li>For <em>In progress</em>: keep <em>admin notes</em> as a reminder of pending actions.</li>
                                         <li>For <em>Resolved</em>: write a short summary of what was done.</li>
-                                        <li>Deletion is <span class="text-danger">not allowed</span> for unresolved issues.</li>
+                                        <li>Deletion message<span class="text-danger">(Caution: not allowed for unresolved issues)</span> for unresolved issues.</li>
                                     </ul>
                                 </div>
                             </div>
