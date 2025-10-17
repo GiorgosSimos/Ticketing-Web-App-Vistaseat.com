@@ -16,73 +16,79 @@
 
         </div>
 
-        <!-- Section 1 -->
+        <!-- Section 1 - Manage -->
+        <div class="col mb-3">
+              <h5>Manage</h5>
+              <ul class="nav flex-column">
+                  <li class="nav-item mb-2">
+                      <a href="/adminDashboard/manageUsers" class="nav-link p-0">
+                          Users
+                      </a>
+                  </li>
+                  <li class="nav-item mb-2">
+                      <a href="/adminDashboard/manageVenues" class="nav-link p-0">
+                          Venues
+                      </a>
+                  </li>
+                  <li class="nav-item mb-2">
+                      <a href="/adminDashboard/manageEvents" class="nav-link p-0">
+                          Events
+                      </a>
+                  </li>
+                  <li class="nav-item mb-2">
+                      <a href="/adminDashboard/manageBookings" class="nav-link p-0">
+                          Bookings
+                      </a>
+                  </li>
+                  <li class="nav-item mb-2">
+                      <a href="/adminDashboard/manageTestimonials" class="nav-link p-0">
+                          Testimonials
+                      </a>
+                  </li>
+                  <li class="nav-item mb-2">
+                      <a href="/adminDashboard/manageContactMessages" class="nav-link p-0">
+                          Contact Messages
+                      </a>
+                  </li>
+              </ul>
+        </div>
+        <!-- Section 2 - Events -->
         <div class="col mb-3">
           <h5>Events</h5>
           <ul class="nav flex-column">
             <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
+              <a th:href="@{'/adminDashboard/manageEvents?eventType=THEATER'}" class="nav-link p-0">
                 Theater
               </a>
             </li>
             <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
+              <a th:href="@{'/adminDashboard/manageEvents?eventType=CINEMA'}" class="nav-link p-0">
                 Cinema
               </a>
             </li>
             <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
+              <a th:href="@{'/adminDashboard/manageEvents?eventType=CONCERT'}" class="nav-link p-0">
                 Music Concerts
               </a>
             </li>
             <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
+              <a th:href="@{'/adminDashboard/manageEvents?eventType=SPORTS'}" class="nav-link p-0">
                 Sports
               </a>
             </li>
             <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
+              <a th:href="@{'/adminDashboard/manageEvents?eventType=MUSEUM'}" class="nav-link p-0">
                 Museum Visits
               </a>
             </li>
             <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
+              <a th:href="@{'/adminDashboard/manageEvents?eventType=ARCHAEOLOGICAL'}" class="nav-link p-0">
                 Archaeological Site Visits
               </a>
             </li>
           </ul>
         </div>
-        <!-- Section 2 -->
-        <div class="col mb-3">
-          <h5>Section 2</h5>
-          <ul class="nav flex-column">
-            <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
-                Home
-              </a>
-            </li>
-            <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
-                Features
-              </a>
-            </li>
-            <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
-                Pricing
-              </a>
-            </li>
-            <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
-                FAQs
-              </a>
-            </li>
-            <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
-                About
-              </a>
-            </li>
-          </ul>
-        </div>
+
         <!-- Section 3 -->
         <div class="col mb-3">
           <h5>Advanced Settings</h5>
@@ -94,17 +100,12 @@
             </li>
             <li class="nav-item mb-2">
               <a href="#" class="nav-link p-0">
-                Create an Admin Account
+                Create a new Admin Account
               </a>
             </li>
             <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
-                Pricing
-              </a>
-            </li>
-            <li class="nav-item mb-2">
-              <a href="#" class="nav-link p-0">
-                FAQs
+              <a href="/adminDashboard/adminGuide" class="nav-link p-0">
+                Admin Guide
               </a>
             </li>
             <li class="nav-item mb-2">

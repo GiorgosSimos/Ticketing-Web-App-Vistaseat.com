@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Guide | Vistaseat.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/adminStyle.css}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/admin.js}" defer></script>
+</head>
+<body>
+
+    <!-- Include Header -->
+    <div th:insert="~{fragments/adminHeader :: adminHeader(${firstName}, ${lastName})}"></div>
+
+
+    <section class="container my-4">
+        <header class="d-flex flex-wrap align-items-center mb-3">
+            <div class="me-auto">
+                <h1 class="mb-1">Admin Guide</h1>
+                <p class="text-muted mb-0">Operations manual for <strong th:text="${appName}">Vistaseat.com</strong>.
+                    <span class="ms-2 small">Last updated: <span th:text="${lastUpdated}">2025-10-17</span></span>
+                </p>
+            </div>
+            <div class="ms-auto" style="max-width: 360px; width: 100%;">
+                <input id="helpSearch" class="form-control" type="search" placeholder="Search in guide (e.g., refund, venues, registrations)">
+            </div>
+        </header>
+
+        <div class="row g-4">
+            <!-- TOC -->
+            <nav class="col-lg-3">
+                <div class="list-group small position-sticky" style="top: 1rem;" id="toc">
+                    <a class="list-group-item list-group-item-action" href="#dashboard">Admin Dashboard</a>
+                    <a class="list-group-item list-group-item-action" href="#home">Home</a>
+                    <a class="list-group-item list-group-item-action" href="#manage-users">Manage Users</a>
+                    <a class="list-group-item list-group-item-action" href="#manage-venues">Manage Venues</a>
+                    <a class="list-group-item list-group-item-action" href="#venue-events">View Scheduled Events for Venue</a>
+                    <a class="list-group-item list-group-item-action" href="#venue-occurrences">Manage Venue Occurrences</a>
+                    <a class="list-group-item list-group-item-action" href="#manage-events">Manage Events</a>
+                    <a class="list-group-item list-group-item-action" href="#event-occurrences">Manage Event Occurrences</a>
+                    <a class="list-group-item list-group-item-action" href="#manage-bookings">Manage Bookings</a>
+                    <a class="list-group-item list-group-item-action" href="#booking-details">Manage Booking Details</a>
+                    <a class="list-group-item list-group-item-action" href="#testimonials">Manage Testimonials</a>
+                    <a class="list-group-item list-group-item-action" href="#contact-messages">Manage Contact Messages</a>
+                    <a class="list-group-item list-group-item-action" href="#account-details">Manage Account Details</a>
+                </div>
+            </nav>
+
+            <!-- Content -->
+            <div class="col-lg-9">
+
+                <!-- Admin Dashboard (control panel) -->
+                <section id="dashboard" class="mb-5">
+                    <h2 class="mb-3">Admin Dashboard</h2>
+                    <div class="accordion" id="accDashboard">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="dash1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#dash1c">
+                                    Overview & Purpose
+                                </button>
+                            </h2>
+                            <div id="dash1c" class="accordion-collapse collapse show" data-bs-parent="#accDashboard">
+                                <div class="accordion-body">
+                                    <p>The Admin Dashboard is the "control panel" for the entire management system—the brain of <strong th:text="${appName}">Vistaseat.com</strong>. From here, admins can see high-level KPIs, drill into users, events, venues, bookings, and system activity.</p>
+                                    <ul>
+                                        <li><strong>Access:</strong> <a th:href="@{/admin}">/admin</a> (ADMIN role required).</li>
+                                        <li><strong>Navigation:</strong> Use the left navigation menu to jump into each management area.</li>
+                                        <li><strong>Best practice:</strong> Review KPIs and Recent History on login to spot anomalies (spikes in refunds, sudden registrations, etc.).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Home Section -->
+                <section id="home" class="mb-5">
+                    <h2 class="mb-3">Home</h2>
+                    <div class="accordion" id="accHome">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="home1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#home1c">
+                                    KPI Cards & Recent History
+                                </button>
+                            </h2>
+                            <div id="home1c" class="accordion-collapse collapse show" data-bs-parent="#accHome">
+                                <div class="accordion-body">
+                                    <p>Displays summary cards and latest activity to give admins a snapshot of the system.</p>
+                                    <h6 class="mt-2">KPI Cards</h6>
+                                    <ul>
+                                        <li><strong>Total Users:</strong> All admins + registered users.</li>
+                                        <li><strong>Total Events:</strong> Past and upcoming combined.</li>
+                                        <li><strong>Total Venues:</strong> Regardless of scheduled events.</li>
+                                        <li><strong>Total Bookings:</strong> Across all events so far.</li>
+                                        <li><strong>Total Revenue:</strong> Tickets + service fees for <em>confirmed</em> and non-cancelled/non-refunded bookings.</li>
+                                    </ul>
+                                    <h6 class="mt-3">Recent History</h6>
+                                    <p>Two tabs show the last 10 records of each:</p>
+                                    <ul>
+                                        <li><strong>User Registrations:</strong> newest first.</li>
+                                        <li><strong>Bookings:</strong> newest first.</li>
+                                    </ul>
+                                    <p class="small text-muted mb-0">Tip: Link each row to its detail page to speed up triage.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Users Section -->
+                <section id="manage-users" class="mb-5">
+                    <h2 class="mb-3">Manage Users</h2>
+                    <div class="accordion" id="accUsers">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="mu1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#mu1c">
+                                    Data Shown & Filtering
+                                </button>
+                            </h2>
+                            <div id="mu1c" class="accordion-collapse collapse show" data-bs-parent="#accUsers">
+                                <div class="accordion-body">
+                                    <p>Table shows: first name, last name, email, user role (registered, admin), phone number, status (active/inactive), registration date.</p>
+                                    <ul>
+                                        <li><strong>Search by name</strong> (first/last/both).</li>
+                                        <li><strong>Filter by role</strong>: All, Registered, Admins.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="mu2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mu2c">
+                                    Permitted Actions
+                                </button>
+                            </h2>
+                            <div id="mu2c" class="accordion-collapse collapse" data-bs-parent="#accUsers">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Display user bookings.</li>
+                                        <li>Toggle user status (active/inactive).</li>
+                                        <li>Delete user <span class="text-danger">(only if the user has no bookings)</span>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Venues Section -->
+                <section id="manage-venues" class="mb-5">
+                    <h2 class="mb-3">Manage Venues</h2>
+                    <div class="accordion" id="accVenues">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="mv1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#mv1c">
+                                    Data Shown & Searching
+                                </button>
+                            </h2>
+                            <div id="mv1c" class="accordion-collapse collapse show" data-bs-parent="#accVenues">
+                                <div class="accordion-body">
+                                    <p>Table shows: venue name, street, number, zipcode, city, capacity, total events count (active + upcoming).</p>
+                                    <p><strong>Search:</strong> by venue name.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="mv2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mv2c">
+                                    Permitted Actions
+                                </button>
+                            </h2>
+                            <div id="mv2c" class="accordion-collapse collapse" data-bs-parent="#accVenues">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Add new venue.</li>
+                                        <li>View scheduled events for a venue.</li>
+                                        <li>Edit venue details.</li>
+                                        <li>Delete venue <span class="text-danger">(only if not associated with any events)</span>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- View Scheduled Events for Venue Section -->
+                <section id="venue-events" class="mb-5">
+                    <h2 class="mb-3">View Scheduled Events for Venue</h2>
+                    <div class="accordion" id="accVenueEvents">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="ve1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ve1c">
+                                    Management Actions
+                                </button>
+                            </h2>
+                            <div id="ve1c" class="accordion-collapse collapse show" data-bs-parent="#accVenueEvents">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Edit event details.</li>
+                                        <li>Delete event <span class="text-danger">(only if the event has no occurrences)</span>.</li>
+                                        <li>Add a new event for this venue.</li>
+                                        <li>View occurrences per event.</li>
+                                        <li>View all occurrences for the selected venue.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Venue Occurrences Section -->
+                <section id="venue-occurrences" class="mb-5">
+                    <h2 class="mb-3">Manage Venue Occurrences</h2>
+                    <div class="accordion" id="accVenueOcc">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="vo1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#vo1c">
+                                    Data Shown & Filters
+                                </button>
+                            </h2>
+                            <div id="vo1c" class="accordion-collapse collapse show" data-bs-parent="#accVenueOcc">
+                                <div class="accordion-body">
+                                    <p>Columns: event name, occurrence date & time, ticket price, duration, available seats, bookings count, availability badge.</p>
+                                    <p><strong>Date range filter</strong> to search occurrences.</p>
+                                    <div class="mt-2">
+                                        <span class="badge bg-success me-1">Green: &gt; 50%</span>
+                                        <span class="badge bg-secondary me-1">Grey: 50% – 25%</span>
+                                        <span class="badge bg-warning text-dark me-1">Orange: 25% – 0.1%</span>
+                                        <span class="badge bg-danger">Red: Sold-out</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="vo2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#vo2c">
+                                    Permitted Actions
+                                </button>
+                            </h2>
+                            <div id="vo2c" class="accordion-collapse collapse" data-bs-parent="#accVenueOcc">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Add a new occurrence for this venue.</li>
+                                        <li>Manage bookings for an occurrence.</li>
+                                        <li>Edit an occurrence.</li>
+                                        <li>Delete an occurrence <span class="text-danger">(only if it has no bookings)</span>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Events Section -->
+                <section id="manage-events" class="mb-5">
+                    <h2 class="mb-3">Manage Events</h2>
+                    <div class="accordion" id="accEvents">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="me1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#me1c">
+                                    Data Shown & Search
+                                </button>
+                            </h2>
+                            <div id="me1c" class="accordion-collapse collapse show" data-bs-parent="#accEvents">
+                                <div class="accordion-body">
+                                    <p>Columns: event name, event type (theater, cinema, music concert, sports, museum visit, archaeological site visit), number of occurrences.</p>
+                                    <p><strong>Search:</strong> by event name or type.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="me2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#me2c">
+                                    Permitted Actions
+                                </button>
+                            </h2>
+                            <div id="me2c" class="accordion-collapse collapse" data-bs-parent="#accEvents">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Add new event.</li>
+                                        <li>Manage occurrences of an event.</li>
+                                        <li>Edit event details.</li>
+                                        <li>Delete event <span class="text-danger">(only if it has no occurrences)</span>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Event Occurrences Section -->
+                <section id="event-occurrences" class="mb-5">
+                    <h2 class="mb-3">Manage Event Occurrences</h2>
+                    <div class="accordion" id="accEventOcc">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="eo1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#eo1c">
+                                    Data Shown
+                                </button>
+                            </h2>
+                            <div id="eo1c" class="accordion-collapse collapse show" data-bs-parent="#accEventOcc">
+                                <div class="accordion-body">
+                                    <p>Shows an event image, event type, venue name, and a short description. Each occurrence lists: date & time, ticket price, duration, available seats, bookings count, and availability badge.</p>
+                                    <div class="mt-2">
+                                        <span class="badge bg-success me-1">Green: &gt; 50%</span>
+                                        <span class="badge bg-secondary me-1">Grey: 50% – 25%</span>
+                                        <span class="badge bg-warning text-dark me-1">Orange: 25% – 0.1%</span>
+                                        <span class="badge bg-danger">Red: Sold-out</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="eo2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#eo2c">
+                                    Permitted Actions
+                                </button>
+                            </h2>
+                            <div id="eo2c" class="accordion-collapse collapse" data-bs-parent="#accEventOcc">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Add a new occurrence for this event.</li>
+                                        <li>Manage bookings of an event occurrence.</li>
+                                        <li>Edit an occurrence.</li>
+                                        <li>Delete an occurrence <span class="text-danger">(only if it has no bookings)</span>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Bookings Section -->
+                <section id="manage-bookings" class="mb-5">
+                    <h2 class="mb-3">Manage Bookings</h2>
+                    <div class="accordion" id="accBookings">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="mb1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#mb1c">
+                                    Data Shown & Advanced Search
+                                </button>
+                            </h2>
+                            <div id="mb1c" class="accordion-collapse collapse show" data-bs-parent="#accBookings">
+                                <div class="accordion-body">
+                                    <p>Columns: booking ID, event name, venue name, event date, booking date, customer name & email, number of tickets, total amount (tickets + service fee), booking status (pending, confirmed, cancelled, refunded).</p>
+                                    <p><strong>Advanced search:</strong> by booking ID, event name, customer email, venue name and/or date range.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="mb2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mb2c">
+                                    Permitted Actions
+                                </button>
+                            </h2>
+                            <div id="mb2c" class="accordion-collapse collapse" data-bs-parent="#accBookings">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Manage booking details.</li>
+                                        <li>Delete booking <span class="text-danger">(cannot delete a confirmed booking that is associated with active tickets and payment)</span>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Booking Details Section -->
+                <section id="booking-details" class="mb-5">
+                    <h2 class="mb-3">Manage Booking Details</h2>
+                    <div class="accordion" id="accBookingDetails">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="bd1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#bd1c">
+                                    Information & Actions
+                                </button>
+                            </h2>
+                            <div id="bd1c" class="accordion-collapse collapse show" data-bs-parent="#accBookingDetails">
+                                <div class="accordion-body">
+                                    <p>View order details: booking ID, booking date, status, event details, payment details (tickets amount + service fee), payment date & method (card/PayPal), client contact info, and tickets.</p>
+                                    <ul>
+                                        <li>Cancel a booking <span class="text-danger">(only for confirmed & upcoming bookings; use for emergencies)</span>.</li>
+                                        <li>Reschedule a booking to a new date <span class="text-muted">(if available)</span>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Testimonials Section -->
+                <section id="testimonials" class="mb-5">
+                    <h2 class="mb-3">Manage Testimonials</h2>
+                    <div class="accordion" id="accTestimonials">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="t1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#t1c">
+                                    Visibility & Data
+                                </button>
+                            </h2>
+                            <div id="t1c" class="accordion-collapse collapse show" data-bs-parent="#accTestimonials">
+                                <div class="accordion-body">
+                                    <p>All testimonials are <strong>hidden by default</strong>. Admins can toggle visibility (visible/hidden). Limit to <strong>no more than 10</strong> visible testimonials for a polished UI in user mode.</p>
+                                    <p>Columns: testimonial ID, rating (0.5 – 5 stars), text review, author name & email, testimonial date.</p>
+                                    <ul>
+                                        <li>Delete a testimonial at any time.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Contact Messages Section -->
+                <section id="contact-messages" class="mb-5">
+                    <h2 class="mb-3">Manage Contact Messages</h2>
+                    <div class="accordion" id="accContact">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="cm1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#cm1c">
+                                    Workflow & Data
+                                </button>
+                            </h2>
+                            <div id="cm1c" class="accordion-collapse collapse show" data-bs-parent="#accContact">
+                                <div class="accordion-body">
+                                    <p>Users can submit contact messages for issues while using the app. Admins review and resolve them, adding notes as needed.</p>
+                                    <p>Columns: message ID, subject, text message, category, author name & email, created date/time, status (<em>In progress</em> or <em>Resolved</em>), resolved date/time, admin notes.</p>
+                                    <ul>
+                                        <li>For <em>In progress</em>: keep <em>admin notes</em> as a reminder of pending actions.</li>
+                                        <li>For <em>Resolved</em>: write a short summary of what was done.</li>
+                                        <li>Deletion is <span class="text-danger">not allowed</span> for unresolved issues.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manage Account Details Section -->
+                <section id="account-details" class="mb-5">
+                    <h2 class="mb-3">Manage Account Details</h2>
+                    <div class="accordion" id="accAccount">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="ad1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ad1c">
+                                    Editing Your Profile
+                                </button>
+                            </h2>
+                            <div id="ad1c" class="accordion-collapse collapse show" data-bs-parent="#accAccount">
+                                <div class="accordion-body">
+                                    <p>Admins can modify personal info: first name, last name, phone number.</p>
+                                    <p><strong>Email</strong> is the account identifier and <strong>cannot be changed</strong>.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="text-muted small">
+                    <p class="mb-0">Need more help? Contact <a th:href="'mailto:' + ${supportEmail}" th:text="${supportEmail}">support@vistaseat.com</a>.</p>
+                </footer>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap modal to confirm dialogues-->
+    <div th:replace="~{fragments/confirmModal :: confirmModalFragment}"></div>
+
+    <!-- Include Footer-->
+    <div th:insert="~{fragments/adminFooter :: footer}"></div>
+
+    <!-- Simple client-side filter across accordion content -->
+    <script>
+        (function () {
+            const input = document.getElementById('helpSearch');
+            if (!input) return;
+            input.addEventListener('input', function () {
+                const q = this.value.trim().toLowerCase();
+                const containers = document.querySelectorAll('section.container .col-lg-9 section');
+                containers.forEach(sec => {
+                    // search within section text only
+                    const text = sec.innerText.toLowerCase();
+                    sec.style.display = text.includes(q) ? '' : 'none';
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -148,4 +148,19 @@ public class AdminController {
         return "redirect:/adminAccount";
     }
 
+    @GetMapping("/adminDashboard/adminGuide")
+    public String displayAdminGuide(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) auth.getPrincipal();
+
+        model.addAttribute("firstName", user.getFirstName());
+        model.addAttribute("lastName", user.getLastName());
+        model.addAttribute("appName", "Vistaseat.com");
+        model.addAttribute("supportEmail", "support@vistaseat.com");
+        model.addAttribute("lastUpdated", java.time.LocalDate.now().toString());
+
+        return "adminGuide";
+
+    }
+
 }
