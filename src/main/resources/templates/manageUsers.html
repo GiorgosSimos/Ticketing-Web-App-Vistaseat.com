@@ -110,7 +110,7 @@
                                 <td th:text="${user.firstName}">Alice</td>
                                 <td th:text="${user.lastName}">Smith</td>
                                 <td th:text="${user.email}">alice@example.com</td>
-                                <td th:text="${user.role}">Admin</td>
+                                <td th:text="${user.role.displayRole}">Admin</td>
                                 <td th:text="${user.phone}">1234567890</td>
                                 <td>
                                     <span th:classappend="${user.active} ? 'badge bg-success' : 'badge bg-danger'">

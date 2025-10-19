@@ -58,6 +58,14 @@ public class UserRestController {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('DOMAIN_ADMIN')")
+    @PostMapping("/admin/register")
+    public ResponseEntity<UserDto> createAdmin(@RequestBody NewUserDto newUserDto) {
+
+        UserDto savedAdmin = userService.createAdmin(newUserDto);
+        return new ResponseEntity<>(savedAdmin, HttpStatus.CREATED);
+    }
+
     // Get user By Id REST API
     @PreAuthorize("hasRole('DOMAIN_ADMIN')")
     @GetMapping("{id}")

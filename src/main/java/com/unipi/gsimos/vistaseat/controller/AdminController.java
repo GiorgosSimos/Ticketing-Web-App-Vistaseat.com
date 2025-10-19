@@ -1,6 +1,7 @@
 package com.unipi.gsimos.vistaseat.controller;
 
 import com.unipi.gsimos.vistaseat.model.BookingStatus;
+import com.unipi.gsimos.vistaseat.model.UserRole;
 import com.unipi.gsimos.vistaseat.repository.BookingRepository;
 import com.unipi.gsimos.vistaseat.repository.EventRepository;
 import com.unipi.gsimos.vistaseat.repository.UserRepository;
@@ -162,6 +163,16 @@ public class AdminController {
 
         return "adminGuide";
 
+    }
+
+    @PreAuthorize("hasRole('DOMAIN_ADMIN')")
+    @GetMapping("/adminSignUp")
+    public String adminSignUp(Model model) {
+
+        model.addAttribute("userRoles", UserRole.values());
+        model.addAttribute("REGISTERED", UserRole.REGISTERED);
+
+        return "adminSignUp";
     }
 
 }

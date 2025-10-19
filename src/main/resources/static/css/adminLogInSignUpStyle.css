@@ -78,6 +78,47 @@ h2 {
     font-size: 1rem;
 }
 
+/* Make select look like the text inputs */
+.inputbox select {
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 0 35px 0 5px;  /* space for icons, same as inputs */
+    color: #fff;
+
+    /* remove native styling so it matches the custom field */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Keep the floating label behavior for selects too */
+.inputbox select:focus ~ label,
+.inputbox select:valid ~ label {
+    top: -5px;
+    font-size: 0.9rem;
+    color: #a8a8a8;
+}
+
+/* Improve keyboard focus visibility (underline color change) */
+.inputbox:focus-within {
+    border-color: #fff;
+}
+
+/* Ensure dropdown list is readable against system UI (options usually render on system surface) */
+.inputbox select option {
+    color: #000; /* so options show dark text on light dropdown menus */
+}
+
+/* remove old IE chevron (harmless elsewhere) */
+.inputbox select::-ms-expand {
+    display: none;
+}
+
+
 .password-box {
     position: relative;
 }
@@ -116,26 +157,6 @@ button:hover {
     background-color: rgba(255, 255, 255, 0.5);
 }
 
-.register {
-    font-size: 0.9rem;
-    color: #fff;
-    text-align: center;
-    margin: 25px 0 10px;
-    transition: all 0.5s ease-in-out;
-}
-
-.register p a {
-    text-decoration: none;
-    color: #fff;
-    font-weight: 600;
-    transition: all 0.5s ease-in-out;
-}
-
-.register p a:hover {
-    text-decoration: underline;
-    color: #a8a8a8;
-}
-
 .toast {
     position: relative;
     background-color: #ff4d4d;
@@ -151,6 +172,3 @@ button:hover {
 .hidden {
     display: none;
 }
-
-
-

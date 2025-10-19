@@ -13,6 +13,8 @@ public interface UserService {
 
     UserDto createUser(NewUserDto newUserDto);
 
+    UserDto createAdmin(NewUserDto newUserDto);
+
     UserDto getUserById(Long userId);
 
     List<UserDto> getAllUsers();

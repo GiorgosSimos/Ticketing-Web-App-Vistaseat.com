@@ -60,6 +60,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public UserDto createAdmin(NewUserDto adminDto) {
+        if (userRepository.existsByEmail(adminDto.getEmail())){
+            throw new RuntimeException("Email already exists");
+        }
+
+        //Before saving, encrypt password with BCryptPasswordEncoder
+        adminDto.setPassword(passwordEncoder.encode(adminDto.getPassword()));
+
+        User user = UserMapper.toUser(adminDto);
+        User savedAdmin = userRepository.save(user);
+        return UserMapper.toUserDto(savedAdmin);
+    }
+
+    @Override
     public UserDto getUserById(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(
