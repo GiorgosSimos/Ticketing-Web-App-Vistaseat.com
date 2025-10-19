@@ -10,7 +10,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgb(165, 21, 140);
+    background: rgb(109, 6, 147);
     color: white;
     padding: 1rem 1.5rem;
 }
@@ -81,7 +81,7 @@ body {
     justify-content: center;
     text-align: center;
     color: rgb(242, 229, 255);
-    background-color: rgb(165, 21, 140);
+    background-color: rgb(109, 6, 147);;
 }
 
 .admin-footer a {
