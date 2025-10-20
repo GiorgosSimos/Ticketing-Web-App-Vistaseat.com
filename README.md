@@ -202,4 +202,4 @@ The system replicates real-world event ticketing workflows, demonstrating applie
 ---
 
 > © 2025 **Georgios Simos**  
-> *A demonstration of modern web technologies applied to real-world ticketing systems — designed with scalability, usability, and precision in mind.*
+> *A demonstration of modern web technologies applied to a real-world ticketing systems — addressing real world problems with scalability and smooth UX in mind.*
