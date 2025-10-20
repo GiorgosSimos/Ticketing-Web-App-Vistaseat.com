@@ -12,33 +12,59 @@
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@6.0.4/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
-    <h1>Welcome to vistaseat.com</h1>
+    <h1 class="fw-bold">Welcome to vistaseat.com</h1>
     <section>
         <form action="/api/users/register" method="POST">
             <h2>Sign Up</h2>
 
             <div class="inputbox">
                 <ion-icon name="body-outline"></ion-icon>
-                <input type="text" id="firstName" name="firstName" required>
+                <input type="text"
+                       id="firstName"
+                       name="firstName"
+                       pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]{2,30}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,30})?$"
+                       title="Only letters, optional apostrophe or hyphen (e.g. Jean-Luc)"
+                       required>
                 <label for="firstName">First Name</label>
             </div>
             <div class="inputbox">
                 <ion-icon name="body-outline"></ion-icon>
-                <input type="text" id="lastName" name="lastName" required>
+                <input type="text"
+                       id="lastName"
+                       name="lastName"
+                       pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]{2,40}(?:[ '--][A-Za-zÀ-ÖØ-öø-ÿ]{2,40})*$"
+                       title="Only letters, spaces, apostrophes, hyphens allowed (e.g. van der Mer)"
+                       required>
                 <label for="lastName">Last Name</label>
             </div>
             <div class="inputbox">
                 <ion-icon name="call-outline"></ion-icon>
-                <input type="tel" id="phone" name="phone" required>
+                <input type="tel"
+                       id="phone"
+                       name="phone"
+                       pattern="^\+?[0-9. ()-]{7,20}$"
+                       maxlength="20"
+                       title="Use digits, space, -, (), or +"
+                       required>
                 <label for="phone">Phone</label>
             </div>
             <div class="inputbox">
                 <ion-icon name="mail-outline"></ion-icon>
-                <input type="email" id="email" name="email" required>
+                <input type="email"
+                       id="email"
+                       name="email"
+                       title="example@domain.com"
+                       required>
                 <label for="email">Your email</label>
             </div>
             <div class="inputbox password-box">
-                <input type="password" id="password" name="password" minlength="8" required>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       minlength="8"
+                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$_])[A-Za-z\d!@#$_]{8,}$"
+                       title="At least 8 chars, include 1 lowercase, 1 uppercase, 1 number, and 1 special: !, @, #, $, _."
+                       required>
                 <label for="password">Your password</label>
                 <ion-icon name="eye-off-outline" class="toggle-password" onclick="togglePassword('password', this)"></ion-icon>
             </div>
@@ -74,22 +100,37 @@
     </div>
 
     <script>
+        // Password Regex:
+        // - (?=.*[a-z])  at least one lowercase
+        // - (?=.*[A-Z])  at least one uppercase
+        // - (?=.*\d)     at least one digit
+        // - (?=.*[!@#$_]) at least one of the allowed specials
+        // - [A-Za-z\d!@#$_]{8,} only allow letters/digits/these specials, min 8 chars
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$_])[A-Za-z\d!@#$_]{8,}$/;
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+
+        password.addEventListener('input', function() {
+            this.setCustomValidity(
+                passwordRegex.test(this.value)
+                    ? ''
+                    : 'Password must be at least 8 characters and include: 1 lowercase, 1 uppercase, 1 number, and one of ! @ # $ _.'
+            );
+        });
+
+        confirmPassword.addEventListener('input', function() {
+            this.setCustomValidity(this.value && this.value !== password.value ? 'Passwords do not match' : '');
+        });
+
         document.querySelector('form').addEventListener('submit', async function(e) {
             e.preventDefault(); // Prevent default form submission
-
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            if (password!==confirmPassword) {
-                alert('Passwords do not match.');
-                return;
-            }
 
             const formData = {
                 firstName: document.getElementById('firstName').value,
                 lastName: document.getElementById('lastName').value,
                 phone: document.getElementById('phone').value,
                 email: document.getElementById('email').value,
-                password: password
+                password: password.value
             };
 
             try {
@@ -124,14 +165,16 @@
                         window.location.href = '/userLogin';
                     }
                 } else {
+                    // Read once as text, then try JSON.parse
+                    const raw = await response.text();
+                    let msg = "An unexpected error occurred";
                     try {
-                        const errorData = await response.json();
-                        alert("Registration failed: " + (errorData.message || "An unexpected error occurred"));
-                    } catch (parseError) {
-                        const rawText = await response.text(); // fallback
-                        console.warn("Could not parse JSON. Raw response:", rawText);
-                        alert("Registration failed. Server did not return expected JSON.");
+                        const data = JSON.parse(raw);
+                        msg = data.message || msg;
+                    } catch {
+                        console.warn("Non-JSON error body:", raw);
                     }
+                    alert("Registration failed: " + msg);
                 }
             } catch (error) {
                 alert("An error occurred: " + error.message);
