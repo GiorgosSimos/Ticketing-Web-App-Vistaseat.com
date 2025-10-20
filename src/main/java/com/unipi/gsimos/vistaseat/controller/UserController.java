@@ -195,7 +195,7 @@ public class UserController {
         return "redirect:/adminDashboard/manageUsers";
     }
 
-    @PostMapping("adminDashboard/manageUsers/delete/{id}")
+    @PostMapping("/adminDashboard/manageUsers/delete/{id}")
     public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
         try {

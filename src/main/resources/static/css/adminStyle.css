@@ -1,8 +1,22 @@
+:root{
+    --bg-sidebar: rgb(245, 236, 213);
+    --bg-card: rgb(245, 236, 213);
+    --bg-history-table: rgb(245, 236, 213);
+    --sidebar-width: 280px;
+    --gutter: 1.5rem;
+    --error-page-bg: linear-gradient(to bottom, rgb(122, 166, 227), rgb(240, 175, 100), rgb(184, 154, 232));
+    --admin-mode-bg: linear-gradient(to bottom, rgb(116, 200, 181), rgb(122, 166, 227), rgb(184, 154, 232));
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom, rgb(116, 200, 181), rgb(122, 166, 227), rgb(184, 154, 232));
+    background: var(--admin-mode-bg);
+}
+
+.errorStyle{
+    background: var(--error-page-bg);
 }
 
 /* Header Styling*/
@@ -140,14 +154,6 @@ body {
 }
 
 /* Admin Dashboard Styling*/
-:root{
-    --bg-sidebar: rgb(245, 236, 213);
-    --bg-card: rgb(245, 236, 213);
-    --bg-history-table: rgb(245, 236, 213);
-    --sidebar-width: 280px;
-    --gutter: 1.5rem;
-}
-
 .dashboard-layout{
     display: grid;
     min-height: 100vh;

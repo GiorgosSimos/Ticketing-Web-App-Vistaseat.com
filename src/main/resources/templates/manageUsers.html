@@ -120,15 +120,6 @@
                                 </td>
                                 <td th:text="${#temporals.format(user.registrationDate, 'yyyy-MM-dd HH:mm')}">2025-05-09</td>
                                 <td class="text-nowrap">
-                                    <!-- View Booking History Button -->
-                                    <form action=""
-                                          class="confirm-form-submission"
-                                          data-message="View booking history of this user?"
-                                          style="display: inline;">
-                                        <button class="btn btn-sm btn-info me-1" id="btn-booking-history" title="View Booking History">
-                                            <i class="bi bi-journal-text"></i>
-                                        </button>
-                                    </form>
                                     <!-- Toggle User Status Button -->
                                     <form th:action="@{'/adminDashboard/manageUsers/toggle-status/' + ${user.id}}"
                                           method="post"
