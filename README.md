@@ -82,7 +82,7 @@ The **Admin Dashboard** is the control center of the application — providing f
 - Add, edit, or delete events and their scheduled occurrences
 - Enforce 30-minute windows between event occurrences
 - Track seat availability with color-coded **availability badges:**
-    - 🟩 >50%, ⚪ 50–25%, 🟧 25–0.1%, 🟥 Sold Out
+  🟩 >50%, ⚪ 50–25%, 🟧 25–0.1%, 🟥 Sold Out
 
 ### 🧾 Manage Bookings
 - Search by booking ID, customer email, event, or date range
@@ -91,7 +91,7 @@ The **Admin Dashboard** is the control center of the application — providing f
 - **Reschedule events** where applicable
 
 ### 💬 Manage Testimonials
-- Approve or hide user testimonials (limit: 10 visible at once)
+- Approve or hide user testimonials
 - Delete inappropriate or outdated feedback
 
 ### 📩 Manage Contact Messages
@@ -166,7 +166,7 @@ The system replicates real-world event ticketing workflows, demonstrating applie
 
 ## 🚀 Future Enhancements
 - **Analytics dashboard** for performance and sales insights
-- Implement an **interactive seat selection** feature by displaying the floor plan of each venue.
+- Implementation of an **interactive seat selection** feature by displaying the floor plan of each venue
 - Addition of **QR/barcode scanning** for ticket validation
 - **Email notifications** for order confirmations
 
@@ -197,8 +197,7 @@ The system replicates real-world event ticketing workflows, demonstrating applie
 ## 📬 Contact
 
 👤 **Georgios Simos**  
-📧 [Email Me](mailto:giorgos_simos@windowslive.com)  
-🌐 [LinkedIn](www.linkedin.com/in/georgios-simos-5a7497260)
+📧 [Email Me](mailto:giorgos_simos@windowslive.com)
 
 ---
 
