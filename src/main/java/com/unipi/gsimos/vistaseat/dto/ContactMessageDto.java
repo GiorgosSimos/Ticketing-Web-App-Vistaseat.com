@@ -25,5 +25,4 @@ public class ContactMessageDto {
     private LocalDateTime createdAt;
     private LocalDateTime resolvedAt;
     private String adminNotes;
-
 }

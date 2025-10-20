@@ -27,5 +27,4 @@ public class TestimonialDto {
     private int fullStars;
     private boolean halfStars;
     private int emptyStars;
-
 }

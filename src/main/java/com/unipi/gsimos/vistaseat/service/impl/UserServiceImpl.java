@@ -102,7 +102,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found"));
 
-        // prevent orphaned venues or events - TODO User friendly exceptions
         if (venueRepository.countVenuesManagedByUser(userId) > 0) {
             throw new IllegalStateException("You cannot delete an administrator who currently manages venues.");
         } else if (!user.getManagedEvents().isEmpty()) {

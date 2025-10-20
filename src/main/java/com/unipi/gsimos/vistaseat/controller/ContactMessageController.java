@@ -38,7 +38,6 @@ public class ContactMessageController {
     private final UserRepository userRepository;
     private final ContactMessageRepository contactMessageRepository;
 
-
     @GetMapping("/contact")
     public String getContactForm(Model model) {
 

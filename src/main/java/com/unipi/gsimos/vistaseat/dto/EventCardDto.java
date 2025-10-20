@@ -24,9 +24,7 @@ public record EventCardDto(
             case SPORTS -> "/images/sports.jpg";
             case MUSEUM -> "/images/museum_visit.png";
             case ARCHAEOLOGICAL -> "/images/archaeological_site.jpg";
-            default -> "/images/events_generic.jpg";
         };
-
 
         return new EventCardDto(
                 event.getId(),

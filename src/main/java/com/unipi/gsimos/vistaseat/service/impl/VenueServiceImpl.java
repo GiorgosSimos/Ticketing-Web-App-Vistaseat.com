@@ -80,7 +80,6 @@ public class VenueServiceImpl implements VenueService {
         Venue venue = venueRepository.findById(VenueId)
                 .orElseThrow(() -> new RuntimeException("Venue not found"));
 
-        // prevent orphaned events - TODO User friendly exceptions
         if (!venue.getEvents().isEmpty()) {
             throw new IllegalStateException("Cannot delete venue: it is associated with existing events.");
         }

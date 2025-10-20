@@ -48,7 +48,6 @@ public record EventOccurrenceCardDto(
         public final String badge;
         public final String color;
 
-
         AvailabilityLevel(String label, String badge, String color) {
             this.label = label;
             this.badge   = badge;

@@ -98,7 +98,6 @@ public class AdminController {
         return "adminDashboard";
     }
 
-
     @PreAuthorize("hasRole('DOMAIN_ADMIN')")
     @GetMapping("/adminAccount")
     public String adminAccount(Model model) {

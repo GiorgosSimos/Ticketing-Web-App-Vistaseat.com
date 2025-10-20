@@ -29,7 +29,6 @@ public class PaymentController {
     private final BookingRepository bookingRepository;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
-    private final BookingMapper bookingMapper;
     private final PaymentService paymentService;
 
     @GetMapping("/api/payments/{bookingId}")
@@ -40,7 +39,7 @@ public class PaymentController {
 
         LocalDateTime occurrenceDateTime = booking.getEventOccurrence().getEventDate();
 
-        BookingDto bookingDto = bookingMapper.toDto(booking);
+        BookingDto bookingDto = BookingMapper.toDto(booking);
 
         Event event = eventRepository.findEventByOccurrenceId(booking.getEventOccurrence().getId());
 

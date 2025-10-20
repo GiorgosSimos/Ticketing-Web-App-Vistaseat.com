@@ -14,7 +14,5 @@ public record TicketPDFDto(
         String venueName,
         LocalDateTime eventDateTime,
         BigDecimal ticketPrice,
-        String seat
-
-) {
+        String seat) {
 }

@@ -69,12 +69,12 @@
     overflow: hidden;
     display: -webkit-box;         /* creates an anonymous flex box  */
     -webkit-line-clamp: 2;        /* number of visible lines        */
-    -webkit-box-orient: vertical; /* vertical stacking              */
+    -webkit-box-orient: vertical;
 }
 
 .swiper-button-prev,
 .swiper-button-next {
-    width: 48px;                 /* square pill */
+    width: 48px;
     height: 48px;
     border-radius: 50%;
     opacity: 0.5;
@@ -220,13 +220,13 @@
 
 /* Empty-state block: take up some vertical space and fade in */
 .empty-state {
-    min-height: 40vh;                 /* adjust to taste */
+    min-height: 40vh;
     animation: fade-slide 0.4s ease-out;
 }
 
 /* Resize and dim the icon */
 .empty-state .empty-icon {
-    width: 3rem;                      /* ~48 px */
+    width: 3rem;
     height: 3rem;
     opacity: .65;
 }
@@ -809,7 +809,6 @@
     cursor: pointer;
 }
 
-/* Optional hover cursor feedback */
 .rating .half-star-segment:hover,
 .rating .half-star-segment:focus {
     outline: none;

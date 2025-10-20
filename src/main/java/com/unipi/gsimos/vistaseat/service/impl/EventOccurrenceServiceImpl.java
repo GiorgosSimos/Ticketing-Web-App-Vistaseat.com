@@ -231,4 +231,3 @@ public class EventOccurrenceServiceImpl implements EventOccurrenceService {
                 .sum();
     }
 }
-

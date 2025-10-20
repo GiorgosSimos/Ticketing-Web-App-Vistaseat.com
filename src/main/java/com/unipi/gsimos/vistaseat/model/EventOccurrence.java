@@ -93,5 +93,4 @@ public class EventOccurrence {
         return seatsSold >= availableSeats;
     }
 
-
 }

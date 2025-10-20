@@ -152,7 +152,6 @@ public class TestimonialController {
             redirectAttributes.addFlashAttribute("error", "An unexpected error occurred!");
             return "redirect:/userAccount/testimonials?error";
         }
-
     }
 
 }

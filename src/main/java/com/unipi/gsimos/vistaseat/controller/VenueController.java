@@ -32,7 +32,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
-//A Web controller (@Controller) works with HTML forms (using @ModelAttribute, returns view names for Thymeleaf).
 @Controller
 @RequiredArgsConstructor
 public class VenueController {
@@ -135,7 +134,6 @@ public class VenueController {
         return "editVenue";
     }
 
-    // Handle form submission (POST)
     @PostMapping("/adminDashboard/manageVenues/editVenue/{venueId}")
     public String editVenue(@PathVariable Long venueId,
                             @ModelAttribute VenueDto venueDto,

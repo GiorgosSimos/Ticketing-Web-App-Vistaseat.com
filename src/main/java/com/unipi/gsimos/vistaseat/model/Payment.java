@@ -1,6 +1,5 @@
 package com.unipi.gsimos.vistaseat.model;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;

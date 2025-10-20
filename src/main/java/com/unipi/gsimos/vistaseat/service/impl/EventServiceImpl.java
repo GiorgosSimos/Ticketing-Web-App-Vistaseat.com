@@ -65,7 +65,6 @@ public class EventServiceImpl implements EventService {
         Page<Event> events = eventRepository.findEventByNameContainingIgnoreCaseAndEventType(searchQuery, eventType, pageable);
         List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
         return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
-        //return events.map(eventMapper::toDto);
     }
 
     @Override
@@ -73,8 +72,6 @@ public class EventServiceImpl implements EventService {
         Page<Event> events = eventRepository.findEventByNameContainingIgnoreCase(searchQuery, pageable);
         List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
         return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
-        /*return eventRepository.findEventByNameContainingIgnoreCase(searchQuery, pageable)
-                .map(eventMapper::toDto);*/
     }
 
     @Override
@@ -82,7 +79,6 @@ public class EventServiceImpl implements EventService {
         Page<Event> events = eventRepository.findAllByEventType(eventType, pageable);
         List<EventDto>  eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
         return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
-        //return events.map(eventMapper::toDto);
     }
 
     @Override
@@ -90,7 +86,6 @@ public class EventServiceImpl implements EventService {
         Page<Event> events = eventRepository.findAll(pageable);
         List<EventDto> eventsWithOccurrenceCount = calculateEventOccurrenceCount(events.getContent());
         return new PageImpl<>(eventsWithOccurrenceCount, pageable, events.getTotalElements());
-        //return events.map(eventMapper::toDto);
     }
 
     @Override

@@ -405,5 +405,4 @@ public class BookingServiceImpl implements BookingService {
         bookingRepository.delete(booking);
     }
 
-
 }

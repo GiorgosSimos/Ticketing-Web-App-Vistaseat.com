@@ -32,7 +32,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Controller
 @RequiredArgsConstructor
 public class BookingController {
@@ -201,7 +200,6 @@ public class BookingController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return  "redirect:/adminDashboard/manageBookings";
         }
-
     }
 
     @GetMapping("/api/makeBooking")

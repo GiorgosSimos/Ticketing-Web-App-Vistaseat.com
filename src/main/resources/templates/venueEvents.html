@@ -94,7 +94,6 @@
                         <td th:text="${event.eventType}">CINEMA</td>
                         <td th:text="${event.occurrenceCount}">10</td>
                         <td>
-                            <!-- Browser Alerts - TODO: User friendly alerts (sweetAlert2)-->
                             <!-- Action Button: Manage Occurrences -->
                             <form th:action="@{'/adminDashboard/manageOccurrencesForEvent/' + ${event.id}}"
                                   method="get"
