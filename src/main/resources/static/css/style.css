@@ -608,7 +608,7 @@
     flex-direction: column;
     max-width: 700px;
     margin: 3rem auto;
-    background: rgb(242, 192, 120);
+    background: rgb(245, 239, 255);
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -679,7 +679,7 @@
     flex-direction: column;
     width: 600px;
     margin: 3rem auto;
-    background: rgb(242, 192, 120);
+    background: rgb(245, 239, 255);
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -755,7 +755,7 @@
     flex-direction: column;
     width: 650px;
     margin: 3rem auto;
-    background: rgb(242, 192, 120);
+    background: rgb(245, 239, 255);
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);

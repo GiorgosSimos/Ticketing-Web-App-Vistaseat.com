@@ -25,6 +25,18 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByVenueId(Long venueId);
 
+    @Query("""
+  select e
+  from Event e
+  join e.occurrences o
+  where lower(e.name) like lower(concat('%', :name, '%'))
+    and o.eventDate > :now
+  group by e
+  order by min(o.eventDate) asc
+""")
+    List<Event> findUpcomingByNameGroupBy(@Param("name") String name,
+                                          @Param("now") LocalDateTime now);
+
     List<Event> findTop5ByNameContainingIgnoreCase(String eventName);
 
     Page<Event> findAllByVenueId(Long venueId, Pageable pageable);

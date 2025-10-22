@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -36,7 +37,7 @@ public class UserRestController {
                     .map(v -> new SuggestionDto(v.getId(), v.getName(), "/api/venues/" + v.getId()))
                     .toList();
         } else {
-            suggestions = eventRepository.findTop5ByNameContainingIgnoreCase(query)
+            suggestions = eventRepository.findUpcomingByNameGroupBy(query, LocalDateTime.now())
                     .stream()
                     .map(e -> new SuggestionDto(e.getId(), e.getName(), "/api/events/" + e.getId()))
                     .toList();
