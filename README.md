@@ -1,6 +1,6 @@
 # 🎟️ Vistaseat.com — Integrated Event Ticketing & Seat Reservation System
 
-> **Full-Stack Java Web Application** | MSc Dissertation Project | University of Piraeus — Department of Informatics
+> **Full-Stack Java Web Application** | M.Sc. Dissertation Project | University of Piraeus — Department of Informatics
 
 A feature-rich **ticket booking platform** that enables users to explore, reserve, and purchase tickets for cultural and entertainment events — built with **Spring Boot**, **PostgreSQL**, and **Thymeleaf**, following the **MVC architecture** and **RESTful design principles**.
 
@@ -150,10 +150,10 @@ The **Admin Dashboard** is the control center of the application — providing f
 
 ## 🎓 Academic Context
 
-This project was developed as part of my **MSc Dissertation** at the  
+This project was developed as part of my **M.Sc. Dissertation** at the  
 **University of Piraeus – Department of Informatics**, titled:
 
-> **"Design and Development of an Integrated Ticketing and Seat Reservation System"**
+> **"Design and Development of an Integrated Seat Reservation & Ticketing System for Events & Performances"**
 
 The system replicates real-world event ticketing workflows, demonstrating applied knowledge in:
 - Software architecture (MVC + REST)
@@ -175,8 +175,8 @@ The system replicates real-world event ticketing workflows, demonstrating applie
 ## 📸 Preview & Demo
 
 ### 🎥 Video Presentation
-> *Coming soon!*  
-> *(Click above to watch a short walkthrough of the project in action!)*
+> [![Watch Demo](https://img.shields.io/badge/▶️%20Watch%20Demo-Mega.nz-blue?style=for-the-badge&logo=mega)](https://mega.nz/folder/07ACEQIa#LRl7WH5ro-MNXS9-dRXslA)   
+> *(Click above to watch a walkthrough of the project in action!)*
 
 ### 🖼️ Application Snapshots
 
