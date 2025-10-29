@@ -286,11 +286,31 @@
             document.querySelectorAll('#btn-resolve-issue').forEach(btn => {
                 btn.addEventListener('click', () => {
 
-                    // populate modal content
+                    // format the date
+                    const dateString = btn.getAttribute('data-writtenAt');
+
+                    if (dateString && dateString !== '-'){
+                        const date = new Date(dateString);
+
+                        // Format: dd-MM-yyyy - h:mm a
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const year = date.getFullYear();
+
+                        let hours = date.getHours();
+                        const minutes = String(date.getMinutes()).padStart(2, '0');
+                        const ampm = hours >= 12 ? 'PM' : 'AM';
+                        hours = hours % 12 || 12; // Convert to 12-hour format
+
+                        messageWrittenAt.textContent = `${day}-${month}-${year} - ${hours}:${minutes} ${ampm}`;
+                    } else {
+                        messageWrittenAt.textContent = '-';
+                    }
+
+                    // populate rest of the modal
                     messageAuthor.textContent = btn.getAttribute('data-author') || '-';
                     authorEmail.textContent = btn.getAttribute('data-authorEmail') || '-';
                     messageSubject.textContent = btn.getAttribute('data-subject') || '-';
-                    messageWrittenAt.textContent = btn.getAttribute('data-writtenAt') || '-';
                     messageBody.textContent = btn.getAttribute('data-message') || '-';
                     confirmBtn.dataset.messageId = btn.getAttribute('data-message-id');
 
